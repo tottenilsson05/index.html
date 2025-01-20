@@ -1,0 +1,686 @@
+@font-face {
+  font-family: 'Web437_IBM_VGA_8x16';
+  src: url('/Web437_IBM_VGA_8x16.woff') format('woff');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Web437_IBM_VGA_8x16', monospace;
+}
+
+body {
+  overflow: hidden;
+  background: #008080;  
+  height: 100vh;
+  user-select: none;
+  font-size: 12px;  
+}
+
+.desktop {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.taskbar {
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  margin-top: auto;
+}
+
+.start-btn {
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  padding: 4px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.start-btn:active {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+
+.time {
+  margin-left: auto;
+  padding: 4px 8px;
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+
+.start-menu {
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  width: 250px;
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  padding: 4px;
+}
+
+.start-menu.hidden {
+  display: none;
+}
+
+.menu-header {
+  background: linear-gradient(90deg, #000080, #1084d0);
+  color: white;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 20px;
+}
+
+.menu-items {
+  padding: 8px 0;
+}
+
+.menu-item {
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: #000080;
+  color: white;
+}
+
+.window {
+  position: absolute;
+  background: #c0c0c0;
+  border: 1px solid #000;  
+  box-shadow: 2px 2px #000;  
+  min-width: 200px;
+  min-height: 150px;
+}
+
+.window-header {
+  background: #000080;  
+  color: white;
+  padding: 2px;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.window-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.close-btn {
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.window-content {
+  padding: 8px;
+  height: calc(100% - 32px);
+}
+
+.terminal-content {
+  background: black;
+  color: #00ff00;
+  padding: 8px;
+  height: 100%;
+  overflow-y: auto;
+  white-space: pre;
+}
+
+.notes-content {
+  height: 100%;
+}
+
+.notes-textarea {
+  width: 100%;
+  height: 100%;
+  background: white;
+  border: 2px solid #808080;
+  padding: 8px;
+  resize: none;
+  font-size: 14px;
+}
+
+.browser-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #c0c0c0;  
+}
+
+.browser-toolbar {
+  background: #c0c0c0;
+  padding: 4px;
+  border-bottom: 1px solid #808080;
+}
+
+.browser-btn {
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.browser-btn:active {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+
+.url-bar {
+  flex: 1;
+  background: white;
+  border: 1px solid #000;  
+  padding: 2px;
+  font-family: 'Web437_IBM_VGA_8x16', monospace;
+  font-size: 12px;
+}
+
+.browser-viewport {
+  flex: 1;
+  border: 1px solid #000;
+  margin: 4px;
+  padding: 8px;
+  background: white;
+  font-family: 'Web437_IBM_VGA_8x16', monospace;
+}
+
+.browser-home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.search-box {
+  width: 80%;
+  max-width: 400px;
+  padding: 8px;
+  border: 2px solid #808080;
+  font-size: 14px;
+}
+
+.browser-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  width: 80%;
+  max-width: 600px;
+}
+
+.browser-link {
+  color: #0000FF;
+  text-decoration: underline;
+  padding: 4px;
+}
+
+.browser-link:visited {
+  color: #800080;
+}
+
+.browser-link:hover {
+  background: #e0e0e0;
+}
+
+.news-item {
+  margin: 20px 0;
+  padding: 10px;
+  border-bottom: 1px solid #c0c0c0;
+}
+
+.news-item h2 {
+  color: #000080;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.news-item p {
+  color: #333;
+  line-height: 1.4;
+}
+
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #c0c0c0;
+}
+
+.settings-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  background: #c0c0c0;
+}
+
+.settings-tab {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.settings-tab.active {
+  background: #808080;
+  color: white;
+  border-top-color: #000;
+  border-left-color: #000;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+}
+
+.settings-body {
+  flex: 1;
+  padding: 16px;
+  background: #c0c0c0;
+  border-top: 2px solid #808080;
+}
+
+.settings-section {
+  background: #c0c0c0;
+  padding: 16px;
+}
+
+.setting-item {
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wallpaper-preview {
+  width: 100px;
+  height: 60px;
+  border: 2px solid #808080;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.wallpaper-preview.active {
+  border-color: #000080;
+}
+
+.wallpaper-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.setup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000080;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.setup-content {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  width: 90%;
+  max-width: 600px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.setup-header {
+  background: linear-gradient(90deg, #000080, #1084d0);
+  color: white;
+  padding: 8px 16px;
+}
+
+.setup-body {
+  flex: 1;
+  padding: 20px;
+  background: #c0c0c0;
+}
+
+.setup-footer {
+  padding: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  background: #c0c0c0;
+  border-top: 2px solid #808080;
+}
+
+.setup-button {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  padding: 4px 16px;
+  cursor: pointer;
+}
+
+.setup-button:active {
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+}
+
+.setup-option {
+  margin: 16px 0;
+}
+
+.setup-option select {
+  width: 200px;
+  padding: 4px;
+}
+
+.confirm-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.confirm-content {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  padding: 20px;
+  min-width: 300px;
+}
+
+.confirm-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.reset-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #000;
+  color: #00ff00;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10001;
+  font-family: 'Web437_IBM_VGA_8x16', monospace;
+}
+
+.reset-content {
+  text-align: center;
+  padding: 20px;
+}
+
+.reset-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.loading-container {
+  margin: 20px 0;
+  font-size: 24px;
+}
+
+.reset-btn {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: red;
+  font-weight: bold;
+}
+
+.reset-btn:active {
+  border-top-color: #808080;
+  border-left-color: #808080;
+  border-right-color: #fff;
+  border-bottom-color: #fff;
+}
+
+.downloads-content {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+  background: #fff;
+}
+
+.no-downloads {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.downloads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.download-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  border: 2px solid #808080;
+  background: #f0f0f0;
+}
+
+.download-item.virus {
+  border-color: #ff0000;
+  background: #fff0f0;
+}
+
+.file-icon {
+  flex-shrink: 0;
+}
+
+.file-info {
+  flex-grow: 1;
+}
+
+.file-info h3 {
+  margin: 0 0 5px 0;
+  color: #000080;
+}
+
+.security-status {
+  margin-top: 5px;
+  font-weight: bold;
+}
+
+.virus .security-status {
+  color: #ff0000;
+}
+
+.file-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.quarantine-btn {
+  background: #ff0000 !important;
+  color: white !important;
+}
+
+.run-btn {
+  background: #008000 !important;
+  color: white !important;
+}
+
+.chat-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #fff;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  background: #fff;
+  border: 2px solid #808080;
+}
+
+.chat-input-area {
+  display: flex;
+  padding: 10px;
+  background: #c0c0c0;
+  border-top: 2px solid #808080;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 4px;
+  margin-right: 8px;
+  font-family: 'Web437_IBM_VGA_8x16', monospace;
+  border: 2px solid #808080;
+}
+
+.chat-send-btn {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-top-color: #fff;
+  border-left-color: #fff;
+  border-right-color: #808080;
+  border-bottom-color: #808080;
+  padding: 4px 16px;
+  cursor: pointer;
+}
+
+.chat-message {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 4px;
+}
+
+.chat-avatar {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #808080;
+}
+
+.chat-username {
+  font-weight: bold;
+  color: #000080;
+}
+
+.chat-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.chat-message:hover {
+  background: #f0f0f0;
+}
+
+.web-builder,
+.web-builder-content,
+.website-list,
+.website-editor,
+.form-group,
+.publish-btn,
+.site-link,
+.user-content {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .window {
+    width: 100% !important;
+    height: calc(100vh - 40px) !important;
+    top: 0 !important;
+    left: 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .setup-content {
+    width: 95%;
+    height: 95%;
+  }
+  
+  .settings-tab {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .web-builder-content {
+    grid-template-columns: 1fr;
+  }
+}
