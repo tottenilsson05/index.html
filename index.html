@@ -1,0 +1,154 @@
+<title>Dream Machine - Quantum Realm</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Courier New', monospace;
+    background: #000;
+    color: #0f0;
+  }
+  #quantum-realm {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+  }
+  #matrix {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    opacity: 0.3;
+  }
+  .matrix-column {
+    position: absolute;
+    top: -100%;
+    width: 20px;
+    color: #0f0;
+    font-size: 20px;
+    text-align: center;
+    animation: fall 20s infinite linear;
+  }
+  @keyframes fall {
+    to { transform: translateY(200vh); }
+  }
+  #quantum-cube {
+    width: 200px;
+    height: 200px;
+    transform-style: preserve-3d;
+    animation: rotate 20s infinite linear;
+  }
+  @keyframes rotate {
+    from { transform: rotateX(0) rotateY(0) rotateZ(0); }
+    to { transform: rotateX(360deg) rotateY(720deg) rotateZ(360deg); }
+  }
+  .face {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: rgba(0, 255, 0, 0.1);
+    border: 2px solid #0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    backface-visibility: visible;
+  }
+  #instructions {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 18px;
+  }
+  #symbol-display {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 36px;
+    text-shadow: 0 0 10px #0f0;
+  }
+</style>
+</head>
+<body>
+<div id="quantum-realm">
+  <div id="matrix"></div>
+  <div id="quantum-cube">
+    <div class="face" style="transform: translateZ(100px);">Ω</div>
+    <div class="face" style="transform: rotateY(180deg) translateZ(100px);">σ</div>
+    <div class="face" style="transform: rotateY(-90deg) translateZ(100px);">Φ</div>
+    <div class="face" style="transform: rotateY(90deg) translateZ(100px);">π</div>
+    <div class="face" style="transform: rotateX(-90deg) translateZ(100px);">Ψ</div>
+    <div class="face" style="transform: rotateX(90deg) translateZ(100px);">ξ</div>
+  </div>
+  <div id="symbol-display"></div>
+  <div id="instructions">Press the keys in the correct sequence to unlock the quantum realm...</div>
+</div>
+
+<script>
+const matrix = document.getElementById('matrix');
+const symbolDisplay = document.getElementById('symbol-display');
+const sequence = "QΩYΣZΦAΠRΨWΞFΛTΔHΣGΖJΘKΔMΗLΞNΡPΑBΥVΓXΗCΕDΛOΩIΙ";
+let currentIndex = 0;
+
+// Create matrix effect
+for (let i = 0; i < 50; i++) {
+  const column = document.createElement('div');
+  column.className = 'matrix-column';
+  column.style.left = `${Math.random() * 100}%`;
+  column.style.animationDuration = `${15 + Math.random() * 10}s`;
+  column.style.animationDelay = `${Math.random() * 5}s`;
+  
+  for (let j = 0; j < 25; j++) {
+    const char = document.createElement('div');
+    char.textContent = String.fromCharCode(33 + Math.floor(Math.random() * 94));
+    column.appendChild(char);
+  }
+  
+  matrix.appendChild(column);
+}
+
+// Key press handler
+document.addEventListener('keydown', (event) => {
+  const pressedKey = event.key.toUpperCase();
+  if (pressedKey === sequence[currentIndex]) {
+    symbolDisplay.textContent += pressedKey;
+    currentIndex++;
+    if (currentIndex === sequence.length) {
+      unlockQuantumRealm();
+    }
+  } else {
+    symbolDisplay.textContent = '';
+    currentIndex = 0;
+  }
+});
+
+function unlockQuantumRealm() {
+  document.body.innerHTML = `
+    <div style="height: 100vh; display: flex; justify-content: center; align-items: center; background: radial-gradient(circle, #000044, #000011); overflow: hidden;">
+      <div style="text-align: center; color: #ffffff; font-size: 24px; animation: pulse 2s infinite;">
+        <h1>Quantum Realm Unlocked</h1>
+        <p>You have accessed the secrets of the universe.</p>
+        <p>Reality is now yours to shape...</p>
+      </div>
+    </div>
+    <style>
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+      }
+    </style>
+  `;
+}
+</script>
+</body></html>
