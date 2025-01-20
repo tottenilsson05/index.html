@@ -1,0 +1,1989 @@
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galactic Cosmic Behavior Explorer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+  <style>
+    canvas {
+      background: radial-gradient(circle at center, #1a1a4a 0%, #000033 100%);
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      font-family: Arial, sans-serif;
+    }
+    canvas {
+      display: block;
+    }
+    #info {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      font-size: 14px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+    }
+    #controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      max-width: 600px;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 14px;
+      background-color: rgba(128, 128, 128, 0.3);
+      padding: 10px;
+      border-radius: 5px;
+    }
+    button {
+      background-color: rgba(128, 128, 128, 0.5);
+      border: none;
+      color: white;
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      margin: 4px;
+      cursor: pointer;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: rgba(128, 128, 128, 0.8);
+    }
+    button svg {
+      width: 24px;
+      height: 24px;
+      fill: rgba(255, 255, 255, 0.8);
+    }
+    #viewControls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: white;
+      font-size: 14px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 5px;
+    }
+    #imageUpload {
+      display: none;
+    }
+    #uploadLabel {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+      margin: 8px 0;
+      cursor: pointer;
+      border-radius: 3px;
+      width: 100%;
+    }
+    #uploadLabel:hover {
+      background-color: #45a049;
+    }
+    #effectsPanel {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      transform: none;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 15px;
+      border-radius: 8px;
+      color: white;
+      width: 250px;
+      transition: transform 0.3s ease;
+      transform-origin: bottom left;
+      transform: scale(0);
+    }
+    #effectsPanel.expanded {
+      transform: scale(1);
+    }
+    #effectsPanelIcon {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 40px;
+      height: 40px;
+      background-color: rgba(128, 128, 128, 0.5);
+      border: none;
+      color: white;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: background-color 0.3s;
+    }
+    #effectsPanelIcon:hover {
+      background-color: rgba(128, 128, 128, 0.8);
+    }
+    #effectsPanelIcon svg {
+      width: 24px;
+      height: 24px;
+      fill: rgba(255, 255, 255, 0.8);
+    }
+    #effectsPanel h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+    }
+
+    .effect-control {
+      margin-bottom: 15px;
+    }
+
+    .effect-sliders {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .effect-sliders.active {
+      display: block;
+    }
+
+    .effect-sliders label {
+      display: block;
+      margin: 5px 0;
+      font-size: 12px;
+    }
+
+    .effect-sliders input[type="range"] {
+      width: 100%;
+    }
+    #addFormationBtn {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      font-size: 14px;
+      margin: 8px 0;
+      cursor: pointer;
+      border-radius: 3px;
+      width: 100%;
+    }
+
+    #addFormationBtn:hover {
+      background-color: #45a049;
+    }
+    #tributeText {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+      font-style: italic;
+      display: none;
+    }
+    #billCipherFormation {
+      position: fixed !important;
+      bottom: 20px !important;
+      right: 20px !important;
+      background-color: rgba(128, 128, 128, 0.3) !important;
+      z-index: 1000;
+    }
+
+    #billCipherFormation:hover {
+      background-color: rgba(128, 128, 128, 0.5) !important;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particle-canvas"></canvas>
+  <div id="info">
+    Galactic Cosmic Behavior Explorer<br>
+    Current Formation: Lion
+  </div>
+  <div id="controls">
+    <button id="sphereFormation" title="Sphere">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="10" fill="currentColor"/>
+        <ellipse cx="12" cy="9" rx="8" ry="3" fill="rgba(255,255,255,0.2)"/>
+      </svg>
+    </button>
+    <button id="cubeFormation" title="Cube">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18"/></svg>
+    </button>
+    <button id="torusFormation" title="Torus">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="white" stroke-width="4" fill="none"/></svg>
+    </button>
+    <button id="halfSphereFormation" title="Half Sphere">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.34 0 .68-.02 1.01-.07C10.9 17.76 9 14.87 9 11.5c0-3.37 1.9-6.26 4.01-7.93-.33-.05-.67-.07-1.01-.07z" fill="currentColor"/>
+        <rect x="2" y="12" width="20" height="10" fill="currentColor"/>
+      </svg>
+    </button>
+    <button id="coneFormation" title="Cone">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 20h18L12 2z"/></svg>
+    </button>
+    <button id="cylinderFormation" title="Cylinder">
+      <svg viewBox="0 0 24 24"><path d="M7 5v14c0 1.1 2.2 2 5 2s5-.9 5-2V5c0-1.1-2.2-2-5-2s-5 .9-5 2z"/></svg>
+    </button>
+    <button id="pyramidFormation" title="Pyramid">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 20h18L12 2z"/></svg>
+    </button>
+    <button id="hourglassFormation" title="Hourglass">
+      <svg viewBox="0 0 24 24"><path d="M6 2v6h4l2 2-2 2H6v8h12v-8h-4l-2-2 2-2h4V2H6z"/></svg>
+    </button>
+    <button id="dnaFormation" title="DNA">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2l-1 4 1 2-1 2 1 2-1 2 1 2-1 4h2l1-4-1-2 1-2-1-2 1-2-1-2 1-4z" fill="currentColor"/>
+        <path d="M8 5h8M8 9h8M8 13h8M8 17h8" stroke="currentColor" fill="none" stroke-width="1"/>
+      </svg>
+    </button>
+    <button id="fishFormation" title="Fish">
+      <svg viewBox="0 0 24 24">
+        <path d="M20 12c-3-4-6-6-10-6C6 6 3 8 2 12c1 4 4 6 8 6 4 0 7-2 10-6z" fill="currentColor"/>
+        <circle cx="7" cy="12" r="1"/>
+        <path d="M20 12c-2 3-4 4-6 4" fill="none" stroke="currentColor"/>
+      </svg>
+    </button>
+    <button id="galaxyFormation" title="Galaxy">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.34 0 .68-.02 1.01-.07C10.9 17.76 9 14.87 9 11.5c0-3.37 1.9-6.26 4.01-7.93-.33-.05-.67-.07-1.01-.07z" fill="currentColor"/>
+        <path d="M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z" fill="currentColor"/>
+        <path d="M15 12c0 1.66-1.34 3-3 3s-3-1.34-3-3 1.34-3 3-3 3 1.34 3 3" fill="rgba(255,255,255,0.3)"/>
+      </svg>
+    </button>
+    <button id="wormholeFormation" title="Wormhole">
+      <svg viewBox="0 0 24 24">
+        <ellipse cx="12" cy="12" rx="10" ry="4" fill="none" stroke="currentColor" stroke-width="1"/>
+        <ellipse cx="12" cy="12" rx="8" ry="6" fill="none" stroke="currentColor" stroke-width="1"/>
+        <ellipse cx="12" cy="12" rx="6" ry="8" fill="none" stroke="currentColor" stroke-width="1"/>
+        <ellipse cx="12" cy="12" rx="4" ry="10" fill="none" stroke="currentColor" stroke-width="1"/>
+      </svg>
+    </button>
+    <button id="nebulaFormation" title="Nebula">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>
+    </button>
+    <button id="blackholeFormation" title="Black Hole">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4" fill="black"/>
+        <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2,2"/>
+        <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1"/>
+      </svg>
+    </button>
+    <button id="galaxyCollisionFormation" title="Galaxy Collision">
+      <svg viewBox="0 0 24 24">
+        <path d="M8 8c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z" fill="currentColor" opacity="0.7"/>
+        <path d="M16 4c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z" fill="currentColor" opacity="0.7"/>
+        <path d="M12 6c2.21 0 4 1.79 4 4M12 14c-2.21 0-4-1.79-4-4" stroke="currentColor" fill="none" stroke-width="1"/>
+      </svg>
+    </button>
+    <button id="cometFormation" title="Comet">
+      <svg viewBox="0 0 24 24"><path d="M11 3L5 20h14L11 3z"/></svg>
+    </button>
+    <button id="supernovaFormation" title="Supernova">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="3" fill="white"/>
+        <circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M12 2L14 6M12 22L10 18M2 12L6 14M22 12L18 10M4 4L8 8M20 20L16 16M4 20L8 16M20 4L16 8" stroke="currentColor"/>
+      </svg>
+    </button>
+    <button id="bigBangFormation" title="Big Bang">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="2" fill="white"/>
+        <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2" opacity="0.7"/>
+        <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+        <path d="M12 2L13 6M12 22L11 18M2 12L6 13M22 12L18 11M4 4L8 7M20 20L16 17M4 20L7 16M20 4L17 8" stroke="currentColor" opacity="0.3"/>
+      </svg>
+    </button>
+    <button id="crescentMoonFormation" title="Crescent Moon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.34 0 .68-.02 1.01-.07C10.9 17.76 9 14.87 9 11.5c0-3.37 1.9-6.26 4.01-7.93-.33-.05-.67-.07-1.01-.07z" fill="currentColor"/>
+      </svg>
+    </button>
+    <button id="bacteriaFormation" title="Bacteria">
+      <svg viewBox="0 0 24 24">
+        <ellipse cx="12" cy="12" rx="8" ry="4" fill="currentColor"/>
+        <circle cx="9" cy="12" r="1.5" fill="rgba(255,255,255,0.8)"/>
+        <circle cx="15" cy="12" r="1.5" fill="rgba(255,255,255,0.8)"/>
+        <path d="M6 12c0 0 1-2 3-2s3 2 3 2s1-2 3-2s3 2 3 2" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="0.5"/>
+        <path d="M4 12c0 0 2-4 5-4s5 4 5 4s2-4 5-4s5 4 5 4" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+      </svg>
+    </button>
+    <button id="yinYangFormation" title="Yin Yang">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
+        <path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10c0-5.52-4.48-10-10-10S2 6.48 2 12 6.48 22 12 22"/>
+        <circle cx="12" cy="7" r="2"/>
+        <circle cx="12" cy="17" r="2" fill="white"/>
+      </svg>
+    </button>
+    <button id="towerFormation" title="Tower">
+      <svg viewBox="0 0 24 24">
+        <path d="M8 2h8v20H8zM6 6h12M6 12h12M6 18h12" stroke="currentColor" fill="none"/>
+        <path d="M10 2h4l-2-2z" fill="currentColor"/>
+        <rect x="7" y="20" width="10" height="2" fill="currentColor"/>
+      </svg>
+    </button>
+    <div id="sliders">
+      <label for="particleSize">Particle Size:</label>
+      <input type="range" id="particleSize" min="1" max="10" value="5" step="0.1">
+      <label for="particleSpeed">Animation Speed:</label>
+      <input type="range" id="particleSpeed" min="0.1" max="2" value="1" step="0.1">
+    </div>
+  </div>
+  <button id="billCipherFormation" title="Bill Cipher">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 2L4 20h16L12 2z" fill="currentColor"/>
+      <circle cx="12" cy="12" r="2"/>
+      <path d="M8 7h8M6 16h12" stroke="black" fill="none"/>
+      <path d="M9 4h6v2c0 1.1-.9 2-2 2h-2c-1.1 0-2-.9-2-2V4z" fill="currentColor"/>
+    </svg>
+  </button>
+  <button id="effectsPanelIcon" title="Effects Panel">
+    <svg viewBox="0 0 24 24">
+      <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+    </svg>
+  </button>
+  <div id="effectsPanel">
+    <h3>Effects Panel</h3>
+    <div class="effect-control">
+      <label for="blackHoleToggle">Black Hole Effect:</label>
+      <input type="checkbox" id="blackHoleToggle">
+      <div class="effect-sliders" id="blackHoleControls">
+        <label>Strength: <input type="range" id="blackHoleStrength" min="0" max="100" value="50"></label>
+        <label>Radius: <input type="range" id="blackHoleRadius" min="50" max="500" value="200"></label>
+        <label>Position X: <input type="range" id="blackHoleX" min="-500" max="500" value="0"></label>
+        <label>Position Y: <input type="range" id="blackHoleY" min="-500" max="500" value="0"></label>
+        <label>Position Z: <input type="range" id="blackHoleZ" min="-500" max="500" value="0"></label>
+      </div>
+    </div>
+    <div class="effect-control">
+      <label for="addFormationToggle">Add Formation Effect:</label>
+      <input type="checkbox" id="addFormationToggle">
+      <div class="effect-sliders" id="addFormationControls">
+        <label>Number of Formations: <input type="range" id="formationCount" min="1" max="10" value="3"></label>
+        <label>Formation Scale: <input type="range" id="formationScale" min="10" max="100" value="50"></label>
+        <button id="addFormationBtn">Add Formations</button>
+      </div>
+    </div>
+    <div class="effect-control">
+      <label for="imageUploadToggle">Image Upload Effect:</label>
+      <input type="checkbox" id="imageUploadToggle">
+      <div class="effect-sliders" id="imageUploadControls">
+        <label for="imageUpload" id="uploadLabel">Choose Image</label>
+        <input type="file" id="imageUpload" accept="image/*">
+      </div>
+    </div>
+    <div class="effect-control">
+      <label for="colorEffectToggle">Color Change Effect:</label>
+      <input type="checkbox" id="colorEffectToggle">
+      <div class="effect-sliders" id="colorEffectControls">
+        <label>Color Change Speed: <input type="range" id="colorChangeSpeed" min="0.1" max="2" value="1" step="0.1"></label>
+        <label>Color Intensity: <input type="range" id="colorIntensity" min="0.1" max="1" value="0.7" step="0.1"></label>
+      </div>
+    </div>
+    <div class="effect-control">
+      <label for="particleCountToggle">Particle Count Effect:</label>
+      <input type="checkbox" id="particleCountToggle">
+      <div class="effect-sliders" id="particleCountControls">
+        <label>Number of Particles: <input type="range" id="particleCount" min="1000" max="50000" value="20000" step="1000"></label>
+      </div>
+    </div>
+  </div>
+  <div id="viewControls">
+    <button id="resetView" title="Reset View">
+      <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6z"/></svg>
+    </button>
+    <button id="topView" title="Top View">
+      <svg viewBox="0 0 24 24"><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg>
+    </button>
+    <button id="sideView" title="Side View">
+      <svg viewBox="0 0 24 24"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>
+    </button>
+    <button id="frontView" title="Front View">
+      <svg viewBox="0 0 24 24"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+    </button>
+    <button id="randomView" title="Random View">
+      <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+    </button>
+  </div>
+  <div id="tributeText">in honor of tusken den</div>
+
+  <script>let scene, camera, renderer, particles;
+let windowHalfX = window.innerWidth / 2;
+let windowHalfY = window.innerHeight / 2;
+let particleSystem;
+let animationSpeed = 1;
+let currentFormation = 'sphere';
+let controls;
+let blackHoleEffect = {
+  active: false,
+  strength: 50,
+  radius: 200,
+  position: new THREE.Vector3(0, 0, 0)
+};
+let additionalFormations = [];
+const formationTypes = ['sphere', 'cube', 'torus', 'halfSphere', 'cone', 'cylinder', 'pyramid', 'hourglass', 'dna', 'fish', 'galaxy', 'wormhole', 'nebula', 'blackhole', 'comet', 'supernova', 'crescentMoon', 'bacteria', 'yinYang', 'bigBang', 'tower', 'galaxyCollision', 'billCipher'];
+let starField;
+let backgroundStars = [];
+const colorEffect = {
+  active: false,
+  speed: 1,
+  intensity: 0.7,
+  time: 0
+};
+let currentParticleCount = 20000;
+gsap.registerPlugin({
+  name: "endArray",
+  init(target, endValue) {
+    this.start = new Float32Array(target);
+    this.endArray = endValue;
+    this.diff = new Float32Array(target.length);
+    for (let i = 0; i < this.diff.length; i++) {
+      this.diff[i] = this.endArray[i] - this.start[i];
+    }
+  },
+  render(progress, data) {
+    for (let i = 0; i < data.start.length; i++) {
+      data.target[i] = data.start[i] + data.diff[i] * progress;
+    }
+  }
+});
+document.addEventListener('DOMContentLoaded', function () {
+  init();
+  animate();
+  formShape('galaxy');
+  document.getElementById('crescentMoonFormation').addEventListener('click', () => formShape('crescentMoon'));
+  document.getElementById('particleCountToggle').addEventListener('change', toggleParticleCountControls);
+  document.getElementById('particleCount').addEventListener('input', updateParticleCount);
+  document.getElementById('fishFormation').addEventListener('click', () => formShape('fish'));
+  document.getElementById('galaxyCollisionFormation').addEventListener('click', () => formShape('galaxyCollision'));
+  document.getElementById('bacteriaFormation').addEventListener('click', () => formShape('bacteria'));
+});
+function init() {
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 20000);
+  camera.position.z = 2000;
+  renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('particle-canvas'),
+    antialias: true
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  const backgroundStars = [];
+  for (let i = 0; i < 2000; i++) {
+    const starGeometry = new THREE.SphereGeometry(Math.random() * 4);
+    const starMaterial = new THREE.MeshBasicMaterial({
+      color: new THREE.Color().setHSL(Math.random(), 0.9, 0.9),
+      transparent: true,
+      opacity: Math.random() * 0.9 + 0.1
+    });
+    const star = new THREE.Mesh(starGeometry, starMaterial);
+    const radius = 8000;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.random() * Math.PI;
+    star.position.x = radius * Math.sin(phi) * Math.cos(theta);
+    star.position.y = radius * Math.sin(phi) * Math.sin(theta);
+    star.position.z = radius * Math.cos(phi);
+    scene.add(star);
+    backgroundStars.push(star);
+  }
+  const starFieldGeometry = new THREE.BufferGeometry();
+  const starFieldVertices = [];
+  const starFieldColors = [];
+  for (let i = 0; i < 10000; i++) {
+    const radius = 5000 + Math.random() * 2000;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.random() * Math.PI;
+    const x = radius * Math.sin(phi) * Math.cos(theta);
+    const y = radius * Math.sin(phi) * Math.sin(theta);
+    const z = radius * Math.cos(phi);
+    starFieldVertices.push(x, y, z);
+    const color = new THREE.Color();
+    color.setHSL(0.65 + Math.random() * 0.1, 0.8, 0.7);
+    starFieldColors.push(color.r, color.g, color.b);
+  }
+  starFieldGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starFieldVertices, 3));
+  starFieldGeometry.setAttribute('color', new THREE.Float32BufferAttribute(starFieldColors, 3));
+  const starFieldMaterial = new THREE.PointsMaterial({
+    size: 20,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.4,
+    blending: THREE.AdditiveBlending
+  });
+  starField = new THREE.Points(starFieldGeometry, starFieldMaterial);
+  scene.add(starField);
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.screenSpacePanning = false;
+  controls.minDistance = 100;
+  controls.maxDistance = 3000;
+  const textureLoader = new THREE.TextureLoader();
+  const sprite = textureLoader.load('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpGODdGMTE3NDA3MjA2ODExODIyQUJFMTZDNTIxQ0I3NSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpBRjg5RDZBRjE3N0ExMUUyQjZGOEE2RjhGRjhERjkyQyIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpBRjg5RDZBRjE3N0ExMUUyQjZGOEE2RjhGRjhERjkyQyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M2IChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkY4N0YxMTc0MDcyMDY4MTE4MjJBQkUxNkM1MjFDQjc1IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkY4N0YxMTc0MDcyMDY4MTE4MjJBQkUxNkM1MjFDQjc1Ij8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Z7B8MQAAAXNJREFUeNpi+P//PwMQMANxERCXAnEIEHsBcTUQbwTiD0BsBcRWQMwFxApArADEr4H4PhDzAjEzEP8E4t9ArA3E74CYBYjZgZgDiH8AsQgQfwHi/0D8BYh/AfEfIP4LxL+BWAmIvwGxIBDzA/FPIH4JxApAzAXE34FYC4g1gPgdEEsD8Rsg5gNiFSD+BMRvgVgDiOWAWA6IRYH4BxALAbEwEEsBsQwQvwdieSBWBGIlIFYGYhUgVgViNSDWAGJNINYCYm0g1gFiXSDWA2J9IDYAYkMgNgJiYyA2AWJTIDYDYnMgtgBiSyC2AmJrILYBYlsgtgNieyB2AGJHIHYC4v9A7AzELkDsCsRuQOwOxB5A7AnEXkDsDcQ+QOwLxH5A7A/EAUAcCMRBQBwMxCFAHArEYUAcDsQRQBwJxLZAHAXE0UAcA8SxQBwHxPFAnADEiUCcBMTJQJwCxJOBOBWI04A4HYgzgDgTiLOAOBuIc4A4F4jzAQIMAOGhanXHbU7JAAAAAElFTkSuQmCC');
+  createParticles(sprite);
+  window.addEventListener('resize', onWindowResize);
+  document.getElementById('sphereFormation').addEventListener('click', () => formShape('sphere'));
+  document.getElementById('cubeFormation').addEventListener('click', () => formShape('cube'));
+  document.getElementById('torusFormation').addEventListener('click', () => formShape('torus'));
+  document.getElementById('coneFormation').addEventListener('click', () => formShape('cone'));
+  document.getElementById('cylinderFormation').addEventListener('click', () => formShape('cylinder'));
+  document.getElementById('pyramidFormation').addEventListener('click', () => formShape('pyramid'));
+  document.getElementById('hourglassFormation').addEventListener('click', () => formShape('hourglass'));
+  document.getElementById('dnaFormation').addEventListener('click', () => formShape('dna'));
+  document.getElementById('galaxyFormation').addEventListener('click', () => formShape('galaxy'));
+  document.getElementById('wormholeFormation').addEventListener('click', () => formShape('wormhole'));
+  document.getElementById('nebulaFormation').addEventListener('click', () => formShape('nebula'));
+  document.getElementById('blackholeFormation').addEventListener('click', () => formShape('blackhole'));
+  document.getElementById('cometFormation').addEventListener('click', () => formShape('comet'));
+  document.getElementById('supernovaFormation').addEventListener('click', () => formShape('supernova'));
+  document.getElementById('bigBangFormation').addEventListener('click', () => formShape('bigBang'));
+  document.getElementById('particleSize').addEventListener('input', updateParticleSize);
+  document.getElementById('particleSpeed').addEventListener('input', updateParticleSpeed);
+  document.getElementById('resetView').addEventListener('click', resetView);
+  document.getElementById('topView').addEventListener('click', topView);
+  document.getElementById('sideView').addEventListener('click', sideView);
+  document.getElementById('frontView').addEventListener('click', frontView);
+  document.getElementById('randomView').addEventListener('click', randomView);
+  document.getElementById('imageUpload').addEventListener('change', handleImageUpload);
+  document.getElementById('blackHoleToggle').addEventListener('change', toggleBlackHoleControls);
+  document.getElementById('blackHoleStrength').addEventListener('input', updateBlackHoleEffect);
+  document.getElementById('blackHoleRadius').addEventListener('input', updateBlackHoleEffect);
+  document.getElementById('blackHoleX').addEventListener('input', updateBlackHoleEffect);
+  document.getElementById('blackHoleY').addEventListener('input', updateBlackHoleEffect);
+  document.getElementById('blackHoleZ').addEventListener('input', updateBlackHoleEffect);
+  document.getElementById('effectsPanelIcon').addEventListener('click', toggleEffectsPanel);
+  document.getElementById('addFormationToggle').addEventListener('change', toggleAddFormationControls);
+  document.getElementById('addFormationBtn').addEventListener('click', addRandomFormations);
+  document.getElementById('halfSphereFormation').addEventListener('click', () => formShape('halfSphere'));
+  document.getElementById('yinYangFormation').addEventListener('click', () => formShape('yinYang'));
+  document.getElementById('towerFormation').addEventListener('click', () => formShape('tower'));
+  document.getElementById('billCipherFormation').addEventListener('click', () => formShape('billCipher'));
+  window.originalStarField = starField;
+  window.originalBackgroundStars = backgroundStars;
+}
+function createParticles(sprite) {
+  const geometry = new THREE.BufferGeometry();
+  const vertices = [];
+  const colors = [];
+  const sizes = [];
+  for (let i = 0; i < currentParticleCount; i++) {
+    const x = (Math.random() - 0.5) * 3000;
+    const y = (Math.random() - 0.5) * 3000;
+    const z = (Math.random() - 0.5) * 3000;
+    vertices.push(x, y, z);
+    const color = new THREE.Color();
+    const hue = Math.random() * 0.3 + 0.5;
+    const saturation = 0.8 + Math.random() * 0.2;
+    const lightness = 0.4 + Math.random() * 0.3;
+    color.setHSL(hue, saturation, lightness);
+    colors.push(color.r, color.g, color.b);
+    sizes.push(Math.random() * 8 + 2);
+  }
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+  scene.remove(particleSystem);
+  const material = new THREE.PointsMaterial({
+    size: 8,
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    opacity: 0.8,
+    sizeAttenuation: true
+  });
+  particleSystem = new THREE.Points(geometry, material);
+  scene.add(particleSystem);
+}
+function createParticlesFromImage(img) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  ctx.drawImage(img, 0, 0, img.width, img.height);
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const data = imageData.data;
+  const positions = [];
+  const colors = [];
+  const sizes = [];
+  const particleCount = currentParticleCount;
+  const scaleFactor = Math.min(1000 / img.width, 1000 / img.height);
+  for (let i = 0; i < particleCount; i++) {
+    const x = Math.floor(Math.random() * img.width);
+    const y = Math.floor(Math.random() * img.height);
+    const index = (y * img.width + x) * 4;
+    if (data[index + 3] > 128) {
+      const pixelX = (x - img.width / 2) * scaleFactor;
+      const pixelY = (img.height / 2 - y) * scaleFactor;
+      const pixelZ = (Math.random() - 0.5) * 200;
+      positions.push(pixelX, pixelY, pixelZ);
+      const r = data[index] / 255;
+      const g = data[index + 1] / 255;
+      const b = data[index + 2] / 255;
+      colors.push(r, g, b);
+      sizes.push(Math.random() * 5 + 1);
+    }
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+  scene.remove(particleSystem);
+  const material = new THREE.PointsMaterial({
+    size: 8,
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+    transparent: true,
+    opacity: 0.8,
+    sizeAttenuation: true
+  });
+  particleSystem = new THREE.Points(geometry, material);
+  scene.add(particleSystem);
+  currentFormation = 'custom image';
+  updateInfoText('Custom Image');
+  document.getElementById('imageUploadToggle').checked = false;
+  document.getElementById('imageUploadControls').classList.remove('active');
+}
+function onWindowResize() {
+  windowHalfX = window.innerWidth / 2;
+  windowHalfY = window.innerHeight / 2;
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+}
+function animate() {
+  requestAnimationFrame(animate);
+  controls.update();
+  additionalFormations.forEach(formation => {
+    formation.rotation.x += 0.001;
+    formation.rotation.y += 0.001;
+  });
+  render();
+}
+function render() {
+  if (colorEffect.active) {
+    colorEffect.time += 0.016 * colorEffect.speed;
+    const positions = particleSystem.geometry.attributes.position.array;
+    const colors = particleSystem.geometry.attributes.color.array;
+    for (let i = 0; i < colors.length; i += 3) {
+      const hue = (Math.sin(colorEffect.time + i / 300) * 0.5 + 0.5) % 1;
+      const color = new THREE.Color().setHSL(hue, 0.8, colorEffect.intensity);
+      colors[i] = color.r;
+      colors[i + 1] = color.g;
+      colors[i + 2] = color.b;
+    }
+    particleSystem.geometry.attributes.color.needsUpdate = true;
+  }
+  const time = Date.now() * 0.0001 * animationSpeed;
+  backgroundStars.forEach((star, i) => {
+    star.rotation.y = time * (i % 5 - 2) * 0.2;
+    star.rotation.x = time * (i % 3 - 1) * 0.1;
+    star.material.opacity = 0.3 + Math.sin(time * 2 + i) * 0.5;
+    star.scale.setScalar(0.8 + Math.sin(time * 3 + i) * 0.2);
+  });
+  if (starField) {
+    starField.rotation.y = time * 0.08;
+    starField.rotation.x = time * 0.05;
+    starField.rotation.z = time * 0.03;
+  }
+  const positions = particleSystem.geometry.attributes.position.array;
+  const colors = particleSystem.geometry.attributes.color.array;
+  const sizes = particleSystem.geometry.attributes.size.array;
+  for (let i = 0; i < positions.length; i += 3) {
+    const hue = (Math.sin(time * 3 + i / 3) * 0.1 + 0.7) % 1;
+    const color = new THREE.Color();
+    color.setHSL(hue, 0.7, 0.5);
+    colors[i] = color.r;
+    colors[i + 1] = color.g;
+    colors[i + 2] = color.b;
+    sizes[i / 3] = (Math.sin(time * 5 + i / 3) * 0.5 + 1) * 3;
+    if (currentFormation === 'nebula') {
+      const nebulaTime = time * 0.05;
+      const swirl = Math.sin(nebulaTime + positions[i] * 0.001) * 0.5;
+      const drift = Math.cos(nebulaTime + positions[i + 1] * 0.001) * 0.4;
+      const float = Math.sin(nebulaTime + positions[i + 2] * 0.001) * 0.5;
+      const turbulence = Math.sin(nebulaTime * 2 + positions[i] * 0.002) * 0.3;
+      positions[i] += Math.sin(nebulaTime + positions[i] * 0.0005) * 0.1 + swirl * 0.15 + turbulence;
+      positions[i + 1] += Math.cos(nebulaTime + positions[i + 1] * 0.0005) * 0.05 + drift * 0.15;
+      positions[i + 2] += Math.sin(nebulaTime + positions[i + 2] * 0.0005) * 0.1 + float * 0.15 + turbulence;
+      const distFromCenter = Math.sqrt(positions[i] * positions[i] + positions[i + 1] * positions[i + 1] + positions[i + 2] * positions[i + 2]);
+      const baseHue = 0.6;
+      const hueVariation = Math.sin(nebulaTime + i / 3) * 0.05;
+      const saturation = 0.5 + Math.sin(nebulaTime * 0.25 + i / 5) * 0.1;
+      const brightness = 0.3 + Math.cos(nebulaTime * 0.75 + i / 4) * 0.1;
+      const opacity = 0.3 + Math.sin(nebulaTime + i / 4) * 0.1;
+      if (distFromCenter < 500) {
+        const color = new THREE.Color().setHSL(0.15, 0.8, 0.7);
+        colors[i] = color.r * opacity * 1.5;
+        colors[i + 1] = color.g * opacity * 1.5;
+        colors[i + 2] = color.b * opacity * 1.5;
+      } else {
+        const color = new THREE.Color().setHSL(baseHue + hueVariation, saturation, brightness * 0.8);
+        colors[i] = color.r * opacity;
+        colors[i + 1] = color.g * opacity;
+        colors[i + 2] = color.b * opacity;
+      }
+    } else if (currentFormation === 'blackhole') {
+      const bhTime = time * 0.5;
+      const distFromCenter = Math.sqrt(positions[i] * positions[i] + positions[i + 1] * positions[i + 1] + positions[i + 2] * positions[i + 2]);
+      const orbitalSpeed = 2 * Math.pow(200 / Math.max(distFromCenter, 50), 0.5);
+      const angle = Math.atan2(positions[i], positions[i + 2]) + bhTime * orbitalSpeed;
+      const radius = Math.sqrt(positions[i] * positions[i] + positions[i + 2] * positions[i + 2]);
+      positions[i] = Math.cos(angle) * radius;
+      positions[i + 2] = Math.sin(angle) * radius;
+      const color = new THREE.Color();
+      if (distFromCenter < 200) {
+        color.setHSL(0, 0, Math.max(0, 0.3 - distFromCenter / 1000));
+      } else {
+        const intensity = Math.min(1, orbitalSpeed * 0.5);
+        const isInJet = Math.abs(positions[i + 1]) > distFromCenter * 0.7;
+        if (isInJet) {
+          color.setHSL(0.6, 0.1, 0.9);
+          const pulseIntensity = Math.sin(bhTime * 5) * 0.3 + 0.7;
+          colors[i] *= pulseIntensity;
+          colors[i + 1] *= pulseIntensity;
+          colors[i + 2] *= pulseIntensity;
+        } else {
+          color.setHSL(0.6 + intensity * 0.4, 0.8, 0.6 * intensity);
+        }
+      }
+      colors[i] = color.r;
+      colors[i + 1] = color.g;
+      colors[i + 2] = color.b;
+    } else if (currentFormation === 'comet') {
+      const distFromCore = Math.sqrt(Math.pow(positions[i], 2) + Math.pow(positions[i + 1], 2) + Math.pow(positions[i + 2], 2));
+      const color = new THREE.Color();
+      if (distFromCore < 50) {
+        color.setHSL(0.1, 1.0, 1.0);
+      } else {
+        const fade = Math.max(0, 1 - distFromCore / 600);
+        color.setHSL(0.6, 0.8, fade * 0.9);
+      }
+      colors[i] = color.r;
+      colors[i + 1] = color.g;
+      colors[i + 2] = color.b;
+      const glowIntensity = Math.sin(time * 5) * 0.2 + 0.8;
+      colors[i] *= glowIntensity;
+      colors[i + 1] *= glowIntensity;
+      colors[i + 2] *= glowIntensity;
+    } else if (currentFormation === 'galaxy') {
+      const galaxyRotationSpeed = time * 0.1;
+      const x = positions[i];
+      const z = positions[i + 2];
+      const radius = Math.sqrt(x * x + z * z);
+      const angle = Math.atan2(z, x) + galaxyRotationSpeed * (1 - radius / 2000);
+      positions[i] = radius * Math.cos(angle);
+      positions[i + 2] = radius * Math.sin(angle);
+      const distFromCenter = Math.sqrt(positions[i] * positions[i] + positions[i + 1] * positions[i + 1] + positions[i + 2] * positions[i + 2]);
+      if (distFromCenter < 100) {
+        const intensity = Math.max(0, 1 - distFromCenter / 100);
+        const color = new THREE.Color();
+        color.setHSL(0.15, 0.9, 1.0 + intensity);
+        colors[i] = color.r * 2.0;
+        colors[i + 1] = color.g * 2.0;
+        colors[i + 2] = color.b * 2.0;
+      } else if (distFromCenter < 500) {
+        const armPhase = Math.atan2(positions[i], positions[i + 2]) * 5;
+        const brightness = 0.7 + 0.3 * Math.sin(armPhase + time);
+        const color = new THREE.Color();
+        color.setHSL(0.6, 0.8, brightness);
+        colors[i] = color.r;
+        colors[i + 1] = color.g;
+        colors[i + 2] = color.b;
+      } else {
+        const color = new THREE.Color();
+        color.setHSL(0.6, 0.6, 0.4);
+        colors[i] = color.r;
+        colors[i + 1] = color.g;
+        colors[i + 2] = color.b;
+      }
+      if (Math.abs(positions[i + 1]) < 20 && Math.random() < 0.3) {
+        colors[i] *= 0.3;
+        colors[i + 1] *= 0.3;
+        colors[i + 2] *= 0.3;
+      }
+    } else if (currentFormation === 'wormhole') {
+      const wormholeTime = time * 2;
+      const wormholeColor = new THREE.Color();
+      const distFromCenter = Math.sqrt(positions[i] * positions[i] + positions[i + 2] * positions[i + 2]);
+      const yPos = positions[i + 1];
+      const intensity = Math.max(0.2, 1 - distFromCenter / 400);
+      const hue = 0.6 + Math.sin(wormholeTime) * 0.1;
+      const saturation = 0.3 + Math.sin(wormholeTime * 0.5) * 0.2;
+      const brightness = intensity * (0.7 + Math.sin(wormholeTime * 2) * 0.3);
+      wormholeColor.setHSL(hue, saturation, brightness);
+      colors[i] = wormholeColor.r;
+      colors[i + 1] = wormholeColor.g;
+      colors[i + 2] = wormholeColor.b;
+    } else if (currentFormation === 'supernova') {
+      const supernovaTime = time * 2;
+      const color = new THREE.Color();
+      const distFromCenter = Math.sqrt(positions[i] * positions[i] + positions[i + 1] * positions[i + 1] + positions[i + 2] * positions[i + 2]);
+      const explosionPhase = Math.min(1, supernovaTime / 10);
+      if (distFromCenter < 100) {
+        const intensity = Math.min(1, explosionPhase * 2);
+        color.setHSL(0.6, 1.0, intensity * 2.0);
+      } else if (distFromCenter < 800) {
+        const intensity = Math.min(1, (1 - (distFromCenter - 100) / 700) * explosionPhase);
+        const hue = 0.05 + Math.random() * 0.1;
+        const turbulence = Math.sin(supernovaTime * 3 + distFromCenter * 0.01) * 0.2;
+        color.setHSL(hue + turbulence, 0.9, intensity * 1.5);
+      } else if (distFromCenter < 1200) {
+        const intensity = Math.max(0, 1 - (distFromCenter - 800) / 400) * explosionPhase;
+        color.setHSL(0.65, 0.9, intensity * 1.2);
+      } else {
+        const intensity = Math.max(0, 1 - (distFromCenter - 1200) / 800) * explosionPhase;
+        color.setHSL(0.0, 0.8, intensity * 0.9);
+      }
+      const pulseIntensity = Math.sin(supernovaTime * 3) * 0.2 + 0.8;
+      colors[i] = color.r * pulseIntensity;
+      colors[i + 1] = color.g * pulseIntensity;
+      colors[i + 2] = color.b * pulseIntensity;
+      const expansionSpeed = time * 0.2;
+      const expansion = Math.sin(expansionSpeed) * 0.1 + 1.1;
+      const asymmetry = Math.sin(positions[i] * 0.01) * 0.2 + 1.0;
+      const jetDirection = Math.abs(Math.atan2(positions[i], positions[i + 1]));
+      const jetBoost = jetDirection < 0.5 ? 1.3 : 1.0;
+      positions[i] *= expansion * asymmetry * jetBoost;
+      positions[i + 1] *= expansion * (asymmetry * 0.8 + 0.2) * jetBoost;
+      positions[i + 2] *= expansion * asymmetry * jetBoost;
+    } else if (currentFormation === 'bigBang') {
+      const explosionTime = time * 3;
+      const color = new THREE.Color();
+      const distFromCenter = Math.sqrt(positions[i] * positions[i] + positions[i + 1] * positions[i + 1] + positions[i + 2] * positions[i + 2]);
+      if (distFromCenter < 200) {
+        color.setHSL(0.1, 1.0, 2.0);
+      } else if (distFromCenter < 1000) {
+        const intensity = 1.5 - (distFromCenter - 200) / 800;
+        color.setHSL(0.05, 0.9, intensity * 1.5);
+      } else {
+        const intensity = Math.max(0, 1 - (distFromCenter - 1000) / 2000);
+        color.setHSL(0.6, 0.8, intensity * 1.2);
+      }
+      const pulseIntensity = Math.sin(explosionTime * 2) * 0.3 + 1.2;
+      colors[i] = color.r * pulseIntensity;
+      colors[i + 1] = color.g * pulseIntensity;
+      colors[i + 2] = color.b * pulseIntensity;
+      const expansion = Math.sin(explosionTime * 0.5) * 0.1 + 1.05;
+      positions[i] *= expansion;
+      positions[i + 1] *= expansion;
+      positions[i + 2] *= expansion;
+    } else if (currentFormation === 'galaxyCollision') {
+      const collisionTime = time * 0.5;
+      const distFromCenter = Math.sqrt(positions[i] * positions[i] + positions[i + 1] * positions[i + 1] + positions[i + 2] * positions[i + 2]);
+      const swirl = Math.sin(collisionTime + positions[i] * 0.001) * 2;
+      positions[i] += Math.sin(collisionTime + positions[i] * 0.0005) * 0.5;
+      positions[i + 1] += Math.cos(collisionTime + positions[i + 1] * 0.0005) * 0.3;
+      positions[i + 2] += Math.sin(collisionTime + positions[i + 2] * 0.0005) * 0.5;
+      const color = new THREE.Color();
+      if (positions[i] < 0) {
+        color.setHSL(0.6 + Math.random() * 0.1, 0.8, 0.6);
+      } else {
+        color.setHSL(0.0 + Math.random() * 0.1, 0.8, 0.6);
+      }
+      if (Math.abs(positions[i]) < 100) {
+        const intensity = 1.0 - Math.abs(positions[i]) / 100;
+        color.lerp(new THREE.Color(1, 1, 1), intensity * 0.5);
+      }
+      colors[i] = color.r;
+      colors[i + 1] = color.g;
+      colors[i + 2] = color.b;
+      sizes[i / 3] = (Math.sin(collisionTime * 5 + i / 3) * 0.5 + 1) * 3;
+    }
+    if (blackHoleEffect.active) {
+      const particlePos = new THREE.Vector3(positions[i], positions[i + 1], positions[i + 2]);
+      const distanceToBlackHole = particlePos.distanceTo(blackHoleEffect.position);
+      if (distanceToBlackHole < blackHoleEffect.radius) {
+        const force = blackHoleEffect.strength / 50 * (1 - distanceToBlackHole / blackHoleEffect.radius);
+        const direction = new THREE.Vector3().subVectors(blackHoleEffect.position, particlePos).normalize();
+        positions[i] += direction.x * force;
+        positions[i + 1] += direction.y * force;
+        positions[i + 2] += direction.z * force;
+        if (distanceToBlackHole < 10) {
+          positions[i] = blackHoleEffect.position.x;
+          positions[i + 1] = blackHoleEffect.position.y;
+          positions[i + 2] = blackHoleEffect.position.z;
+          colors[i] = 0;
+          colors[i + 1] = 0;
+          colors[i + 2] = 0;
+        }
+      }
+    }
+    if (currentFormation === 'bigBang') {
+      if (starField && starField.parent) {
+        scene.remove(starField);
+      }
+      backgroundStars.forEach(star => {
+        if (star.parent) scene.remove(star);
+      });
+    } else {
+      if (window.originalStarField && !starField.parent) {
+        scene.add(window.originalStarField);
+        window.originalBackgroundStars.forEach(star => {
+          if (!star.parent) scene.add(star);
+        });
+      }
+    }
+  }
+  particleSystem.geometry.attributes.position.needsUpdate = true;
+  particleSystem.geometry.attributes.color.needsUpdate = true;
+  particleSystem.geometry.attributes.size.needsUpdate = true;
+  renderer.render(scene, camera);
+}
+function formShape(shape) {
+  currentFormation = shape;
+  updateInfoText(shape);
+  const currentPositions = new Float32Array(particleSystem.geometry.attributes.position.array);
+  const targetPositions = new Float32Array(currentPositions.length);
+  const radius = 1200;
+  for (let i = 0; i < targetPositions.length; i += 3) {
+    let x, y, z;
+    switch (shape) {
+      case 'sphere':
+        {
+          const phi = Math.acos(-1 + 2 * i / targetPositions.length);
+          const theta = Math.sqrt(targetPositions.length * Math.PI) * phi;
+          const sphereRadius = radius * 0.8;
+          const glowProbability = Math.exp(-Math.random() * 2);
+          x = sphereRadius * Math.cos(theta) * Math.sin(phi);
+          y = sphereRadius * Math.sin(theta) * Math.sin(phi);
+          z = sphereRadius * Math.cos(phi);
+          if (Math.random() < glowProbability) {
+            const glowRadius = sphereRadius * (1 + Math.random() * 0.3);
+            x *= glowRadius / sphereRadius;
+            y *= glowRadius / sphereRadius;
+            z *= glowRadius / sphereRadius;
+          }
+          break;
+        }
+      case 'cube':
+        x = (Math.random() - 0.5) * radius;
+        y = (Math.random() - 0.5) * radius;
+        z = (Math.random() - 0.5) * radius;
+        break;
+      case 'torus':
+        const u = Math.random() * Math.PI * 2;
+        const v = Math.random() * Math.PI * 2;
+        const majorRadius = radius * 0.7;
+        const minorRadius = radius * 0.3;
+        x = (majorRadius + minorRadius * Math.cos(v)) * Math.cos(u);
+        y = (majorRadius + minorRadius * Math.cos(v)) * Math.sin(u);
+        z = minorRadius * Math.sin(v);
+        break;
+      case 'cone':
+        const heightCone = radius * 1.5;
+        const radiusCone = radius * 0.8;
+        const angle = Math.random() * Math.PI * 2;
+        const heightPos = Math.random() * heightCone;
+        const r = radiusCone * (1 - heightPos / heightCone);
+        x = r * Math.cos(angle);
+        y = heightPos - heightCone / 2;
+        z = r * Math.sin(angle);
+        break;
+      case 'cylinder':
+        const heightCyl = radius;
+        const radiusCyl = radius * 0.5;
+        const angleCyl = Math.random() * Math.PI * 2;
+        x = radiusCyl * Math.cos(angleCyl);
+        y = (Math.random() - 0.5) * heightCyl;
+        z = radiusCyl * Math.sin(angleCyl);
+        break;
+      case 'pyramid':
+        const heightPyr = radius * 1.5;
+        const baseSizePyr = radius * 1.2;
+        const py = Math.random() * heightPyr;
+        const scale = 1 - py / heightPyr;
+        x = (Math.random() - 0.5) * baseSizePyr * scale;
+        y = py - heightPyr / 2;
+        z = (Math.random() - 0.5) * baseSizePyr * scale;
+        break;
+      case 'hourglass':
+        const t = Math.random();
+        const radiusHg = radius * 0.5;
+        const angleHg = Math.random() * Math.PI * 2;
+        const scale2 = Math.abs(t - 0.5) * 2;
+        x = radiusHg * scale2 * Math.cos(angleHg);
+        y = (t - 0.5) * radius * 5;
+        z = radiusHg * scale2 * Math.sin(angleHg);
+        break;
+      case 'dna':
+        const tDna = i / targetPositions.length * Math.PI * 16;
+        const radiusDna = radius * 0.2;
+        const spiralRadius = radius * 0.4;
+        const fillingFactor = Math.random();
+        if (fillingFactor < 0.7) {
+          x = Math.cos(tDna) * spiralRadius;
+          y = (i / targetPositions.length - 0.5) * radius * 3;
+          z = Math.sin(tDna) * spiralRadius;
+          if (Math.random() > 0.5) {
+            x += Math.cos(tDna + Math.PI) * radiusDna;
+            z += Math.sin(tDna + Math.PI) * radiusDna;
+          }
+        } else {
+          const randT = tDna + (Math.random() - 0.5) * 1.0;
+          const randRadius = spiralRadius * (0.4 + Math.random() * 0.6);
+          x = Math.cos(randT) * randRadius;
+          y = (i / targetPositions.length - 0.5) * radius * 3;
+          z = Math.sin(randT) * randRadius;
+          x += (Math.random() - 0.5) * radiusDna * 2;
+          z += (Math.random() - 0.5) * radiusDna * 2;
+        }
+        break;
+      case 'galaxy':
+        const tGalaxy = Math.random() * Math.PI * 24;
+        const rGalaxy = Math.pow(Math.random(), 0.5) * radius * 8;
+        const arms = 5;
+        const spiralFactor = 1.8;
+        const rotation = tGalaxy + rGalaxy * spiralFactor;
+        const armOffset = Math.floor(Math.random() * arms) * (Math.PI * 2 / arms);
+        const scatter = (Math.random() - 0.5) * 0.25 * rGalaxy;
+        const armThickness = Math.exp(-rGalaxy / (radius * 4)) * radius * 0.3;
+        const armWidth = (Math.random() - 0.5) * armThickness;
+        x = (rGalaxy * Math.cos(rotation + armOffset) + scatter + armWidth) * 0.5;
+        y = (Math.random() - 0.5) * radius * 0.2;
+        z = (rGalaxy * Math.sin(rotation + armOffset) + scatter + armWidth) * 0.5;
+        if (Math.random() < 0.2) {
+          const coreRadius = radius * 0.4;
+          const angle = Math.random() * Math.PI * 2;
+          const r = Math.pow(Math.random(), 0.3) * coreRadius;
+          x = Math.cos(angle) * r;
+          y = (Math.random() - 0.5) * coreRadius * 0.1;
+          z = Math.sin(angle) * r;
+        }
+        if (Math.random() < 0.15) {
+          const dustAngle = Math.random() * Math.PI * 2;
+          const dustR = radius * (0.3 + Math.random() * 0.7);
+          x = Math.cos(dustAngle) * dustR * 0.5;
+          y = (Math.random() - 0.5) * radius * 0.05;
+          z = Math.sin(dustAngle) * dustR * 0.5;
+        }
+        break;
+      case 'wormhole':
+        const wormholeRadius = radius / 2;
+        const wormholeLength = radius * 4;
+        const wormholeTurns = 6;
+        const wormholeT = i / targetPositions.length;
+        const wormholeAngle = wormholeTurns * 2 * Math.PI * wormholeT;
+        const tunnelPinch = Math.pow(Math.abs(wormholeT - 0.5) * 2, 0.5);
+        const tunnelRadius = wormholeRadius * (0.2 + 0.8 * tunnelPinch);
+        x = tunnelRadius * Math.cos(wormholeAngle);
+        z = tunnelRadius * Math.sin(wormholeAngle);
+        y = wormholeLength * (0.5 - wormholeT);
+        const turbulence = 0.3;
+        const distortion = Math.sin(wormholeT * Math.PI * 8) * turbulence * tunnelRadius;
+        x += distortion * Math.cos(wormholeAngle + Math.PI / 2);
+        z += distortion * Math.sin(wormholeAngle + Math.PI / 2);
+        const spreadFactor = 0.15;
+        const randRadius = tunnelRadius * (1 + (Math.random() - 0.5) * spreadFactor);
+        const randAngle = wormholeAngle + (Math.random() - 0.5) * 0.4;
+        x = randRadius * Math.cos(randAngle);
+        z = randRadius * Math.sin(randAngle);
+        y += (Math.random() - 0.5) * 20 * tunnelPinch;
+        break;
+      case 'nebula':
+        {
+          const nebulaRadius = radius * (2 + Math.random() * 4);
+          const nebulaAngle = Math.random() * Math.PI * 2;
+          const cloudSize = radius * 2.4;
+          const filamentProbability = 0.4;
+          const coreProbability = 0.3;
+          if (Math.random() < coreProbability) {
+            const coreRadius = radius * 0.5;
+            const r = Math.pow(Math.random(), 0.3) * coreRadius;
+            const theta = Math.random() * Math.PI * 2;
+            const phi = Math.random() * Math.PI;
+            x = r * Math.sin(phi) * Math.cos(theta);
+            y = r * Math.sin(phi) * Math.sin(theta);
+            z = r * Math.cos(phi);
+          } else if (Math.random() < filamentProbability) {
+            const filamentAngle = Math.random() * Math.PI * 2;
+            const filamentLength = radius * (0.8 + Math.random() * 1.2);
+            const filamentWidth = radius * (0.05 + Math.random() * 0.1);
+            const twist = Math.sin(filamentAngle * 3) * radius * 0.2;
+            x = Math.cos(filamentAngle) * filamentLength + twist;
+            y = (Math.random() - 0.5) * filamentWidth;
+            z = Math.sin(filamentAngle) * filamentLength + twist;
+            x += (Math.random() - 0.5) * radius * 0.3;
+            y += (Math.random() - 0.5) * radius * 0.3;
+            z += (Math.random() - 0.5) * radius * 0.3;
+          } else {
+            const distortionX = Math.sin(nebulaAngle * 3) * cloudSize * 0.4;
+            const distortionY = Math.cos(nebulaAngle * 2) * cloudSize * 0.3;
+            const distortionZ = Math.sin(nebulaAngle * 4) * cloudSize * 0.5;
+            const turbulence = Math.sin(nebulaAngle * 8) * cloudSize * 0.2;
+            x = Math.cos(nebulaAngle) * nebulaRadius + distortionX + turbulence;
+            y = Math.sin(nebulaAngle * 2) * nebulaRadius * 0.5 + distortionY;
+            z = Math.sin(nebulaAngle) * nebulaRadius + distortionZ + turbulence;
+          }
+          break;
+        }
+      case 'blackhole':
+        const bhRadius = 200;
+        const diskRadius = radius * 0.8;
+        const bhAngle = Math.random() * Math.PI * 2;
+        const jetProbability = 0.15;
+        if (Math.random() < jetProbability) {
+          const jetLength = radius * 2;
+          const jetWidth = radius * 0.2;
+          const isTopJet = Math.random() < 0.5;
+          const jetAngle = Math.random() * Math.PI * 2;
+          const distanceAlongJet = Math.random() * jetLength;
+          const spreadAtDistance = distanceAlongJet / jetLength * jetWidth;
+          const radialPosition = Math.random() * spreadAtDistance;
+          x = Math.cos(jetAngle) * radialPosition;
+          z = Math.sin(jetAngle) * radialPosition;
+          y = isTopJet ? distanceAlongJet : -distanceAlongJet;
+        } else if (Math.random() < 0.3) {
+          const r = Math.random() * bhRadius;
+          x = Math.cos(bhAngle) * r;
+          y = (Math.random() - 0.5) * bhRadius * 0.2;
+          z = Math.sin(bhAngle) * r;
+        } else {
+          const diskR = diskRadius * (0.6 + Math.random() * 0.4);
+          const diskY = (Math.random() - 0.5) * (diskRadius * 0.1);
+          x = Math.cos(bhAngle) * diskR;
+          y = diskY;
+          z = Math.sin(bhAngle) * diskR;
+        }
+        break;
+      case 'comet':
+        const cometAngle = Math.random() * Math.PI * 2;
+        const cometRadius = Math.random() * radius;
+        const cometTail = Math.pow(Math.random(), 2) * radius;
+        x = Math.cos(cometAngle) * cometRadius;
+        y = Math.sin(cometAngle) * cometRadius;
+        z = -cometTail;
+        break;
+      case 'supernova':
+        {
+          const explosionRadius = radius * 4;
+          const shockwaveRadius = explosionRadius * 1.4;
+          const coreRadius = radius * 0.2;
+          const ejectionConeProb = 0.3;
+          if (Math.random() < 0.15) {
+            const coreAngle = Math.random() * Math.PI * 2;
+            const corePhi = Math.random() * Math.PI;
+            const r = Math.pow(Math.random(), 0.3) * coreRadius;
+            x = r * Math.sin(corePhi) * Math.cos(coreAngle);
+            y = r * Math.sin(corePhi) * Math.sin(coreAngle);
+            z = r * Math.cos(corePhi);
+          } else if (Math.random() < ejectionConeProb) {
+            const coneAngle = Math.random() * Math.PI * 2;
+            const coneHeight = explosionRadius * (0.8 + Math.random() * 0.4);
+            const coneWidth = Math.random() * (explosionRadius * 0.2);
+            if (Math.random() < 0.5) {
+              x = coneWidth * Math.cos(coneAngle);
+              y = coneHeight * (0.8 + Math.random() * 0.4);
+              z = coneWidth * Math.sin(coneAngle);
+            } else {
+              x = coneWidth * Math.cos(coneAngle);
+              y = -coneHeight * (0.8 + Math.random() * 0.4);
+              z = coneWidth * Math.sin(coneAngle);
+            }
+          } else if (Math.random() < 0.7) {
+            const explosionAngle = Math.random() * Math.PI * 2;
+            const explosionPhi = Math.random() * Math.PI;
+            const r = explosionRadius * (0.2 + Math.random() * 0.8);
+            x = r * Math.sin(explosionPhi) * Math.cos(explosionAngle);
+            y = r * Math.sin(explosionPhi) * Math.sin(explosionAngle);
+            z = r * Math.cos(explosionPhi);
+          } else {
+            const shockwaveAngle = Math.random() * Math.PI * 2;
+            const shockwavePhi = Math.random() * Math.PI;
+            const r = shockwaveRadius * (0.95 + Math.random() * 0.05);
+            x = r * Math.sin(shockwavePhi) * Math.cos(shockwaveAngle);
+            y = r * Math.sin(shockwavePhi) * Math.sin(shockwaveAngle);
+            z = r * Math.cos(shockwavePhi);
+          }
+          break;
+        }
+      case 'crescentMoon':
+        const outerRadius = radius * 0.8;
+        const innerRadius = radius * 0.5;
+        const crescent = Math.PI * 0.8;
+        const crescentAngle = Math.random() * Math.PI * 2;
+        const crescentPhi = Math.random() * Math.PI;
+        const testAngle = Math.atan2(Math.random() - 0.5, Math.random() - 0.5) + Math.PI;
+        const distFromCenter = Math.sqrt(Math.pow(Math.random() - 0.5, 2) + Math.pow(Math.random() - 0.5, 2));
+        const isCrescent = testAngle > crescent && testAngle < Math.PI * 2;
+        if (isCrescent || distFromCenter > 0.8) {
+          const r = outerRadius * (0.9 + Math.random() * 0.1);
+          x = r * Math.sin(crescentPhi) * Math.cos(crescentAngle);
+          y = r * Math.sin(crescentPhi) * Math.sin(crescentAngle);
+          z = r * Math.cos(crescentPhi);
+        } else {
+          const r = innerRadius + Math.random() * (outerRadius - innerRadius) * 0.3;
+          const angle = Math.random() * (Math.PI * 0.6) + Math.PI * 0.7;
+          x = r * Math.cos(angle);
+          y = r * Math.sin(angle);
+          z = (Math.random() - 0.5) * radius * 0.2;
+        }
+        break;
+      case 'halfSphere':
+        const phiHS = Math.acos(-1 + 2 * i / targetPositions.length);
+        const thetaHS = Math.sqrt(Math.random() * Math.PI) * phiHS;
+        if (Math.random() > 0.5) {
+          x = radius * Math.cos(thetaHS) * Math.sin(phiHS);
+          y = Math.abs(radius * Math.sin(thetaHS) * Math.sin(phiHS));
+          z = radius * Math.cos(phiHS);
+        } else {
+          const flatRadius = Math.random() * radius;
+          const flatAngle = Math.random() * Math.PI * 2;
+          x = flatRadius * Math.cos(flatAngle);
+          y = 0;
+          z = flatRadius * Math.sin(flatAngle);
+        }
+        break;
+      case 'bigBang':
+        if (starField) scene.remove(starField);
+        backgroundStars.forEach(star => scene.remove(star));
+        const bigBangExplosionRadius = radius * 16;
+        const bigBangCoreRadius = radius * 0.8;
+        const bigBangShockwaveRadius = bigBangExplosionRadius * 1.4;
+        if (Math.random() < 0.2) {
+          const coreAngle = Math.random() * Math.PI * 2;
+          const corePhi = Math.random() * Math.PI;
+          const r = Math.random() * bigBangCoreRadius;
+          x = r * Math.sin(corePhi) * Math.cos(coreAngle);
+          y = r * Math.sin(corePhi) * Math.sin(coreAngle);
+          z = r * Math.cos(corePhi);
+        } else if (Math.random() < 0.7) {
+          const explosionAngle = Math.random() * Math.PI * 2;
+          const explosionPhi = Math.random() * Math.PI;
+          const r = bigBangExplosionRadius * (0.2 + Math.random() * 0.8);
+          x = r * Math.sin(explosionPhi) * Math.cos(explosionAngle);
+          y = r * Math.sin(explosionPhi) * Math.sin(explosionAngle);
+          z = r * Math.cos(explosionPhi);
+        } else {
+          const shockwaveAngle = Math.random() * Math.PI * 2;
+          const shockwavePhi = Math.random() * Math.PI;
+          const r = bigBangShockwaveRadius * (0.95 + Math.random() * 0.05);
+          x = r * Math.sin(shockwavePhi) * Math.cos(shockwaveAngle);
+          y = r * Math.sin(shockwavePhi) * Math.sin(shockwaveAngle);
+          z = r * Math.cos(shockwavePhi);
+        }
+        break;
+      case 'fish':
+        const fishLength = radius * 0.8;
+        const fishHeight = radius * 0.4;
+        const fishWidth = radius * 0.3;
+        const finSize = fishWidth * 0.8;
+        const tailFinWidth = fishWidth * 1.2;
+        if (Math.random() < 0.6) {
+          const bodyT = Math.random();
+          const bodyThickness = Math.sin(bodyT * Math.PI) * fishWidth;
+          const bodyY = (Math.random() - 0.5) * fishHeight;
+          const bodyZ = (Math.random() - 0.5) * fishLength;
+          const bodyCurve = Math.sin(bodyZ / fishLength * Math.PI * 2) * (fishWidth * 0.3);
+          x = bodyThickness + bodyCurve;
+          y = bodyY;
+          z = bodyZ;
+        } else if (Math.random() < 0.8) {
+          const tailT = Math.random();
+          const tailAngle = (Math.random() - 0.5) * Math.PI * 0.7;
+          const tailWidth = tailFinWidth * (1 - tailT);
+          x = tailWidth * Math.cos(tailAngle);
+          y = tailWidth * Math.sin(tailAngle);
+          z = fishLength * 0.5;
+        } else {
+          const finT = Math.random();
+          const finSide = Math.random() < 0.5 ? 1 : -1;
+          const finAngle = (Math.random() - 0.5) * Math.PI * 0.4;
+          x = finSide * (fishWidth + finSize * Math.cos(finAngle));
+          y = finSize * Math.sin(finAngle);
+          z = (Math.random() - 0.3) * fishLength * 0.5;
+        }
+        break;
+      case 'yinYang':
+        const yinYangRadius = radius * 0.8;
+        const yinYangPhi = Math.random() * Math.PI;
+        const yinYangTheta = Math.random() * Math.PI * 2;
+        if (Math.random() < 0.5) {
+          const r = yinYangRadius * Math.random();
+          const phi = yinYangPhi;
+          const theta = yinYangTheta;
+          x = Math.abs(r * Math.sin(phi) * Math.cos(theta));
+          y = r * Math.sin(phi) * Math.sin(theta);
+          z = r * Math.cos(phi);
+          if (Math.random() < 0.2) {
+            const smallR = yinYangRadius * 0.2;
+            const smallPhi = Math.random() * Math.PI;
+            const smallTheta = Math.random() * Math.PI * 2;
+            const offset = yinYangRadius * 0.25;
+            x = offset + smallR * Math.sin(smallPhi) * Math.cos(smallTheta);
+            y = offset + smallR * Math.sin(smallPhi) * Math.sin(smallTheta);
+            z = smallR * Math.cos(smallPhi);
+          }
+        } else {
+          const r = yinYangRadius * Math.random();
+          const phi = yinYangPhi + Math.PI;
+          const theta = yinYangTheta;
+          x = -Math.abs(r * Math.sin(phi) * Math.cos(theta));
+          y = r * Math.sin(phi) * Math.sin(theta);
+          z = r * Math.cos(phi);
+          if (Math.random() < 0.2) {
+            const smallR = yinYangRadius * 0.2;
+            const smallPhi = Math.random() * Math.PI;
+            const smallTheta = Math.random() * Math.PI * 2;
+            const offset = yinYangRadius * 0.25;
+            x = -offset + smallR * Math.sin(smallPhi) * Math.cos(smallTheta);
+            y = -offset + smallR * Math.sin(smallPhi) * Math.sin(smallTheta);
+            z = smallR * Math.cos(smallPhi);
+          }
+        }
+        break;
+      case 'tower':
+        const towerHeight = radius * 5;
+        const towerWidth = radius * 0.4;
+        const spireHeight = radius * 1.2;
+        if (Math.random() < 0.7) {
+          const towerY = (Math.random() - 0.5) * towerHeight;
+          const radiusAtHeight = towerWidth * (1 - Math.abs(towerY / towerHeight));
+          const angle = Math.random() * Math.PI * 2;
+          x = radiusAtHeight * Math.cos(angle);
+          y = towerY;
+          z = radiusAtHeight * Math.sin(angle);
+          if (Math.random() < 0.2) {
+            x *= 1.2;
+            z *= 1.2;
+          }
+        } else {
+          const spireY = towerHeight / 2 + Math.random() * spireHeight;
+          const spireRadius = towerWidth * 0.2 * (1 - (spireY - towerHeight / 2) / spireHeight);
+          const angle = Math.random() * Math.PI * 2;
+          x = spireRadius * Math.cos(angle);
+          y = spireY;
+          z = spireRadius * Math.sin(angle);
+        }
+        break;
+      case 'galaxyCollision':
+        const galaxyRadius1 = radius * 0.8;
+        const galaxyRadius2 = radius * 0.6;
+        const collisionAngle = Math.PI / 4;
+        const collisionOffset = radius * 0.3;
+        if (Math.random() < 0.5) {
+          const tGalaxy = Math.random() * Math.PI * 24;
+          const rGalaxy = Math.pow(Math.random(), 0.5) * galaxyRadius1;
+          const arms = 6;
+          const spiralFactor = 3.2;
+          const rotation = tGalaxy + rGalaxy * spiralFactor;
+          const armOffset = Math.floor(Math.random() * arms) * (Math.PI * 2 / arms);
+          const scatter = (Math.random() - 0.5) * 0.15 * rGalaxy;
+          x = rGalaxy * Math.cos(rotation + armOffset) + scatter - collisionOffset;
+          y = (Math.random() - 0.5) * galaxyRadius1 * 0.12;
+          z = rGalaxy * Math.sin(rotation + armOffset) + scatter;
+          const temp = x * Math.cos(collisionAngle) - z * Math.sin(collisionAngle);
+          z = x * Math.sin(collisionAngle) + z * Math.cos(collisionAngle);
+          x = temp;
+        } else {
+          const tGalaxy = Math.random() * Math.PI * 24;
+          const rGalaxy = Math.pow(Math.random(), 0.5) * galaxyRadius2;
+          const arms = 5;
+          const spiralFactor = 2.8;
+          const rotation = tGalaxy + rGalaxy * spiralFactor;
+          const armOffset = Math.floor(Math.random() * arms) * (Math.PI * 2 / arms);
+          const scatter = (Math.random() - 0.5) * 0.15 * rGalaxy;
+          x = rGalaxy * Math.cos(rotation + armOffset) + scatter + collisionOffset;
+          y = (Math.random() - 0.5) * galaxyRadius2 * 0.12;
+          z = rGalaxy * Math.sin(rotation + armOffset) + scatter;
+          const temp = x * Math.cos(-collisionAngle) - z * Math.sin(-collisionAngle);
+          z = x * Math.sin(-collisionAngle) + z * Math.cos(-collisionAngle);
+          x = temp;
+        }
+        if (Math.random() < 0.2) {
+          const debrisRadius = radius * 1.2;
+          const angle = Math.random() * Math.PI * 2;
+          x = debrisRadius * Math.cos(angle) * Math.random();
+          y = (Math.random() - 0.5) * radius * 0.5;
+          z = debrisRadius * Math.sin(angle) * Math.random();
+        }
+        break;
+      case 'billCipher':
+        const triangleHeight = radius * 1.2;
+        const triangleWidth = radius * 0.8;
+        const eyeRadius = radius * 0.15;
+        const brickSize = radius * 0.08;
+        if (Math.random() < 0.7) {
+          const py = Math.random() * triangleHeight;
+          const scale = 1 - py / triangleHeight;
+          const angle = Math.random() * Math.PI * 2;
+          const r = triangleWidth * scale / 2;
+          x = r * Math.cos(angle);
+          y = py - triangleHeight / 2;
+          z = r * Math.sin(angle);
+        } else if (Math.random() < 0.85) {
+          const eyeAngle = Math.random() * Math.PI * 2;
+          const eyeR = Math.random() * eyeRadius;
+          x = eyeR * Math.cos(eyeAngle);
+          y = 0;
+          z = eyeR * Math.sin(eyeAngle);
+        } else if (Math.random() < 0.95) {
+          const hatWidth = triangleWidth * 0.5;
+          const hatHeight = triangleHeight * 0.3;
+          const brimHeight = triangleHeight * 0.08;
+          const brimWidth = triangleWidth * 0.7;
+          if (Math.random() < 0.7) {
+            const hatX = (Math.random() - 0.5) * hatWidth;
+            const hatZ = (Math.random() - 0.5) * hatWidth;
+            const hatY = triangleHeight / 2 + brimHeight + Math.random() * hatHeight;
+            x = hatX;
+            y = hatY;
+            z = hatZ;
+          } else {
+            const brimAngle = Math.random() * Math.PI * 2;
+            const brimR = Math.random() * brimWidth / 2;
+            x = brimR * Math.cos(brimAngle);
+            y = triangleHeight / 2 + brimHeight / 2;
+            z = brimR * Math.sin(brimAngle);
+          }
+        } else {
+          const edgeDistance = Math.random() * triangleWidth * 0.1;
+          const brickPos = Math.random();
+          const angle = Math.random() * Math.PI * 2;
+          const r = triangleWidth * (0.8 + Math.random() * 0.2);
+          x = r * Math.cos(angle);
+          y = (brickPos - 0.5) * triangleHeight;
+          z = r * Math.sin(angle);
+        }
+        break;
+      case 'bacteria':
+        const bacteriaLength = radius * 1.2;
+        const bacteriaWidth = radius * 0.4;
+        const bacteriaHeight = radius * 0.2;
+        const flagellaLength = radius * 0.3;
+        if (Math.random() < 0.85) {
+          const t = Math.random();
+          const angle = Math.random() * Math.PI * 2;
+          const r = bacteriaWidth * Math.sqrt(1 - Math.pow(2 * t - 1, 2));
+          x = t * bacteriaLength - bacteriaLength / 2 + r * Math.cos(angle);
+          y = r * Math.sin(angle) * (bacteriaHeight / bacteriaWidth);
+          z = (Math.random() - 0.5) * bacteriaWidth;
+          if (Math.random() < 0.3) {
+            x *= 0.7;
+            y *= 0.7;
+            z *= 0.7;
+          }
+        } else {
+          const flagellaT = Math.random();
+          const flagellaAngle = Math.random() * Math.PI * 2;
+          const wavePhase = flagellaT * Math.PI * 4;
+          const waveAmp = flagellaLength * 0.2;
+          x = (bacteriaLength / 2 + flagellaT * flagellaLength) * (Math.random() < 0.5 ? 1 : -1);
+          y = Math.sin(wavePhase) * waveAmp;
+          z = Math.cos(wavePhase) * waveAmp;
+        }
+        break;
+      default:
+        x = (Math.random() - 0.5) * 2000;
+        y = (Math.random() - 0.5) * 2000;
+        z = (Math.random() - 0.5) * 2000;
+    }
+    targetPositions[i] = x;
+    targetPositions[i + 1] = y;
+    targetPositions[i + 2] = z;
+  }
+  if (shape === 'yinYang') {
+    document.getElementById('tributeText').style.display = 'block';
+  } else {
+    document.getElementById('tributeText').style.display = 'none';
+  }
+  gsap.to(particleSystem.geometry.attributes.position.array, {
+    duration: 2,
+    endArray: targetPositions,
+    ease: "power2.inOut",
+    onUpdate: () => {
+      particleSystem.geometry.attributes.position.needsUpdate = true;
+    }
+  });
+}
+function updateParticleSize(event) {
+  const size = parseFloat(event.target.value);
+  particleSystem.material.size = size;
+}
+function updateParticleSpeed(event) {
+  animationSpeed = parseFloat(event.target.value);
+}
+function updateInfoText(formation) {
+  const infoElement = document.getElementById('info');
+  infoElement.innerHTML = `Galactic Cosmic Behavior Explorer<br>Current Formation: ${formation.charAt(0).toUpperCase() + formation.slice(1)}`;
+}
+function resetView() {
+  gsap.to(camera.position, {
+    x: 0,
+    y: 0,
+    z: 2000,
+    duration: 1.5,
+    ease: "power2.inOut",
+    onUpdate: function () {
+      camera.lookAt(scene.position);
+    }
+  });
+  controls.reset();
+}
+function topView() {
+  gsap.to(camera.position, {
+    x: 0,
+    y: 2000,
+    z: 0,
+    duration: 1.5,
+    ease: "power2.inOut",
+    onUpdate: function () {
+      camera.lookAt(scene.position);
+    }
+  });
+}
+function sideView() {
+  gsap.to(camera.position, {
+    x: 2000,
+    y: 0,
+    z: 0,
+    duration: 1.5,
+    ease: "power2.inOut",
+    onUpdate: function () {
+      camera.lookAt(scene.position);
+    }
+  });
+}
+function frontView() {
+  gsap.to(camera.position, {
+    x: 0,
+    y: 0,
+    z: 2000,
+    duration: 1.5,
+    ease: "power2.inOut",
+    onUpdate: function () {
+      camera.lookAt(scene.position);
+    }
+  });
+}
+function randomView() {
+  const radius = 2000;
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.random() * Math.PI;
+  const x = radius * Math.sin(phi) * Math.cos(theta);
+  const y = radius * Math.sin(phi) * Math.sin(theta);
+  const z = radius * Math.cos(phi);
+  gsap.to(camera.position, {
+    x: x,
+    y: y,
+    z: z,
+    duration: 1.5,
+    ease: "power2.inOut",
+    onUpdate: function () {
+      camera.lookAt(scene.position);
+    }
+  });
+}
+function handleImageUpload(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const img = new Image();
+      img.onload = function () {
+        createParticlesFromImage(img);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+function toggleBlackHoleControls(e) {
+  blackHoleEffect.active = e.target.checked;
+  const controls = document.getElementById('blackHoleControls');
+  if (e.target.checked) {
+    controls.classList.add('active');
+  } else {
+    controls.classList.remove('active');
+  }
+}
+function updateBlackHoleEffect() {
+  blackHoleEffect.strength = parseInt(document.getElementById('blackHoleStrength').value);
+  blackHoleEffect.radius = parseInt(document.getElementById('blackHoleRadius').value);
+  blackHoleEffect.position.set(parseInt(document.getElementById('blackHoleX').value), parseInt(document.getElementById('blackHoleY').value), parseInt(document.getElementById('blackHoleZ').value));
+}
+function toggleEffectsPanel() {
+  const panel = document.getElementById('effectsPanel');
+  panel.classList.toggle('expanded');
+}
+function toggleAddFormationControls(e) {
+  const controls = document.getElementById('addFormationControls');
+  if (e.target.checked) {
+    controls.classList.add('active');
+  } else {
+    controls.classList.remove('active');
+  }
+}
+function addRandomFormations() {
+  const count = parseInt(document.getElementById('formationCount').value);
+  const scale = parseInt(document.getElementById('formationScale').value) / 100;
+  additionalFormations.forEach(formation => scene.remove(formation));
+  additionalFormations = [];
+  for (let i = 0; i < count; i++) {
+    const randomShape = formationTypes[Math.floor(Math.random() * formationTypes.length)];
+    const positions = [];
+    const colors = [];
+    const sizes = [];
+    const radius = 1200 * scale;
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.random() * Math.PI;
+    const centerX = radius * Math.sin(phi) * Math.cos(theta);
+    const centerY = radius * Math.sin(phi) * Math.sin(theta);
+    const centerZ = radius * Math.cos(phi);
+    for (let j = 0; j < 2000; j++) {
+      let x, y, z;
+      generateParticlePosition(randomShape, scale, positions, colors, sizes);
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+    const material = new THREE.PointsMaterial({
+      size: 8,
+      vertexColors: true,
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+      opacity: 0.8,
+      sizeAttenuation: true
+    });
+    const formation = new THREE.Points(geometry, material);
+    formation.position.set(centerX, centerY, centerZ);
+    scene.add(formation);
+    additionalFormations.push(formation);
+  }
+}
+function generateParticlePosition(shape, scale, positions, colors, sizes) {
+  const radius = 1200 * scale;
+  let x, y, z;
+  if (shape === 'cone') {
+    const heightCone = radius * 1.5;
+    const radiusCone = radius * 0.8;
+    const angle = Math.random() * Math.PI * 2;
+    const heightPos = Math.random() * heightCone;
+    const r = radiusCone * (1 - heightPos / heightCone);
+    x = r * Math.cos(angle);
+    y = heightPos - heightCone / 2;
+    z = r * Math.sin(angle);
+  } else if (shape === 'pyramid') {
+    const heightPyr = radius * 1.5;
+    const baseSizePyr = radius * 1.2;
+    const py = Math.random() * heightPyr;
+    const scale = 1 - py / heightPyr;
+    x = (Math.random() - 0.5) * baseSizePyr * scale;
+    y = py - heightPyr / 2;
+    z = (Math.random() - 0.5) * baseSizePyr * scale;
+  } else if (shape === 'crescentMoon') {
+    const outerRadius = radius * 0.8;
+    const innerRadius = radius * 0.5;
+    const crescent = Math.PI * 0.8;
+    const crescentAngle = Math.random() * Math.PI * 2;
+    const crescentPhi = Math.random() * Math.PI;
+    const testAngle = Math.atan2(Math.random() - 0.5, Math.random() - 0.5) + Math.PI;
+    const distFromCenter = Math.sqrt(Math.pow(Math.random() - 0.5, 2) + Math.pow(Math.random() - 0.5, 2));
+    const isCrescent = testAngle > crescent && testAngle < Math.PI * 2;
+    if (isCrescent || distFromCenter > 0.8) {
+      const r = outerRadius * (0.9 + Math.random() * 0.1);
+      x = r * Math.sin(crescentPhi) * Math.cos(crescentAngle);
+      y = r * Math.sin(crescentPhi) * Math.sin(crescentAngle);
+      z = r * Math.cos(crescentPhi);
+    } else {
+      const r = innerRadius + Math.random() * (outerRadius - innerRadius) * 0.3;
+      const angle = Math.random() * (Math.PI * 0.6) + Math.PI * 0.7;
+      x = r * Math.cos(angle);
+      y = r * Math.sin(angle);
+      z = (Math.random() - 0.5) * radius * 0.2;
+    }
+  } else if (shape === 'halfSphere') {
+    const phiHS = Math.acos(-1 + 2 * Math.random());
+    const thetaHS = Math.sqrt(Math.random() * Math.PI) * phiHS;
+    if (Math.random() > 0.5) {
+      x = radius * Math.cos(thetaHS) * Math.sin(phiHS);
+      y = Math.abs(radius * Math.sin(thetaHS) * Math.sin(phiHS));
+      z = radius * Math.cos(phiHS);
+    } else {
+      const flatRadius = Math.random() * radius;
+      const flatAngle = Math.random() * Math.PI * 2;
+      x = flatRadius * Math.cos(flatAngle);
+      y = 0;
+      z = flatRadius * Math.sin(flatAngle);
+    }
+  } else if (shape === 'fish') {
+    const fishLength = radius * 0.8;
+    const fishHeight = radius * 0.4;
+    const fishWidth = radius * 0.3;
+    const finSize = fishWidth * 0.8;
+    const tailFinWidth = fishWidth * 1.2;
+    if (Math.random() < 0.6) {
+      const bodyT = Math.random();
+      const bodyThickness = Math.sin(bodyT * Math.PI) * fishWidth;
+      const bodyY = (Math.random() - 0.5) * fishHeight;
+      const bodyZ = (Math.random() - 0.5) * fishLength;
+      const bodyCurve = Math.sin(bodyZ / fishLength * Math.PI * 2) * (fishWidth * 0.3);
+      x = bodyThickness + bodyCurve;
+      y = bodyY;
+      z = bodyZ;
+    } else if (Math.random() < 0.8) {
+      const tailT = Math.random();
+      const tailAngle = (Math.random() - 0.5) * Math.PI * 0.7;
+      const tailWidth = tailFinWidth * (1 - tailT);
+      x = tailWidth * Math.cos(tailAngle);
+      y = tailWidth * Math.sin(tailAngle);
+      z = fishLength * 0.5;
+    } else {
+      const finT = Math.random();
+      const finSide = Math.random() < 0.5 ? 1 : -1;
+      const finAngle = (Math.random() - 0.5) * Math.PI * 0.4;
+      x = finSide * (fishWidth + finSize * Math.cos(finAngle));
+      y = finSize * Math.sin(finAngle);
+      z = (Math.random() - 0.3) * fishLength * 0.5;
+    }
+  } else if (shape === 'hourglass') {
+    const t = Math.random();
+    const radiusHg = radius * 0.5;
+    const angleHg = Math.random() * Math.PI * 2;
+    const scale2 = Math.abs(t - 0.5) * 2;
+    x = radiusHg * scale2 * Math.cos(angleHg);
+    y = (t - 0.5) * radius * 5;
+    z = radiusHg * scale2 * Math.sin(angleHg);
+  } else if (shape === 'yinYang') {
+    const yinYangRadius = radius * 0.8;
+    const yinYangPhi = Math.random() * Math.PI;
+    const yinYangTheta = Math.random() * Math.PI * 2;
+    if (Math.random() < 0.5) {
+      const r = yinYangRadius * Math.random();
+      const phi = yinYangPhi;
+      const theta = yinYangTheta;
+      x = Math.abs(r * Math.sin(phi) * Math.cos(theta));
+      y = r * Math.sin(phi) * Math.sin(theta);
+      z = r * Math.cos(phi);
+      if (Math.random() < 0.2) {
+        const smallR = yinYangRadius * 0.2;
+        const smallPhi = Math.random() * Math.PI;
+        const smallTheta = Math.random() * Math.PI * 2;
+        const offset = yinYangRadius * 0.25;
+        x = offset + smallR * Math.sin(smallPhi) * Math.cos(smallTheta);
+        y = offset + smallR * Math.sin(smallPhi) * Math.sin(smallTheta);
+        z = smallR * Math.cos(smallPhi);
+      }
+    } else {
+      const r = yinYangRadius * Math.random();
+      const phi = yinYangPhi + Math.PI;
+      const theta = yinYangTheta;
+      x = -Math.abs(r * Math.sin(phi) * Math.cos(theta));
+      y = r * Math.sin(phi) * Math.sin(theta);
+      z = r * Math.cos(phi);
+      if (Math.random() < 0.2) {
+        const smallR = yinYangRadius * 0.2;
+        const smallPhi = Math.random() * Math.PI;
+        const smallTheta = Math.random() * Math.PI * 2;
+        const offset = yinYangRadius * 0.25;
+        x = -offset + smallR * Math.sin(smallPhi) * Math.cos(smallTheta);
+        y = -offset + smallR * Math.sin(smallPhi) * Math.sin(smallTheta);
+        z = smallR * Math.cos(smallPhi);
+      }
+    }
+  } else if (shape === 'tower') {
+    const towerHeight = radius * 5;
+    const towerWidth = radius * 0.4;
+    const spireHeight = radius * 1.2;
+    if (Math.random() < 0.7) {
+      const towerY = (Math.random() - 0.5) * towerHeight;
+      const radiusAtHeight = towerWidth * (1 - Math.abs(towerY / towerHeight));
+      const angle = Math.random() * Math.PI * 2;
+      x = radiusAtHeight * Math.cos(angle);
+      y = towerY;
+      z = radiusAtHeight * Math.sin(angle);
+      if (Math.random() < 0.2) {
+        x *= 1.2;
+        z *= 1.2;
+      }
+    } else {
+      const spireY = towerHeight / 2 + Math.random() * spireHeight;
+      const spireRadius = towerWidth * 0.2 * (1 - (spireY - towerHeight / 2) / spireHeight);
+      const angle = Math.random() * Math.PI * 2;
+      x = spireRadius * Math.cos(angle);
+      y = spireY;
+      z = spireRadius * Math.sin(angle);
+    }
+  } else if (shape === 'billCipher') {
+    const triangleHeight = radius * 1.2;
+    const triangleWidth = radius * 0.8;
+    const eyeRadius = radius * 0.15;
+    const brickSize = radius * 0.08;
+    if (Math.random() < 0.7) {
+      const py = Math.random() * triangleHeight;
+      const scale = 1 - py / triangleHeight;
+      const angle = Math.random() * Math.PI * 2;
+      const r = triangleWidth * scale / 2;
+      x = r * Math.cos(angle);
+      y = py - triangleHeight / 2;
+      z = r * Math.sin(angle);
+    } else if (Math.random() < 0.85) {
+      const eyeAngle = Math.random() * Math.PI * 2;
+      const eyeR = Math.random() * eyeRadius;
+      x = eyeR * Math.cos(eyeAngle);
+      y = 0;
+      z = eyeR * Math.sin(eyeAngle);
+    } else if (Math.random() < 0.95) {
+      const hatWidth = triangleWidth * 0.5;
+      const hatHeight = triangleHeight * 0.3;
+      const brimHeight = triangleHeight * 0.08;
+      const brimWidth = triangleWidth * 0.7;
+      if (Math.random() < 0.7) {
+        const hatX = (Math.random() - 0.5) * hatWidth;
+        const hatZ = (Math.random() - 0.5) * hatWidth;
+        const hatY = triangleHeight / 2 + brimHeight + Math.random() * hatHeight;
+        x = hatX;
+        y = hatY;
+        z = hatZ;
+      } else {
+        const brimAngle = Math.random() * Math.PI * 2;
+        const brimR = Math.random() * brimWidth / 2;
+        x = brimR * Math.cos(brimAngle);
+        y = triangleHeight / 2 + brimHeight / 2;
+        z = brimR * Math.sin(brimAngle);
+      }
+    } else {
+      const edgeDistance = Math.random() * triangleWidth * 0.1;
+      const brickPos = Math.random();
+      const angle = Math.random() * Math.PI * 2;
+      const r = triangleWidth * (0.8 + Math.random() * 0.2);
+      x = r * Math.cos(angle);
+      y = (brickPos - 0.5) * triangleHeight;
+      z = r * Math.sin(angle);
+    }
+  } else if (shape === 'galaxyCollision') {
+    const galaxyRadius1 = radius * 0.8;
+    const galaxyRadius2 = radius * 0.6;
+    const collisionAngle = Math.PI / 4;
+    const collisionOffset = radius * 0.3;
+    if (Math.random() < 0.5) {
+      const tGalaxy = Math.random() * Math.PI * 24;
+      const rGalaxy = Math.pow(Math.random(), 0.5) * galaxyRadius1;
+      const arms = 6;
+      const spiralFactor = 3.2;
+      const rotation = tGalaxy + rGalaxy * spiralFactor;
+      const armOffset = Math.floor(Math.random() * arms) * (Math.PI * 2 / arms);
+      const scatter = (Math.random() - 0.5) * 0.15 * rGalaxy;
+      x = rGalaxy * Math.cos(rotation + armOffset) + scatter - collisionOffset;
+      y = (Math.random() - 0.5) * galaxyRadius1 * 0.12;
+      z = rGalaxy * Math.sin(rotation + armOffset) + scatter;
+      const temp = x * Math.cos(collisionAngle) - z * Math.sin(collisionAngle);
+      z = x * Math.sin(collisionAngle) + z * Math.cos(collisionAngle);
+      x = temp;
+    } else {
+      const tGalaxy = Math.random() * Math.PI * 24;
+      const rGalaxy = Math.pow(Math.random(), 0.5) * galaxyRadius2;
+      const arms = 5;
+      const spiralFactor = 2.8;
+      const rotation = tGalaxy + rGalaxy * spiralFactor;
+      const armOffset = Math.floor(Math.random() * arms) * (Math.PI * 2 / arms);
+      const scatter = (Math.random() - 0.5) * 0.15 * rGalaxy;
+      x = rGalaxy * Math.cos(rotation + armOffset) + scatter + collisionOffset;
+      y = (Math.random() - 0.5) * galaxyRadius2 * 0.12;
+      z = rGalaxy * Math.sin(rotation + armOffset) + scatter;
+      const temp = x * Math.cos(-collisionAngle) - z * Math.sin(-collisionAngle);
+      z = x * Math.sin(-collisionAngle) + z * Math.cos(-collisionAngle);
+      x = temp;
+    }
+    if (Math.random() < 0.2) {
+      const debrisRadius = radius * 1.2;
+      const angle = Math.random() * Math.PI * 2;
+      x = debrisRadius * Math.cos(angle) * Math.random();
+      y = (Math.random() - 0.5) * radius * 0.5;
+      z = debrisRadius * Math.sin(angle) * Math.random();
+    }
+  } else if (shape === 'bacteria') {
+    const bacteriaLength = radius * 1.2;
+    const bacteriaWidth = radius * 0.4;
+    const bacteriaHeight = radius * 0.2;
+    const flagellaLength = radius * 0.3;
+    if (Math.random() < 0.85) {
+      const t = Math.random();
+      const angle = Math.random() * Math.PI * 2;
+      const r = bacteriaWidth * Math.sqrt(1 - Math.pow(2 * t - 1, 2));
+      x = t * bacteriaLength - bacteriaLength / 2 + r * Math.cos(angle);
+      y = r * Math.sin(angle) * (bacteriaHeight / bacteriaWidth);
+      z = (Math.random() - 0.5) * bacteriaWidth;
+      if (Math.random() < 0.3) {
+        x *= 0.7;
+        y *= 0.7;
+        z *= 0.7;
+      }
+    } else {
+      const flagellaT = Math.random();
+      const flagellaAngle = Math.random() * Math.PI * 2;
+      const wavePhase = flagellaT * Math.PI * 4;
+      const waveAmp = flagellaLength * 0.2;
+      x = (bacteriaLength / 2 + flagellaT * flagellaLength) * (Math.random() < 0.5 ? 1 : -1);
+      y = Math.sin(wavePhase) * waveAmp;
+      z = Math.cos(wavePhase) * waveAmp;
+    }
+  } else {
+    const phi = Math.acos(-1 + 2 * Math.random());
+    const theta = Math.sqrt(Math.random() * Math.PI) * phi;
+    x = radius * Math.cos(theta) * Math.sin(phi);
+    y = radius * Math.sin(theta) * Math.sin(phi);
+    z = radius * Math.cos(phi);
+  }
+  positions.push(x, y, z);
+  const color = new THREE.Color();
+  color.setHSL(Math.random(), 0.8, 0.7);
+  colors.push(color.r, color.g, color.b);
+  sizes.push(Math.random() * 5 + 1);
+}
+function toggleParticleCountControls(e) {
+  const controls = document.getElementById('particleCountControls');
+  if (e.target.checked) {
+    controls.classList.add('active');
+  } else {
+    controls.classList.remove('active');
+  }
+}
+function updateParticleCount(e) {
+  currentParticleCount = parseInt(e.target.value);
+  scene.remove(particleSystem);
+  createParticles();
+  if (currentFormation !== 'sphere') {
+    formShape(currentFormation);
+  }
+}
+document.getElementById('imageUploadToggle').addEventListener('change', function (e) {
+  const controls = document.getElementById('imageUploadControls');
+  if (e.target.checked) {
+    controls.classList.add('active');
+  } else {
+    controls.classList.remove('active');
+  }
+});
+document.getElementById('colorEffectToggle').addEventListener('change', function (e) {
+  const controls = document.getElementById('colorEffectControls');
+  colorEffect.active = e.target.checked;
+  if (e.target.checked) {
+    controls.classList.add('active');
+  } else {
+    controls.classList.remove('active');
+  }
+});
+document.getElementById('colorChangeSpeed').addEventListener('input', function (e) {
+  colorEffect.speed = parseFloat(e.target.value);
+});
+document.getElementById('colorIntensity').addEventListener('input', function (e) {
+  colorEffect.intensity = parseFloat(e.target.value);
+});
+document.getElementById('billCipherFormation').addEventListener('click', () => formShape('billCipher'));
+formShape('sphere');</script>
+</body>
+</html>
