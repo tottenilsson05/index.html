@@ -1,0 +1,350 @@
+<title>dumptrucktrump</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #1c2841, #2c3e50, #34495e);
+    color: #ecf0f1;
+  }
+  #main-title {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 4em;
+    color: #ecf0f1;
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073;
+    z-index: 1000;
+    animation: glow 2s ease-in-out infinite alternate;
+    text-align: center;
+    pointer-events: none;
+  }
+  @keyframes glow {
+    from {
+      text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073;
+    }
+    to {
+      text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6;
+    }
+  }
+  #dreamscape-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+  }
+  .overlay {
+    position: fixed;
+    background: rgba(44, 62, 80, 0.7);
+    color: #ecf0f1;
+    padding: 15px;
+    border-radius: 10px;
+    z-index: 1000;
+    transition: all 0.5s ease;
+    opacity: 0;
+    box-shadow: 0 0 15px rgba(236, 240, 241, 0.1);
+  }
+  #controls {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #info {
+    top: 20px;
+    left: 20px;
+  }
+  #dream-state {
+    top: 20px;
+    right: 20px;
+    text-align: right;
+  }
+  .visible {
+    opacity: 1;
+  }
+  button {
+    background: rgba(236, 240, 241, 0.1);
+    border: 2px solid #ecf0f1;
+    color: #ecf0f1;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  button:hover {
+    background: rgba(236, 240, 241, 0.2);
+    box-shadow: 0 0 10px #ecf0f1;
+  }
+  #dream-intensity {
+    width: 100%;
+    margin-top: 10px;
+    -webkit-appearance: none;
+    background: linear-gradient(90deg, #1c2841 0%, #2c3e50 50%, #34495e 100%);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+    border-radius: 10px;
+  }
+  #dream-intensity:hover {
+    opacity: 1;
+  }
+  #dream-intensity::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #ecf0f1;
+    cursor: pointer;
+    box-shadow: 0 0 10px #ecf0f1;
+  }
+  #sketchfab-embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+  }
+  h2, h3 {
+    animation: float 5s ease-in-out infinite;
+  }
+  #twerk-container {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    height: 300px;
+  }
+  #trump-twerk {
+    width: 100%;
+    height: 100%;
+    background: url('https://media.giphy.com/media/l0HlPwMAzh13pcZ20/giphy.gif') no-repeat center center;
+    background-size: contain;
+    animation: twerk 0.5s infinite alternate;
+  }
+  @keyframes twerk {
+    0% { transform: rotate(-5deg); }
+    100% { transform: rotate(5deg); }
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="dreamscape-container">
+  <iframe id="sketchfab-embed" title="Donald Trump" frameborder="0" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" allow="autoplay; fullscreen; xr-spatial-tracking" xr-spatial-tracking="" execution-while-out-of-viewport="" execution-while-not-rendered="" web-share="" src="https://sketchfab.com/models/8e014fdb1c524308a8fe59b87e66fc2e/embed?autostart=1&ui_theme=dark"> </iframe>
+  <div id="twerk-container">
+    <div id="trump-twerk"></div>
+  </div>
+</div>
+<div id="main-title">$TrumpDanc</div>
+<div id="info" class="overlay">
+  <h2>Political Dreamscape</h2>
+  <p>Policy Fragments: <span id="fragmentCount">0</span></p>
+  <p>Current Timeline: <span id="currentPerspective">Present</span></p>
+</div>
+<div id="dream-state" class="overlay">
+  <h3>Simulation State: <span id="currentState">Calibrating</span></h3>
+  <p>Reality Distortion: <span id="intensityLevel">50</span>%</p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+let isSimulating = true;
+let realityDistortion = 50;
+let policyFragments = 0;
+let currentPerspectiveIndex = 0;
+const perspectives = ['Present', 'Past', 'Alternate Present', 'Near Future', 'Distant Future'];
+
+const fragmentCountElement = document.getElementById('fragmentCount');
+const currentPerspectiveElement = document.getElementById('currentPerspective');
+const currentStateElement = document.getElementById('currentState');
+const intensityLevelElement = document.getElementById('intensityLevel');
+const controls = document.getElementById('controls');
+const info = document.getElementById('info');
+const dreamState = document.getElementById('dream-state');
+const sketchfabEmbed = document.getElementById('sketchfab-embed');
+const trumpTwerk = document.getElementById('trump-twerk');
+
+function toggleDreamState() {
+  isSimulating = !isSimulating;
+  currentStateElement.textContent = isSimulating ? "Active Simulation" : "Paused";
+  sketchfabEmbed.contentWindow.postMessage(JSON.stringify({
+    type: 'setTimelineInfo',
+    timeScale: isSimulating ? 1 : 0.5
+  }), '*');
+  trumpTwerk.style.animationPlayState = isSimulating ? 'running' : 'paused';
+}
+
+function changePerspective() {
+  currentPerspectiveIndex = (currentPerspectiveIndex + 1) % perspectives.length;
+  currentPerspectiveElement.textContent = perspectives[currentPerspectiveIndex];
+  sketchfabEmbed.contentWindow.postMessage(JSON.stringify({
+    type: 'setCameraLookAt',
+    position: [Math.random()*10-5, Math.random()*10-5, Math.random()*10-5],
+    target: [0, 0, 0],
+    duration: 1
+  }), '*');
+  trumpTwerk.style.transform = `rotate(${Math.random() * 360}deg)`;
+}
+
+function toggleAudio() {
+  sketchfabEmbed.contentWindow.postMessage(JSON.stringify({
+    type: 'setVolume',
+    volume: 0.5
+  }), '*');
+  playTrumpSound();
+}
+
+function captureMemory() {
+  policyFragments++;
+  fragmentCountElement.textContent = policyFragments;
+  let flash = document.createElement('div');
+  flash.style.position = 'fixed';
+  flash.style.top = 0;
+  flash.style.left = 0;
+  flash.style.width = '100vw';
+  flash.style.height = '100vh';
+  flash.style.backgroundColor = 'rgba(236, 240, 241, 0.3)';
+  flash.style.zIndex = 9999;
+  flash.style.pointerEvents = 'none';
+  document.body.appendChild(flash);
+  setTimeout(() => document.body.removeChild(flash), 200);
+  trumpTwerk.style.animation = 'twerk 0.2s infinite alternate';
+  setTimeout(() => trumpTwerk.style.animation = 'twerk 0.5s infinite alternate', 1000);
+}
+
+function exitDreamscape() {
+  window.location.href = 'https://websim.ai/c/pano-viewer';
+}
+
+function adjustDreamIntensity(value) {
+  realityDistortion = value;
+  intensityLevelElement.textContent = value;
+  sketchfabEmbed.contentWindow.postMessage(JSON.stringify({
+    type: 'setFilter',
+    filter: {
+      name: 'sharpen',
+      intensity: value / 100
+    }
+  }), '*');
+  trumpTwerk.style.filter = `blur(${(100 - value) / 10}px)`;
+}
+
+function toggleOverlays() {
+  controls.classList.toggle('visible');
+  info.classList.toggle('visible');
+  dreamState.classList.toggle('visible');
+}
+
+function playTrumpSound() {
+  const trumpSounds = [
+    'https://www.myinstants.com/media/sounds/wrong.mp3',
+    'https://www.myinstants.com/media/sounds/trump-china.mp3',
+    'https://www.myinstants.com/media/sounds/trump-billions-and-billions.mp3'
+  ];
+  const sound = new Audio(trumpSounds[Math.floor(Math.random() * trumpSounds.length)]);
+  sound.play();
+}
+
+window.addEventListener('load', () => {
+  controls.classList.add('visible');
+  info.classList.add('visible');
+  dreamState.classList.add('visible');
+  
+  let version = '1.12.1';
+  let client = new Sketchfab(version, sketchfabEmbed);
+  client.init(() => {
+    console.log('Sketchfab API ready');
+    sketchfabEmbed.contentWindow.postMessage(JSON.stringify({
+      type: 'setCameraLookAt',
+      position: [3, 2, 3],
+      target: [0, 0, 0],
+      duration: 0
+    }), '*');
+  });
+});
+
+document.addEventListener('dblclick', toggleOverlays);
+
+window.addEventListener('sketchfabLoaded', function(e) {
+  console.log('Sketchfab model loaded');
+});
+
+function animateSimulation() {
+  if (isSimulating) {
+    sketchfabEmbed.contentWindow.postMessage(JSON.stringify({
+      type: 'setFilter',
+      filter: {
+        name: 'sharpen',
+        intensity: (Math.sin(Date.now() / 1000) * 0.25 + 0.25) * (realityDistortion / 100)
+      }
+    }), '*');
+  }
+  requestAnimationFrame(animateSimulation);
+}
+animateSimulation();
+
+const particleCount = 500;
+const particles = new THREE.Group();
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ alpha: true });
+
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000000, 0);
+document.body.appendChild(renderer.domElement);
+
+for (let i = 0; i < particleCount; i++) {
+  const geometry = new THREE.SphereGeometry(0.05, 32, 32);
+  const material = new THREE.MeshBasicMaterial({ color: Math.random() > 0.5 ? 0xff0000 : 0x0000ff });
+  const particle = new THREE.Mesh(geometry, material);
+  
+  particle.position.x = Math.random() * 40 - 20;
+  particle.position.y = Math.random() * 40 - 20;
+  particle.position.z = Math.random() * 40 - 20;
+  
+  particles.add(particle);
+}
+
+scene.add(particles);
+camera.position.z = 5;
+
+function animateParticles() {
+  requestAnimationFrame(animateParticles);
+  
+  particles.rotation.x += 0.0005;
+  particles.rotation.y += 0.001;
+  
+  particles.children.forEach(particle => {
+    particle.position.y += Math.sin(Date.now() * 0.001 + particle.position.x) * 0.01;
+  });
+  
+  renderer.render(scene, camera);
+}
+
+animateParticles();
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body></html>
