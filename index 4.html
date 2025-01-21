@@ -1,0 +1,201 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix Illusion with Mouse Interaction</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: #000;
+    font-family: 'Courier New', monospace;
+  }
+  #matrix {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #0f0;
+    font-size: 24px;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 2s;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<div class="message">The Matrix has you...</div>
+
+<script>
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+const message = document.querySelector('.message');
+
+let width, height;
+let mouseX = 0, mouseY = 0;
+
+const resizeCanvas = () => {
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+};
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+-=[]{}|;:,.<>?';
+const fontSize = 14;
+const columns = Math.floor(width / fontSize);
+
+class Drop {
+  constructor(x, y, speed, opacity) {
+    this.x = x;
+    this.y = y;
+    this.speed = speed;
+    this.opacity = opacity;
+    this.characters = [];
+    this.length = Math.floor(Math.random() * 20) + 5;
+    this.originalX = x;
+    this.originalY = y;
+  }
+
+  update() {
+    this.y += this.speed;
+    if (this.y > height) {
+      this.y = -this.length * fontSize;
+      this.reset();
+    }
+    while (this.characters.length < this.length) {
+      this.characters.push(characters[Math.floor(Math.random() * characters.length)]);
+    }
+  }
+
+  reset() {
+    this.speed = Math.random() * 2 + 1;
+    this.opacity = Math.random() * 0.5 + 0.5;
+    this.length = Math.floor(Math.random() * 20) + 5;
+    this.characters = [];
+    this.originalX = this.x;
+    this.originalY = this.y;
+  }
+
+  draw() {
+    ctx.fillStyle = `rgba(0, 255, 0, ${this.opacity})`;
+    for (let i = 0; i < this.characters.length; i++) {
+      const charX = this.x;
+      const charY = this.y - i * fontSize;
+
+      // Calculate distance from mouse
+      const dx = mouseX - charX;
+      const dy = mouseY - charY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // Apply repulsion effect
+      const repulsionRadius = 100;
+      if (distance < repulsionRadius) {
+        const angle = Math.atan2(dy, dx);
+        const repulsion = (1 - distance / repulsionRadius) * 20;
+        const repelX = Math.cos(angle) * repulsion;
+        const repelY = Math.sin(angle) * repulsion;
+        ctx.fillText(this.characters[i], charX - repelX, charY - repelY);
+      } else {
+        ctx.fillText(this.characters[i], charX, charY);
+      }
+    }
+  }
+}
+
+const drops = [];
+for (let i = 0; i < columns; i++) {
+  drops.push(new Drop(i * fontSize, Math.random() * height, Math.random() * 2 + 1, Math.random() * 0.5 + 0.5));
+}
+
+let animationMode = 0;
+const animationModes = 4;
+
+const draw = () => {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.font = `${fontSize}px monospace`;
+
+  drops.forEach(drop => {
+    drop.update();
+    drop.draw();
+  });
+
+  // Change animation mode every 5 seconds
+  if (Math.floor(Date.now() / 5000) % animationModes !== animationMode) {
+    animationMode = Math.floor(Date.now() / 5000) % animationModes;
+    drops.forEach(drop => drop.reset());
+  }
+
+  // Apply different effects based on the current animation mode
+  switch (animationMode) {
+    case 0: // Normal falling
+      break;
+    case 1: // Wavy motion
+      drops.forEach((drop, index) => {
+        drop.x = drop.originalX + Math.sin(Date.now() * 0.001 + index * 0.1) * fontSize;
+      });
+      break;
+    case 2: // Spiral
+      drops.forEach((drop, index) => {
+        const angle = Date.now() * 0.001 + index * 0.1;
+        drop.x = width / 2 + Math.cos(angle) * (index * fontSize / 2);
+        drop.y = height / 2 + Math.sin(angle) * (index * fontSize / 2);
+      });
+      break;
+    case 3: // Explosion
+      drops.forEach((drop, index) => {
+        const angle = index * (Math.PI * 2 / drops.length);
+        const distance = (Date.now() * 0.1) % (Math.max(width, height) / 2);
+        drop.x = width / 2 + Math.cos(angle) * distance;
+        drop.y = height / 2 + Math.sin(angle) * distance;
+      });
+      break;
+  }
+};
+
+const animate = () => {
+  draw();
+  requestAnimationFrame(animate);
+};
+
+animate();
+
+setTimeout(() => {
+  message.style.opacity = '1';
+}, 5000);
+
+setTimeout(() => {
+  message.style.opacity = '0';
+}, 10000);
+
+// Mouse move event listener
+canvas.addEventListener('mousemove', (e) => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+});
+
+// Touch move event listener for mobile devices
+canvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  mouseX = e.touches[0].clientX;
+  mouseY = e.touches[0].clientY;
+}, { passive: false });
+
+</script>
+</body>
+</html>
