@@ -1,0 +1,498 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UO Shards Win95</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+  <div class="loading-screen">
+    <img src="https://c.tenor.com/029Iip8M-IAAAAAC/windows-desktop.gif" alt="Windows Loading">
+  </div>
+
+  <div id="app">
+    <!-- Desktop Icons -->
+    <div class="desktop-icons">
+      <div v-for="icon in desktopIcons" 
+           :key="icon.id" 
+           class="desktop-icon"
+           :class="{ selected: selectedIcon === icon.id }"
+           @click="selectIcon(icon.id)"
+           @dblclick="createWindow(icon.id)">
+        <img :src="icon.icon" alt="">
+        <div class="desktop-icon-label">{{ icon.title }}</div>
+      </div>
+    </div>
+
+    <!-- Windows -->
+    <div v-for="window in windows" 
+         :key="window.id" 
+         class="window"
+         :style="{ 
+           left: window.x + 'px', 
+           top: window.y + 'px', 
+           width: window.width + 'px', 
+           height: window.height + 'px', 
+           display: window.minimized ? 'none' : 'block', 
+           zIndex: window.active ? 10 : 1 
+         }"
+         @mousedown="activateWindow(window)">
+      <div class="window-header" @mousedown="dragWindow($event, window)">
+        <div class="window-title">{{ window.title }}</div>
+        <div class="window-controls">
+          <button class="window-button" @click="minimizeWindow(window)">_</button>
+          <button class="window-button" @click="closeWindow(window.id)">×</button>
+        </div>
+      </div>
+      
+      <!-- Missile Command Template -->
+      <template v-if="window.template === 'missile'">
+        <div class="window-content missile-content">
+          <iframe 
+            src="https://websim.ai/p/pcvt6_nx2mhm5epkf5xr" 
+            width="100%" 
+            height="100%" 
+            frameborder="0"
+            style="border: none; margin: 0; padding: 0;">
+          </iframe>
+        </div>
+      </template>
+
+      <!-- Chat Window Template -->
+      <template v-if="window.template === 'chat'">
+        <div class="menu-bar">
+          <div class="menu-item">File</div>
+          <div class="menu-item">View</div>
+          <div class="menu-item">Help</div>
+        </div>
+
+        <div class="window-content">
+          <div class="chat-layout">
+            <div class="chat-tabs">
+              <div v-for="tab in tabs" 
+                   :key="tab.id" 
+                   :class="['chat-tab', { active: activeTab === tab.id }]"
+                   @click="setActiveTab(tab.id)">
+                {{ tab.name }}
+              </div>
+            </div>
+            
+            <div class="chat-main">
+              <div class="chat-left">
+                <div class="message-container" ref="messagesContainer">
+                  <div v-for="msg in getMessagesForApp('uo')" :key="msg.id" :class="['message', getMessageClass(msg)]">
+                    <div class="message-header">
+                      <img :src="'https://images.websim.ai/avatar/' + msg.username" class="user-avatar" alt="">
+                      <span class="username">{{ msg.username }}</span>
+                      <span class="category-tag" :class="msg.category">{{ msg.category }}</span>
+                      <span class="timestamp">{{ formatTime(msg.created_at) }}</span>
+                    </div>
+                    <div class="message-content">{{ msg.message }}</div>
+                  </div>
+                </div>
+                
+                <div class="input-container">
+                  <div class="input-area">
+                    <div class="input-controls">
+                      <select v-model="selectedCategory" class="category-select">
+                        <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                          {{ cat.name }}
+                        </option>
+                      </select>
+                      <button @click="sendMessage('uo')">Send</button>
+                    </div>
+                    <textarea v-model="newMessage" 
+                             @keyup.enter.exact="sendMessage('uo')"
+                             placeholder="Type your message..."></textarea>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="chat-right">
+                <div class="room-info">
+                  <div>🌍 Britannia Shard Hub</div>
+                  <div>👥 Users Online: {{ Object.keys(peers).length }}</div>
+                </div>
+                <div class="user-list">
+                  <div v-for="(peer, peerId) in peers" :key="peerId" class="user-item">
+                    <img :src="'https://images.websim.ai/avatar/' + peer.username" class="user-avatar" alt="">
+                    {{ peer.username }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div>Connected to Britannia Shard Hub</div>
+          <div>{{ Object.keys(peers).length }} Adventurers Online</div>
+        </div>
+      </template>
+
+      <!-- About Window Template -->
+      <template v-if="window.template === 'about'">
+        <div class="about-content">
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='2' y='2' width='28' height='28' fill='%23c0c0c0' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M8 8h16v16H8z' fill='%23000080'/%3E%3C/svg%3E" alt="">
+          <h2>UO Shard Navigator</h2>
+          <p>Welcome to the Ultimate Online Shard Navigator! This application helps you connect with other UO players, discover new shards, and trade items across the realms of Britannia.</p>
+          <button @click="closeWindow(window.id)">OK</button>
+        </div>
+      </template>
+
+      <!-- TCG Window Template -->
+      <template v-if="window.template === 'tcg'">
+        <div class="menu-bar">
+          <div class="menu-item">File</div>
+          <div class="menu-item">View</div>
+          <div class="menu-item">Help</div>
+        </div>
+
+        <div class="window-content">
+          <div class="tcg-layout">
+            <div class="chat-tabs">
+              <select v-model="selectedGame" class="game-select" @change="setGame(selectedGame)">
+                <option v-for="game in games" :key="game.id" :value="game.id">
+                  {{ game.icon }} {{ game.name }}
+                </option>
+              </select>
+            </div>
+            
+            <div class="tcg-main">
+              <div class="chat-left">
+                <div class="message-container" ref="messagesContainer">
+                  <div v-for="msg in getMessagesForApp('tcg')" :key="msg.id" :class="['message', getMessageClass(msg)]">
+                    <div class="message-header">
+                      <img :src="'https://images.websim.ai/avatar/' + msg.username" class="user-avatar" alt="">
+                      <span class="username">{{ msg.username }}</span>
+                      <span class="category-tag" :class="msg.category">{{ msg.category }}</span>
+                      <span class="timestamp">{{ formatTime(msg.created_at) }}</span>
+                    </div>
+                    <div class="message-content">{{ msg.message }}</div>
+                  </div>
+                </div>
+                
+                <div class="input-container">
+                  <div class="input-area">
+                    <div class="input-controls">
+                      <select v-model="selectedRoom" class="game-select">
+                        <option v-for="room in getCurrentRooms()" :key="room.id" :value="room.id">
+                          {{ room.name }}
+                        </option>
+                      </select>
+                      <button @click="sendMessage('tcg')">Send</button>
+                    </div>
+                    <textarea v-model="newMessage" 
+                             @keyup.enter.exact="sendMessage('tcg')"
+                             placeholder="Type your message..."></textarea>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="chat-right">
+                <div class="room-info">
+                  <div>🎴 {{ games.find(g => g.id === selectedGame)?.name }}</div>
+                  <div>👥 Users Online: {{ Object.keys(peers).length }}</div>
+                </div>
+                
+                <div class="room-list">
+                  <div v-for="room in getCurrentRooms()" 
+                       :key="room.id" 
+                       class="room-item"
+                       @click="setRoom(room.id)">
+                    <span>{{ room.name }}</span>
+                    <span class="room-count">{{ room.count }}</span>
+                  </div>
+                </div>
+                
+                <div class="user-list">
+                  <div v-for="(peer, peerId) in peers" :key="peerId" class="user-item">
+                    <img :src="'https://images.websim.ai/avatar/' + peer.username" class="user-avatar" alt="">
+                    {{ peer.username }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div>Connected to {{ games.find(g => g.id === selectedGame)?.name }} - {{ getCurrentRooms().find(r => r.id === selectedRoom)?.name }}</div>
+          <div>{{ Object.keys(peers).length }} Players Online</div>
+        </div>
+      </template>
+
+      <!-- D&D Window Template -->
+      <template v-if="window.template === 'dnd'">
+        <div class="menu-bar">
+          <div class="menu-item">File</div>
+          <div class="menu-item">View</div>
+          <div class="menu-item">Help</div>
+        </div>
+
+        <div class="window-content">
+          <div class="dnd-layout">
+            <div class="dnd-nav">
+              <select v-model="selectedDndRoom" class="dnd-select">
+                <option v-for="room in dndRooms" :key="room.id" :value="room.id">
+                  {{ room.icon }} {{ room.name }}
+                </option>
+              </select>
+            </div>
+            
+            <div class="dnd-main">
+              <div class="chat-left">
+                <div class="message-container" ref="messagesContainer">
+                  <div v-for="msg in getMessagesForApp('dnd')" :key="msg.id" :class="['message', getDndMessageClass(msg)]">
+                    <div class="message-header">
+                      <img :src="'https://images.websim.ai/avatar/' + msg.username" class="user-avatar" alt="">
+                      <span class="username">{{ msg.username }}</span>
+                      <span class="category-tag dnd" :class="msg.category">{{ msg.category }}</span>
+                      <span class="timestamp">{{ formatTime(msg.created_at) }}</span>
+                    </div>
+                    <div class="message-content">{{ msg.message }}</div>
+                  </div>
+                </div>
+                
+                <div class="input-container">
+                  <div class="input-area">
+                    <div class="input-controls">
+                      <select v-model="selectedDndCategory" class="category-select">
+                        <option v-for="cat in dndCategories" :key="cat.id" :value="cat.id">
+                          {{ cat.name }}
+                        </option>
+                      </select>
+                      <button @click="sendMessage('dnd')">Send</button>
+                    </div>
+                    <textarea v-model="newMessage" 
+                             @keyup.enter.exact="sendMessage('dnd')"
+                             placeholder="Type your message..."></textarea>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="chat-right">
+                <div class="room-info">
+                  <div>🎲 {{ getCurrentDndRoom()?.name }}</div>
+                  <div>👥 Adventurers Online: {{ Object.keys(peers).length }}</div>
+                </div>
+                
+                <!-- D&D Quick Tools -->
+                <div class="dnd-tools">
+                  <h3>Quick Tools</h3>
+                  <button @click="rollDice('d20')" class="tool-button">Roll d20</button>
+                  <button @click="rollDice('4d6')" class="tool-button">Roll 4d6</button>
+                  <div class="dice-result" v-if="diceResult">
+                    Result: {{ diceResult }}
+                  </div>
+                  
+                  <!-- Character Quick Sheet -->
+                  <div class="quick-sheet" v-if="selectedDndRoom === 'character-creation'">
+                    <h4>Quick Character Stats</h4>
+                    <div class="stat-grid">
+                      <div v-for="stat in characterStats" :key="stat.name" class="stat-item">
+                        <span>{{ stat.name }}</span>
+                        <input type="number" v-model="stat.value" min="3" max="18">
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Weekly Schedule -->
+                  <div class="schedule" v-if="selectedDndRoom === 'weekly-meetups'">
+                    <h4>Upcoming Sessions</h4>
+                    <div v-for="session in upcomingSessions" :key="session.id" class="session-item">
+                      <div>{{ session.date }}</div>
+                      <div>{{ session.campaign }}</div>
+                      <div>{{ session.dm }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="user-list">
+                  <div v-for="(peer, peerId) in peers" :key="peerId" class="user-item">
+                    <img :src="'https://images.websim.ai/avatar/' + peer.username" class="user-avatar" alt="">
+                    {{ peer.username }}
+                    <span v-if="peer.dmStatus" class="dm-badge">DM</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div>Connected to {{ getCurrentDndRoom()?.name }}</div>
+          <div>{{ Object.keys(peers).length }} Adventurers Online</div>
+        </div>
+      </template>
+
+      <!-- Tavern Window Template -->
+      <template v-if="window.template === 'tavern'">
+        <div class="menu-bar">
+          <div class="menu-item">File</div>
+          <div class="menu-item">View</div>
+          <div class="menu-item">Help</div>
+        </div>
+
+        <div class="window-content">
+          <div class="tavern-layout">
+            <div class="chat-tabs">
+              <select v-model="selectedTavernRoom" class="dnd-select">
+                <option v-for="room in tavernRooms" :key="room.id" :value="room.id">
+                  {{ room.icon }} {{ room.name }}
+                </option>
+              </select>
+            </div>
+            
+            <div class="tavern-main">
+              <div class="chat-left">
+                <div class="message-container" ref="messagesContainer">
+                  <div v-for="msg in getMessagesForApp('tavern')" :key="msg.id" :class="['message', 'tavern-message']">
+                    <div class="message-header">
+                      <img :src="'https://images.websim.ai/avatar/' + msg.username" class="user-avatar" alt="">
+                      <span class="username">{{ msg.username }}</span>
+                      <span class="category-tag tavern">{{ msg.category }}</span>
+                      <span class="timestamp">{{ formatTime(msg.created_at) }}</span>
+                    </div>
+                    <div class="message-content">{{ msg.message }}</div>
+                  </div>
+                </div>
+                
+                <div class="input-container">
+                  <div class="input-area">
+                    <div class="input-controls">
+                      <button @click="sendMessage('tavern')">Send</button>
+                    </div>
+                    <textarea v-model="newMessage" 
+                             @keyup.enter.exact="sendMessage('tavern')"
+                             placeholder="Type your message..."></textarea>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="chat-right">
+                <div class="room-info">
+                  <div>🍺 {{ getCurrentTavernRoom()?.name }}</div>
+                  <div>👥 Patrons Online: {{ Object.keys(peers).length }}</div>
+                </div>
+                
+                <div class="tavern-info">
+                  <h3>Welcome to The Tavern!</h3>
+                  <p>A cozy place for gamers to gather, plan meetups, and share stories.</p>
+                </div>
+
+                <!-- Meetups List -->
+                <div class="meetup-list">
+                  <div v-for="meetup in meetups" :key="meetup.id" class="meetup-item">
+                    <div class="meetup-title">{{ meetup.title }}</div>
+                    <div class="meetup-details">
+                      <div>Host: {{ meetup.host }}</div>
+                      <div>{{ meetup.time }}</div>
+                      <div>{{ meetup.attendees }} attendees</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="user-list">
+                  <div v-for="(peer, peerId) in peers" :key="peerId" class="user-item">
+                    <img :src="'https://images.websim.ai/avatar/' + peer.username" class="user-avatar" alt="">
+                    {{ peer.username }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div>Connected to {{ getCurrentTavernRoom()?.name }}</div>
+          <div>{{ Object.keys(peers).length }} Patrons Online</div>
+        </div>
+      </template>
+
+      <!-- Feedback Window Template -->
+      <template v-if="window.template === 'feedback'">
+        <div class="menu-bar">
+          <div class="menu-item">File</div>
+          <div class="menu-item">Edit</div>
+          <div class="menu-item">Help</div>
+        </div>
+
+        <div class="window-content">
+          <div class="feedback-content">
+            <textarea 
+              v-model="feedbackText"
+              class="feedback-textarea"
+              placeholder="Enter your feature request or suggestion here..."></textarea>
+            <div class="feedback-controls">
+              <select v-model="feedbackType" class="feedback-type">
+                <option value="new_server">New Chat Server Request</option>
+                <option value="feature">Feature Request</option>
+                <option value="bug">Bug Report</option>
+                <option value="other">Other</option>
+              </select>
+              <button @click="submitFeedback">Submit</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div>Ready</div>
+        </div>
+      </template>
+
+    </div>
+
+    <!-- Taskbar -->
+    <div class="taskbar">
+      <button class="start-button" @click="toggleStartMenu">
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23008080'/%3E%3Cpath d='M2 2h12v12H2z' fill='%23c0c0c0'/%3E%3C/svg%3E" alt="">
+        Start
+      </button>
+      <div v-for="window in windows" 
+           :key="window.id" 
+           :class="['start-button', { active: !window.minimized }]"
+           @click="openWindow(window.id)">
+        {{ window.title }}
+      </div>
+      <div class="taskbar-right">
+        <div class="taskbar-clock" @click="toggleCalendar">{{ currentTime }}</div>
+      </div>
+    </div>
+
+    <!-- Calendar popup -->
+    <div class="taskbar-calendar" :class="{ active: showCalendar }">
+      <div class="calendar-header">
+        <div class="calendar-nav">
+          <button @click="prevMonth">&lt;</button>
+          <button @click="nextMonth">&gt;</button>
+        </div>
+        <div>{{ formatMonth() }}</div>
+      </div>
+      <div class="calendar-grid">
+        <div v-for="day in weekDays" :key="day" class="calendar-weekday">
+          {{ day }}
+        </div>
+        <div v-for="(day, index) in getDaysInMonth(currentDate)"
+             :key="index"
+             :class="['calendar-day', { current: isCurrentDay(day) }]">
+          {{ day }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Start Menu -->
+    <div class="start-menu" :class="{ active: startMenuActive }">
+      <div v-for="item in startMenuItems" :key="item.id">
+        <div v-if="item.type === 'divider'" class="divider"></div>
+        <div v-else class="start-menu-item" @click="handleStartMenuItem(item)">
+          <img :src="item.icon" alt="">
+          {{ item.title }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
