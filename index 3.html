@@ -1,0 +1,310 @@
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #000;
+}
+
+.yantra-container {
+  width: 600px;
+  height: 600px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: zoom 20s infinite alternate ease-in-out;
+}
+
+.border {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: rotate 60s linear infinite;
+}
+
+.flower-of-life {
+  width: 400px;
+  height: 400px;
+  position: absolute;
+}
+
+.circle {
+  fill: none;
+  stroke: rgba(255, 215, 0, 0.5);
+  stroke-width: 1;
+  opacity: 0;
+  transform-origin: center;
+  animation: appear 2s ease-in forwards;
+}
+
+.triangle {
+  fill: none;
+  stroke: rgba(255, 215, 0, 0.3);
+  stroke-width: 1;
+  opacity: 0;
+  animation: appearTriangle 3s ease-in forwards;
+}
+
+.lotus {
+  fill: none;
+  stroke: gold;
+  stroke-width: 1;
+  opacity: 0;
+  animation: appearLotus 2s ease-in forwards;
+}
+
+.bindu {
+  fill: gold;
+  opacity: 0;
+  animation: appearBindu 1s ease-in forwards 4s;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    stroke-width: 0;
+  }
+  100% {
+    opacity: 1;
+    stroke-width: 1;
+  }
+}
+
+@keyframes appearTriangle {
+  0% {
+    opacity: 0;
+    stroke-width: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    stroke-width: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes appearLotus {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(0deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+@keyframes appearBindu {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes zoom {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+</style></head><body>
+
+<div class="yantra-container">
+  <svg class="border" viewBox="0 0 600 600">
+    <!-- Earth Square -->
+    <rect x="50" y="50" width="500" height="500" fill="none" stroke="gold" stroke-width="2"/>
+    
+    <!-- 16-petal Lotus -->
+    <g class="lotus" style="animation-delay: 2s;">
+      <g transform="translate(300,300)">
+        <path d="M0,0 Q200,0 0,200" />
+        <path d="M0,0 Q141,141 0,200" />
+        <path d="M0,0 Q0,200 0,200" />
+        <path d="M0,0 Q-141,141 0,200" />
+        <path d="M0,0 Q-200,0 0,200" />
+        <path d="M0,0 Q-141,-141 0,200" />
+        <path d="M0,0 Q0,-200 0,200" />
+        <path d="M0,0 Q141,-141 0,200" />
+      </g>
+    </g>
+
+    <!-- 8-petal Lotus -->
+    <g class="lotus" style="animation-delay: 1s;">
+      <g transform="translate(300,300)">
+        <path d="M0,0 Q150,0 0,150" />
+        <path d="M0,0 Q106,106 0,150" />
+        <path d="M0,0 Q0,150 0,150" />
+        <path d="M0,0 Q-106,106 0,150" />
+        <path d="M0,0 Q-150,0 0,150" />
+        <path d="M0,0 Q-106,-106 0,150" />
+        <path d="M0,0 Q0,-150 0,150" />
+        <path d="M0,0 Q106,-106 0,150" />
+      </g>
+    </g>
+
+    <!-- Nine Main Triangles -->
+    <g id="triangleContainer"></g>
+
+    <!-- Bindu (Center Point) -->
+    <circle class="bindu" cx="300" cy="300" r="5"/>
+  </svg>
+
+  <svg class="flower-of-life" viewBox="-200 -200 400 400" id="flowerOfLife"></svg>
+</div>
+
+<script>
+// Generate positions for each pattern
+function generatePositions(count) {
+  const positions = [];
+  const r = 40;
+  const angleStep = Math.PI / 3;
+  
+  // Center circle
+  positions.push([0, 0]);
+  
+  // First ring - 6 circles
+  if (count >= 7) {
+    for (let i = 0; i < 6; i++) {
+      const angle = i * angleStep;
+      positions.push([
+        r * Math.cos(angle),
+        r * Math.sin(angle)
+      ]);
+    }
+  }
+  
+  // Second ring - 12 circles
+  if (count >= 19) {
+    for (let i = 0; i < 12; i++) {
+      const angle = i * angleStep / 2;
+      positions.push([
+        r * 2 * Math.cos(angle),
+        r * 2 * Math.sin(angle)
+      ]);
+    }
+  }
+  
+  // Third ring - 18 circles
+  if (count >= 37) {
+    for (let i = 0; i < 18; i++) {
+      const angle = i * angleStep / 3;
+      positions.push([
+        r * 3 * Math.cos(angle),
+        r * 3 * Math.sin(angle)
+      ]);
+    }
+  }
+  
+  // Fourth ring - 24 circles
+  if (count >= 61) {
+    for (let i = 0; i < 24; i++) {
+      const angle = i * angleStep / 4;
+      positions.push([
+        r * 4 * Math.cos(angle),
+        r * 4 * Math.sin(angle)
+      ]);
+    }
+  }
+  
+  return positions;
+}
+
+const svg = document.getElementById('flowerOfLife');
+const triangleContainer = document.getElementById('triangleContainer');
+
+function createCircle(x, y, opacity = 1) {
+  const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  circle.setAttribute("cx", x);
+  circle.setAttribute("cy", y);
+  circle.setAttribute("r", 25);
+  circle.setAttribute("class", "circle");
+  circle.style.animationDelay = `${Math.random()}s`;
+  circle.style.opacity = opacity;
+  return circle;
+}
+
+function generateTriangles() {
+  const centerX = 300;
+  const centerY = 300;
+  const sizes = [200, 170, 140, 110, 80];
+  const angles = [0, 40, 80, 120, 160, 200, 240, 280, 320];
+  
+  angles.forEach((angle, i) => {
+    const size = sizes[Math.floor(i/2)];
+    const radians = (angle * Math.PI) / 180;
+    
+    const x1 = centerX;
+    const y1 = centerY - size;
+    const x2 = centerX + size * Math.sin(radians);
+    const y2 = centerY - size * Math.cos(radians);
+    const x3 = centerX - size * Math.sin(radians);
+    const y3 = centerY - size * Math.cos(radians);
+    
+    const triangle = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    triangle.setAttribute("d", `M${x1},${y1} L${x2},${y2} L${x3},${y3} Z`);
+    triangle.classList.add("triangle");
+    triangle.style.animationDelay = `${i * 0.2}s`;
+    
+    triangleContainer.appendChild(triangle);
+  });
+}
+
+const patterns = [1, 7, 19, 37, 61, 37, 19, 7, 1];
+let currentPattern = 0;
+const transitionDuration = 3000; // Slower transitions
+let lastTimestamp = 0;
+let currentPositions = generatePositions(patterns[0]);
+let nextPositions = generatePositions(patterns[1]);
+
+function animate(timestamp) {
+  if (!lastTimestamp) lastTimestamp = timestamp;
+  const progress = (timestamp - lastTimestamp) / transitionDuration;
+
+  if (progress >= 1) {
+    currentPattern = (currentPattern + 1) % patterns.length;
+    currentPositions = generatePositions(patterns[currentPattern]);
+    nextPositions = generatePositions(patterns[(currentPattern + 1) % patterns.length]);
+    lastTimestamp = timestamp;
+  }
+
+  svg.innerHTML = '';
+  
+  const easeProgress = 0.5 - Math.cos(progress * Math.PI) / 2; // Smooth easing
+  
+  currentPositions.forEach((pos, i) => {
+    const nextPos = nextPositions[i] || nextPositions[nextPositions.length - 1];
+    const x = pos[0] + (nextPos[0] - pos[0]) * easeProgress;
+    const y = pos[1] + (nextPos[1] - pos[1]) * easeProgress;
+    const opacity = Math.min(1, 1.5 - easeProgress);
+    svg.appendChild(createCircle(x, y, opacity));
+  });
+
+  if (progress < 1 && nextPositions.length > currentPositions.length) {
+    nextPositions.slice(currentPositions.length).forEach((pos, i) => {
+      svg.appendChild(createCircle(pos[0], pos[1], easeProgress));
+    });
+  }
+
+  requestAnimationFrame(animate);
+}
+
+generateTriangles();
+requestAnimationFrame(animate);
+
+</script></body></html>
