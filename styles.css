@@ -1,0 +1,236 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: #111;
+  color: #0f0;
+  font-family: monospace;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+#game {
+  position: relative;
+  width: 800px;
+  height: 600px;
+  border: 2px solid #0f0;
+}
+
+#stats {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 100;
+  font-size: 20px;
+}
+
+#arena {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.player {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+}
+
+.enemy {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+}
+
+.fast-enemy {
+  width: 25px;
+  height: 25px;
+}
+
+.boss-enemy {
+  width: 60px;
+  height: 60px;
+}
+
+.cih-enemy {
+  width: 80px;
+  height: 80px;
+}
+
+.bullet {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #0f0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.bullet.powered {
+  background: #0ff;
+  box-shadow: 0 0 10px #0ff;
+}
+
+.powerup {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+}
+
+.rock {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #f00;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.explosion {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(255,0,0,0.8) 0%, rgba(255,0,0,0) 70%);
+  transform: translate(-50%, -50%);
+  animation: explode 0.5s ease-out forwards;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes explode {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+@keyframes shockwave {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+}
+
+.hit {
+  animation: pulse 0.2s ease-out;
+}
+
+.shield {
+  opacity: 0.5;
+}
+
+.shockwave {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(0, 255, 0, 0.5) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  animation: shockwave 1s ease-out forwards;
+  pointer-events: none;
+}
+
+.floating-text {
+  position: absolute;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  text-shadow: 0 0 5px currentColor;
+  z-index: 1000;
+}
+
+.ransomware-enemy {
+  filter: drop-shadow(0 0 5px #f00);
+}
+
+.enemy text {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+}
+
+#controls {
+  position: absolute;
+  left: 10px;
+  top: 120px;
+  color: #0f0;
+  font-size: 16px;
+  z-index: 100;
+}
+
+#controls h3 {
+  margin: 0 0 10px 0;
+}
+
+#controls p {
+  margin: 5px 0;
+}
+
+#pause-menu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border: 2px solid #0f0;
+  text-align: center;
+  z-index: 1000;
+}
+
+#intermission {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border: 2px solid #0f0;
+  text-align: center;
+  z-index: 1000;
+  color: #0f0;
+}
+
+.program-npc {
+  stroke: #0f0;
+  fill: none;
+}
+
+.virus {
+  stroke: #f0f;
+  fill: none;
+}
+
+.malware {
+  stroke: #00f;
+  fill: none;
+}
+
+.ransomware {
+  stroke: #0ff;
+  fill: none;
+}
+
+.upgrade {
+  stroke: #ff0;
+  fill: none;
+}
+
+.health-fill {
+  transition: width 0.2s ease-out;
+}
+
+.enemy .health-fill {
+  transition: width 0.2s ease-out;
+  filter: drop-shadow(0 0 2px #0f0);
+}
+
+.enemy rect[fill="#400"] {
+  filter: drop-shadow(0 0 1px #000);
+}
