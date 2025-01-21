@@ -1,0 +1,325 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #000011;
+    cursor: pointer;
+    font-family: monospace;
+}
+
+#game-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.1s;
+}
+
+#starfield {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+#cat {
+    position: absolute;
+    font-size: 14px;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+    user-select: none;
+    transition: all 0.3s ease;
+    line-height: 1;
+    z-index: 2;
+    transform-origin: center;
+}
+
+#score, #high-score {
+    position: absolute;
+    font-size: 20px;
+    color: #ff00ff;
+    text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff;
+    z-index: 10;
+}
+
+#score {
+    top: 10px;
+    left: 10px;
+}
+
+#high-score {
+    top: 10px;
+    right: 10px;
+}
+
+#win-message, #taunt-message {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 30px;
+    color: #00ffff;
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
+    background-color: rgba(0,0,20,0.7);
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+    transition: opacity 0.5s ease;
+    z-index: 20;
+}
+
+#taunt-message {
+    font-size: 24px;
+    top: 20%;
+}
+
+.star {
+    position: absolute;
+    background-color: #ffffff;
+    border-radius: 50%;
+    animation: twinkle 1s infinite alternate;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+@keyframes dance {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-15deg); }
+    75% { transform: rotate(15deg); }
+}
+</style></head><body>
+<div id="starfield"></div>
+<div id="score">Attempts: <span id="attempts">0</span></div>
+<div id="high-score">High Score: <span id="best-score">9999</span></div>
+<div id="game-container">
+    <pre id="cat">
+ /\_/\
+( o.o )
+ > ^ <
+    </pre>
+</div>
+<div id="win-message">You caught the dancing sassy ASCII cat! Purr-fection!</div>
+<div id="taunt-message"></div>
+
+<script>
+const gameContainer = document.getElementById('game-container');
+const cat = document.getElementById('cat');
+const scoreElement = document.getElementById('attempts');
+const highScoreElement = document.getElementById('best-score');
+const winMessage = document.getElementById('win-message');
+const tauntMessage = document.getElementById('taunt-message');
+const starfield = document.getElementById('starfield');
+
+let attempts = 0;
+let highScore = 9999; // Set a high initial value
+highScoreElement.textContent = highScore;
+
+const taunts = [
+    "Too slow!",
+    "Missed me!",
+    "Can't catch me!",
+    "Nice try, human!",
+    "Oops! Not there!",
+    "Meow you see me, meow you don't!",
+    "Almost got me!",
+    "Keep trying!",
+    "Too quick for you!",
+    "Catch me if you can!"
+];
+
+function createStars() {
+    const starCount = 200;
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = `${Math.random() * 3}px`;
+        star.style.height = star.style.width;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+        starfield.appendChild(star);
+    }
+}
+
+function moveStars() {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        let top = parseFloat(star.style.top);
+        top += 0.1;
+        if (top > 100) top = -1;
+        star.style.top = `${top}%`;
+    });
+    requestAnimationFrame(moveStars);
+}
+
+function moveCat() {
+    const maxX = window.innerWidth - 80;
+    const maxY = window.innerHeight - 80;
+    const newX = Math.random() * maxX;
+    const newY = Math.random() * maxY;
+    
+    cat.style.left = newX + 'px';
+    cat.style.top = newY + 'px';
+    
+    // Start the dance animation
+    cat.style.animation = 'dance 0.5s ease-in-out infinite';
+}
+
+function updateScore() {
+    attempts++;
+    scoreElement.textContent = attempts;
+}
+
+function updateHighScore() {
+    if (attempts < highScore) {
+        highScore = attempts;
+        highScoreElement.textContent = highScore;
+        localStorage.setItem('catGameHighScore', highScore);
+        return true;
+    }
+    return false;
+}
+
+function resetGame() {
+    winMessage.style.opacity = '0';
+    setTimeout(() => {
+        winMessage.style.display = 'none';
+        winMessage.style.opacity = '1';
+        attempts = 0;
+        scoreElement.textContent = attempts;
+        cat.style.color = '#00ffff';
+        cat.style.textShadow = '0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff';
+        document.body.addEventListener('click', handleClick);
+        moveCat();
+    }, 500);
+}
+
+function showTaunt() {
+    const taunt = taunts[Math.floor(Math.random() * taunts.length)];
+    tauntMessage.textContent = taunt;
+    tauntMessage.style.display = 'block';
+    setTimeout(() => {
+        tauntMessage.style.opacity = '0';
+        setTimeout(() => {
+            tauntMessage.style.display = 'none';
+            tauntMessage.style.opacity = '1';
+        }, 500);
+    }, 1500);
+}
+
+function shakeScreen() {
+    let count = 0;
+    const shake = setInterval(() => {
+        const x = Math.random() * 5 - 2.5;
+        const y = Math.random() * 5 - 2.5;
+        gameContainer.style.transform = `translate(${x}px, ${y}px)`;
+        count++;
+        if (count > 10) {
+            clearInterval(shake);
+            gameContainer.style.transform = 'translate(0, 0)';
+        }
+    }, 50);
+}
+
+function checkWin(e) {
+    const catRect = cat.getBoundingClientRect();
+    if (
+        e.clientX >= catRect.left &&
+        e.clientX <= catRect.right &&
+        e.clientY >= catRect.top &&
+        e.clientY <= catRect.bottom
+    ) {
+        const newHighScore = updateHighScore();
+        winMessage.textContent = newHighScore 
+            ? `New High Score: ${highScore}! You've mastered the cat dance!`
+            : `You caught the dancing sassy cat in ${attempts} attempts!`;
+        winMessage.style.display = 'block';
+        document.body.removeEventListener('click', handleClick);
+        cat.style.color = '#ff00ff';
+        cat.style.textShadow = '0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff';
+        cat.style.animation = 'dance 0.3s ease-in-out infinite';
+        setTimeout(resetGame, 3000);
+    } else {
+        moveCat();
+        updateScore();
+        showTaunt();
+        shakeScreen();
+    }
+}
+
+function handleClick(e) {
+    checkWin(e);
+}
+
+document.body.addEventListener('click', handleClick);
+
+// Initial setup
+createStars();
+moveStars();
+moveCat();
+
+// Move cat every 0.75 seconds
+setInterval(moveCat, 750);
+
+// Add trailing effect
+function createTrail() {
+    const trail = document.createElement('div');
+    trail.textContent = '~';
+    trail.style.position = 'absolute';
+    trail.style.fontSize = '16px';
+    trail.style.color = '#00ffff';
+    trail.style.textShadow = '0 0 5px #00ffff, 0 0 10px #00ffff';
+    trail.style.left = (parseInt(cat.style.left) + 40) + 'px';
+    trail.style.top = (parseInt(cat.style.top) + 40) + 'px';
+    trail.style.opacity = '0.7';
+    trail.style.zIndex = '1';
+    gameContainer.appendChild(trail);
+
+    setTimeout(() => {
+        trail.style.transition = 'all 0.4s';
+        trail.style.opacity = '0';
+        trail.style.transform = 'scale(0.5) rotate(180deg)';
+        setTimeout(() => {
+            gameContainer.removeChild(trail);
+        }, 400);
+    }, 50);
+}
+
+setInterval(createTrail, 50);
+
+// Add "speed lines" effect
+function createSpeedLine() {
+    const speedLine = document.createElement('div');
+    speedLine.textContent = '—';
+    speedLine.style.position = 'absolute';
+    speedLine.style.fontSize = '20px';
+    speedLine.style.color = '#ff00ff';
+    speedLine.style.textShadow = '0 0 5px #ff00ff, 0 0 10px #ff00ff';
+    speedLine.style.left = Math.random() * window.innerWidth + 'px';
+    speedLine.style.top = Math.random() * window.innerHeight + 'px';
+    speedLine.style.opacity = '0.5';
+    speedLine.style.transform = `rotate(${Math.random() * 360}deg)`;
+    speedLine.style.zIndex = '1';
+    gameContainer.appendChild(speedLine);
+
+    setTimeout(() => {
+        speedLine.style.transition = 'all 0.3s';
+        speedLine.style.opacity = '0';
+        speedLine.style.transform += ' scale(1.5)';
+        setTimeout(() => {
+            gameContainer.removeChild(speedLine);
+        }, 300);
+    }, 100);
+}
+
+setInterval(createSpeedLine, 100);
+</script>
+</body></html>
