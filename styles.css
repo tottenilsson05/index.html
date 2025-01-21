@@ -1,0 +1,145 @@
+:root {
+  --noob-yellow: #f2f3b1;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #87ceeb;
+  perspective: 1000px;
+}
+
+.scene {
+  width: 200px;
+  height: 300px;
+  position: relative;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.scene:active {
+  cursor: grabbing;
+}
+
+.noob {
+  position: relative;
+  animation: bounce 1s infinite alternate ease-in-out;
+}
+
+.head {
+  width: 80px;
+  height: 80px;
+  background: var(--noob-yellow);
+  border-radius: 10px;
+  position: absolute;
+  left: 60px;
+  top: 0;
+}
+
+.face {
+  position: absolute;
+  width: 60px;
+  height: 30px;
+  background: #000;
+  clip-path: polygon(0 50%, 20% 0, 40% 50%, 60% 0, 80% 50%, 100% 0);
+  top: 30px;
+  left: 10px;
+}
+
+.torso {
+  width: 80px;
+  height: 100px;
+  background: var(--noob-yellow);
+  position: absolute;
+  left: 60px;
+  top: 90px;
+}
+
+.left-arm, .right-arm {
+  width: 30px;
+  height: 80px;
+  background: var(--noob-yellow);
+  position: absolute;
+  top: 90px;
+}
+
+.left-arm {
+  left: 20px;
+  animation: swingLeft 1s infinite alternate ease-in-out;
+}
+
+.right-arm {
+  right: 20px;
+  animation: swingRight 1s infinite alternate ease-in-out;
+}
+
+.left-leg, .right-leg {
+  width: 30px;
+  height: 80px;
+  background: var(--noob-yellow);
+  position: absolute;
+  top: 200px;
+}
+
+.left-leg {
+  left: 60px;
+  animation: walkLeft 1s infinite alternate ease-in-out;
+}
+
+.right-leg {
+  right: 60px;
+  animation: walkRight 1s infinite alternate ease-in-out;
+}
+
+@keyframes bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes swingLeft {
+  from {
+    transform: rotate(20deg);
+  }
+  to {
+    transform: rotate(-20deg);
+  }
+}
+
+@keyframes swingRight {
+  from {
+    transform: rotate(-20deg);
+  }
+  to {
+    transform: rotate(20deg);
+  }
+}
+
+@keyframes walkLeft {
+  from {
+    transform: rotate(-20deg);
+  }
+  to {
+    transform: rotate(20deg);
+  }
+}
+
+@keyframes walkRight {
+  from {
+    transform: rotate(20deg);
+  }
+  to {
+    transform: rotate(-20deg);
+  }
+}
+
+.noob * {
+  border: 2px solid rgba(0, 0, 0, 0.2);
+}
