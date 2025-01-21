@@ -1,0 +1,42 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retro Game Console</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="console">
+    <div class="logo">SUPER RETRO-64</div>
+    <div class="game-container">
+      <div class="screen-bezel">
+        <div class="power-light"></div>
+        <iframe 
+          id="game-frame"
+          src="about:blank"
+          frameborder="no" 
+          allowfullscreen="true" 
+          webkitallowfullscreen="true" 
+          mozallowfullscreen="true" 
+          scrolling="no">
+        </iframe>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="vent-grid"></div>
+      <div class="buttons">
+        <div class="button power">POWER</div>
+        <div class="button reset">RESET</div>
+      </div>
+      <div class="vent-grid"></div>
+    </div>
+    <div class="game-links">
+      <a href="#" class="game-link active" data-game="harvest-moon">HARVEST MOON 64</a>
+      <a href="#" class="game-link" data-game="super-mario">SUPER MARIO 64</a>
+      <a href="#" class="game-link" data-game="goldeneye">007 - GOLDENEYE</a>
+      <a href="#" class="game-link" data-game="pony-kart">PONY KART 64</a>
+    </div>
+  </div>
+</body>
+</html>
