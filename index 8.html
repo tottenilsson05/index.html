@@ -1,0 +1,388 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #000;
+    overflow: hidden;
+    font-family: 'VT323', monospace;
+    color: #0f0;
+}
+
+#info {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    text-align: center;
+    z-index: 100;
+    display: block;
+    font-size: 32px;
+    text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
+}
+
+#status {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 100;
+    font-size: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border: 1px solid #0f0;
+    box-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+}
+
+#layerBeneathAscii {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+@keyframes glitch {
+    0% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
+    15% { text-shadow: 0.05em 0 0 #00fffc, -0.03em -0.04em 0 #fc00ff, 0.025em 0.04em 0 #fffc00; }
+    16% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+    49% { text-shadow: -0.05em -0.025em 0 #00fffc, 0.025em 0.035em 0 #fc00ff, -0.05em -0.05em 0 #fffc00; }
+    50% { text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff, 0 -0.04em 0 #fffc00; }
+    99% { text-shadow: 0.05em 0.035em 0 #00fffc, 0.03em 0 0 #fc00ff, 0 -0.04em 0 #fffc00; }
+    100% { text-shadow: -0.05em 0 0 #00fffc, -0.025em -0.04em 0 #fc00ff, -0.04em -0.025em 0 #fffc00; }
+}
+
+#info { animation: glitch 1s linear infinite; }
+
+#canvas-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=VT323&amp;display=swap" rel="stylesheet">
+</head>
+<body>
+<div id="info">SCROLL</div>
+<div id="status"></div>
+<div id="layerBeneathAscii"></div>
+<div id="canvas-container"></div>
+
+<script async="" src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://unpkg.com/three@0.150.1/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.150.1/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { AsciiEffect } from 'three/addons/effects/AsciiEffect.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+let camera, scene, renderer, effect, controls, composer;
+let shaderMaterial;
+let clock = new THREE.Clock();
+let entities = [];
+let centralEntity;
+
+const start = Date.now();
+
+let viewportSize = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    depth: 6000
+};
+
+const ENTITY_COUNT = 200;
+const RENDER_DISTANCE = 3000;
+let lastCameraPosition = new THREE.Vector3();
+
+init();
+animate();
+
+function init() {
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, RENDER_DISTANCE);
+    camera.position.set(0, 0, 1500);
+    lastCameraPosition.copy(camera.position);
+
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0, 0, 0);
+
+    const pointLight1 = new THREE.PointLight(0x00ff00, 3);
+    pointLight1.position.set(500, 500, 500);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0x00ffff, 3);
+    pointLight2.position.set(-500, -500, -500);
+    scene.add(pointLight2);
+
+    shaderMaterial = createShaderMaterial();
+
+    // Create initial entities
+    for (let i = 0; i < ENTITY_COUNT; i++) {
+        createEntity();
+    }
+
+    // Create central entity
+    centralEntity = createCentralEntity();
+    scene.add(centralEntity);
+
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    effect = new AsciiEffect(renderer, ' .:-+*=%@#', { invert: true, resolution: 0.15 });
+    effect.setSize(window.innerWidth, window.innerHeight);
+    effect.domElement.style.color = '#0f0';
+    effect.domElement.style.backgroundColor = 'black';
+
+    document.getElementById('canvas-container').appendChild(effect.domElement);
+
+    controls = new OrbitControls(camera, effect.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.screenSpacePanning = false;
+    controls.minDistance = 100;
+    controls.maxDistance = RENDER_DISTANCE / 2;
+
+    // Post-processing
+    composer = new EffectComposer(renderer);
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    const bloomPass = new UnrealBloomPass(
+        new THREE.Vector2(window.innerWidth, window.innerHeight),
+        1.5, 0.4, 0.85
+    );
+    composer.addPass(bloomPass);
+
+    window.addEventListener('resize', onWindowResize);
+
+    createLayerBeneathAscii();
+}
+
+function createShaderMaterial() {
+    return new THREE.ShaderMaterial({
+        uniforms: {
+            time: { value: 1.0 },
+            resolution: { value: new THREE.Vector2() }
+        },
+        vertexShader: `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform float time;
+            uniform vec2 resolution;
+            varying vec2 vUv;
+            
+            void main() {
+                vec2 p = (vUv - 0.5) * 2.0;
+                float r = length(p);
+                float a = atan(p.y, p.x);
+                
+                float f = abs(cos(a * 12.0 + sin(time) * 3.0) * sin(time * 0.5) * 0.5 + 0.5) / r;
+                
+                vec3 color = vec3(f * 0.2, f * 0.8, f * 0.3);
+                color += 0.05 * vec3(sin(time * 0.1), cos(time * 0.2), sin(time * 0.3));
+                
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `
+    });
+}
+
+function createEntity() {
+    const entity = createRandomEntity();
+    entity.position.set(
+        (Math.random() - 0.5) * viewportSize.width,
+        (Math.random() - 0.5) * viewportSize.height,
+        (Math.random() - 0.5) * viewportSize.depth
+    );
+    entity.velocity = new THREE.Vector3(
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10,
+        (Math.random() - 0.5) * 10
+    );
+    scene.add(entity);
+    entities.push(entity);
+}
+
+function createRandomEntity() {
+    const geometries = [
+        new THREE.BoxGeometry(40, 40, 40),
+        new THREE.SphereGeometry(25, 32, 32),
+        new THREE.TorusGeometry(20, 5, 16, 100),
+        new THREE.TorusKnotGeometry(20, 3, 100, 16)
+    ];
+
+    const geometry = geometries[Math.floor(Math.random() * geometries.length)];
+    return new THREE.Mesh(geometry, shaderMaterial);
+}
+
+function createCentralEntity() {
+    const geometry = new THREE.TorusKnotGeometry(200, 40, 400, 64);
+    return new THREE.Mesh(geometry, shaderMaterial);
+}
+
+function createLayerBeneathAscii() {
+    const layerBeneathAsciiContainer = document.getElementById('layerBeneathAscii');
+    for (let i = 0; i < 6; i++) {
+        const layer = document.createElement('iframe');
+        layer.src = 'https://raw.githubusercontent.com/mrdoob/three.js/master/examples/webgl_shader.html';
+        layer.style.position = 'absolute';
+        layer.style.top = '0';
+        layer.style.left = '0';
+        layer.style.width = '100%';
+        layer.style.height = '100%';
+        layer.style.border = 'none';
+        layer.style.opacity = '0.1';
+        layer.style.pointerEvents = 'none';
+        layerBeneathAsciiContainer.appendChild(layer);
+    }
+}
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    effect.setSize(window.innerWidth, window.innerHeight);
+    composer.setSize(window.innerWidth, window.innerHeight);
+
+    shaderMaterial.uniforms.resolution.value.x = window.innerWidth;
+    shaderMaterial.uniforms.resolution.value.y = window.innerHeight;
+
+    viewportSize = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        depth: 6000
+    };
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    render();
+}
+
+function render() {
+    const timer = Date.now() - start;
+    const delta = clock.getDelta();
+
+    // Check camera movement
+    if (!camera.position.equals(lastCameraPosition)) {
+        const moveDirection = new THREE.Vector3().subVectors(camera.position, lastCameraPosition);
+        updateEntities(moveDirection);
+        lastCameraPosition.copy(camera.position);
+    }
+
+    entities.forEach((entity) => {
+        entity.rotation.x += 0.01;
+        entity.rotation.y += 0.015;
+
+        entity.position.add(entity.velocity);
+
+        // Bounce off viewport walls
+        ['x', 'y', 'z'].forEach(axis => {
+            if (Math.abs(entity.position[axis]) > viewportSize[axis === 'z' ? 'depth' : axis] / 4) {
+                entity.velocity[axis] *= -1;
+                entity.position[axis] = Math.sign(entity.position[axis]) * viewportSize[axis === 'z' ? 'depth' : axis] / 4;
+            }
+        });
+    });
+
+    // Rotate central entity
+    centralEntity.rotation.x += 0.005;
+    centralEntity.rotation.y += 0.01;
+
+    shaderMaterial.uniforms.time.value = timer * 0.001;
+
+    controls.update();
+
+    composer.render();
+    effect.render(scene, camera);
+
+    updateStatus();
+}
+
+function updateEntities(moveDirection) {
+    const cameraDirection = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+    
+    entities = entities.filter(entity => {
+        const distanceToCamera = camera.position.distanceTo(entity.position);
+        if (distanceToCamera > RENDER_DISTANCE) {
+            scene.remove(entity);
+            return false;
+        }
+        return true;
+    });
+
+    while (entities.length < ENTITY_COUNT) {
+        const newEntity = createRandomEntity();
+        const distance = Math.random() * (RENDER_DISTANCE - 500) + 500;
+        const angle = Math.random() * Math.PI * 2;
+        const height = (Math.random() - 0.5) * viewportSize.height;
+
+        newEntity.position.set(
+            Math.cos(angle) * distance,
+            height,
+            Math.sin(angle) * distance
+        ).add(camera.position);
+
+        newEntity.velocity = new THREE.Vector3(
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10
+        );
+
+        scene.add(newEntity);
+        entities.push(newEntity);
+    }
+}
+
+function updateStatus() {
+    const status = document.getElementById('status');
+    status.innerHTML = `
+        CYBERNETIC BIOS v1.985<br>
+        MATRIX ELEMENTS: ${entities.length}<br>
+        CAMERA POSITION: (${camera.position.x.toFixed(2)}, ${camera.position.y.toFixed(2)}, ${camera.position.z.toFixed(2)})<br>
+        VIRTUAL SPACE: ${viewportSize.width}x${viewportSize.height}x${viewportSize.depth}<br>
+        QUANTUM TIME: ${shaderMaterial.uniforms.time.value.toFixed(2)}<br>
+        PHYSICS ENGINE: OPERATIONAL<br>
+        SYSTEM STATUS: ASCENDED<br>
+        CENTRAL NEXUS: ACTIVE<br>
+        SUBSPACE LAYERS: 6x RESONATING<br>
+        DEPTH PROCESSING: ENGAGED
+    `;
+}
+
+// Matrix-like text effect
+const matrixText = "INITIALIZING CYBERNETIC BIOS 1985...";
+let index = 0;
+
+function matrixTypeWriter() {
+    const status = document.getElementById('status');
+    if (index < matrixText.length) {
+        status.innerHTML += matrixText.charAt(index);
+        index++;
+        setTimeout(matrixTypeWriter, 50 + Math.random() * 50);
+    } else {
+        setTimeout(() => {
+            status.innerHTML = '';
+        }, 1000);
+    }
+}
+
+matrixTypeWriter();
+</script>
+
+</body></html>
