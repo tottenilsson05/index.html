@@ -1,0 +1,183 @@
+<title>Solana Blockchain Visualizer - Cyberpunk 2099</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background-color: #0a0a0a;
+    font-family: 'Orbitron', sans-serif;
+    color: #00ffff;
+  }
+  #canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  #ui {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    background: rgba(0,0,0,0.7);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #00ffff;
+  }
+  .neon-text {
+    text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 15px #00ffff, 0 0 20px #00ffff;
+  }
+  #stats {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 100;
+    background: rgba(0,0,0,0.7);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ff00ff;
+  }
+  .stat {
+    margin-bottom: 5px;
+  }
+  .value {
+    color: #ff00ff;
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="ui">
+  <h1 class="neon-text">Solana Blockchain Visualizer</h1>
+  <p>Cyberpunk 2099 Edition</p>
+  <button id="toggleFall">Toggle Fall</button>
+  <button id="speedUp">Speed Up</button>
+  <button id="slowDown">Slow Down</button>
+</div>
+<div id="stats">
+  <div class="stat">TPS: <span id="tps" class="value">4,500</span></div>
+  <div class="stat">Block Height: <span id="blockHeight" class="value">133,769,420</span></div>
+  <div class="stat">Active Validators: <span id="validators" class="value">3,720</span></div>
+  <div class="stat">Total SOL Staked: <span id="stakedSol" class="value">372,594,183</span></div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let blocks = [];
+let falling = true;
+let speed = 2;
+
+class Block {
+  constructor(x, y, size, color) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.color = color;
+    this.fallingSpeed = Math.random() * 2 + 1;
+  }
+
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.fillRect(this.x, this.y, this.size, this.size);
+    
+    // Add cyberpunk details
+    ctx.strokeStyle = '#ff00ff';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(this.x, this.y, this.size, this.size);
+    
+    // Add some "data" lines
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y + this.size / 2);
+    ctx.lineTo(this.x + this.size, this.y + this.size / 2);
+    ctx.strokeStyle = '#00ffff';
+    ctx.stroke();
+  }
+
+  update() {
+    if (falling) {
+      this.y += this.fallingSpeed * speed;
+      if (this.y > canvas.height) {
+        this.y = -this.size;
+      }
+    }
+  }
+}
+
+function createBlocks() {
+  for (let i = 0; i < 100; i++) {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height;
+    const size = Math.random() * 30 + 10;
+    const color = `rgba(0, ${Math.random() * 255}, ${Math.random() * 255}, 0.7)`;
+    blocks.push(new Block(x, y, size, color));
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Draw a cyberpunk grid
+  ctx.strokeStyle = 'rgba(0, 255, 255, 0.2)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < canvas.width; i += 50) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i, canvas.height);
+    ctx.stroke();
+  }
+  for (let i = 0; i < canvas.height; i += 50) {
+    ctx.beginPath();
+    ctx.moveTo(0, i);
+    ctx.lineTo(canvas.width, i);
+    ctx.stroke();
+  }
+  
+  blocks.forEach(block => {
+    block.update();
+    block.draw();
+  });
+  
+  // Draw some random "data streams"
+  ctx.strokeStyle = '#ff00ff';
+  for (let i = 0; i < 5; i++) {
+    ctx.beginPath();
+    ctx.moveTo(Math.random() * canvas.width, 0);
+    ctx.lineTo(Math.random() * canvas.width, canvas.height);
+    ctx.stroke();
+  }
+  
+  requestAnimationFrame(animate);
+}
+
+createBlocks();
+animate();
+
+// UI Controls
+document.getElementById('toggleFall').addEventListener('click', () => falling = !falling);
+document.getElementById('speedUp').addEventListener('click', () => speed = Math.min(speed + 0.5, 5));
+document.getElementById('slowDown').addEventListener('click', () => speed = Math.max(speed - 0.5, 0.5));
+
+// Simulated live stats update
+setInterval(() => {
+  document.getElementById('tps').textContent = (4500 + Math.random() * 500).toFixed(0);
+  document.getElementById('blockHeight').textContent = (133769420 + Math.random() * 1000).toFixed(0);
+  document.getElementById('validators').textContent = (3720 + Math.random() * 10).toFixed(0);
+  document.getElementById('stakedSol').textContent = (372594183 + Math.random() * 10000).toFixed(0);
+}, 2000);
+
+// Responsive canvas
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+</body>
+</html>
