@@ -1,0 +1,1418 @@
+<style>* {
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
+}
+
+@font-face {
+    font-family: 'Press Start 2P';
+    src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f0;
+    font-family: 'Press Start 2P', cursive;
+    overflow: hidden;
+    image-rendering: pixelated;
+}
+
+.game-container {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background: white;
+    transition: background-color 0.3s, background-size 0.5s ease-in-out;
+    image-rendering: pixelated;
+    background-image: 
+        linear-gradient(45deg, rgba(224, 224, 224, 0.2) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(224, 224, 224, 0.2) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(224, 224, 224, 0.2) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(224, 224, 224, 0.2) 75%),
+        linear-gradient(to right, rgba(224, 224, 224, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(224, 224, 224, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px, 20px 20px, 20px 20px;
+    background-position: 0 0, 20px 0, 20px -20px, 0 20px, 0 0, 0 0;
+    animation: 
+        slideBackground 20s linear infinite,
+        pulseGrid 8s ease-in-out infinite;
+    z-index: 0;
+}
+
+.game-container.dark-mode {
+    background: #2c2c2c;
+    background-image: 
+        linear-gradient(45deg, rgba(53, 53, 53, 0.2) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(53, 53, 53, 0.2) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(53, 53, 53, 0.2) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(53, 53, 53, 0.2) 75%),
+        linear-gradient(to right, rgba(53, 53, 53, 0.1) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(53, 53, 53, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px, 20px 20px, 20px 20px;
+    animation: 
+        slideDarkBackground 20s linear infinite,
+        pulseGrid 8s ease-in-out infinite;
+}
+
+/* Update and add new animations */
+@keyframes slideBackground {
+    0% {
+        background-position: 0 0, 20px 0, 20px -20px, 0 20px, 0 0, 0 0;
+    }
+    50% {
+        background-position: -40px 40px, -20px 40px, -20px 20px, -40px 60px, -20px 20px, -20px 20px;
+    }
+    100% {
+        background-position: -80px 80px, -60px 80px, -60px 60px, -80px 100px, -40px 40px, -40px 40px;
+    }
+}
+
+@keyframes slideDarkBackground {
+    0% {
+        background-position: 0 0, 20px 0, 20px -20px, 0 20px, 0 0, 0 0;
+    }
+    50% {
+        background-position: -40px 40px, -20px 40px, -20px 20px, -40px 60px, -20px 20px, -20px 20px;
+    }
+    100% {
+        background-position: -80px 80px, -60px 80px, -60px 60px, -80px 100px, -40px 40px, -40px 40px;
+    }
+}
+
+@keyframes pulseGrid {
+    0%, 100% {
+        background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px, 20px 20px, 20px 20px;
+    }
+    50% {
+        background-size: 50px 50px, 50px 50px, 50px 50px, 25px 25px;
+    }
+}
+
+/* Add a subtle transition when score milestones are hit */
+.flash-grid {
+    animation: flashGrid 0.5s ease-out !important;
+}
+
+@keyframes flashGrid {
+    0% {
+        background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px, 20px 20px, 20px 20px;
+        opacity: 1;
+    }
+    50% {
+        background-size: 60px 60px, 60px 60px, 60px 60px, 30px 30px, 30px 30px;
+        opacity: 0.8;
+    }
+    100% {
+        background-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px, 20px 20px, 20px 20px;
+        opacity: 1;
+    }
+}
+
+.chrome-ball {
+    width: 80px;
+    height: 80px;
+    position: absolute;
+    bottom: 50px; /* Adjusted player position */
+    left: 100px;
+    animation: running-rotation 1s linear infinite;
+    image-rendering: pixelated;
+    z-index: 2; /* Add this line */
+}
+
+.death-animation {
+    animation: death 0.5s ease-in forwards !important;
+}
+
+@keyframes death {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5) rotate(180deg);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(0) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.cactus {
+    width: 12px;
+    height: 80px;
+    position: absolute;
+    bottom: 50px; /* Adjusted cactus position */
+    background: #808080;
+    image-rendering: pixelated;
+    z-index: 2; /* Add this line */
+    box-shadow: -1px 0 2px rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    border: 2px solid #606060;
+    background: #707070;
+    box-shadow: inset -2px -2px 0 #606060,
+                inset 2px 2px 0 #808080;
+}
+
+.cactus.variant1::before,
+.cactus.variant1::after {
+    content: '';
+    position: absolute;
+    background: #808080;
+    border-radius: 0;
+    width: 12px;
+    height: 30px;
+    box-shadow: -1px 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.cactus.variant1::before {
+    left: -8px;
+    top: 20px;
+}
+
+.cactus.variant1::after {
+    right: -8px;
+    top: 40px;
+}
+
+.cactus.variant2 {
+    height: 60px;
+}
+
+.cactus.variant2::before,
+.cactus.variant2::after {
+    content: '';
+    position: absolute;
+    background: #808080;
+    width: 10px;
+    height: 20px;
+    left: -6px;
+    box-shadow: -1px 0 2px rgba(0, 0, 0, 0.1);
+}
+
+.cactus.variant2::before {
+    top: 10px;
+}
+
+.cactus.variant2::after {
+    top: 35px;
+}
+
+.cactus.variant3 {
+    height: 70px;
+}
+
+.cactus.variant3::before {
+    content: '';
+    position: absolute;
+    background: #808080;
+    width: 20px;
+    height: 10px;
+    right: -10px;
+    top: 25px;
+}
+
+.ground {
+    width: 100%;
+    height: 20px; /* Increased height for more detail */
+    background: transparent;
+    position: absolute;
+    bottom: 30px;
+    image-rendering: pixelated;
+    overflow: hidden;
+}
+
+.ground::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(to bottom, 
+            transparent 0px,
+            #282828 0px,
+            #282828 2px,
+            #535353 2px,
+            #535353 4px,
+            #282828 4px,
+            #282828 6px,
+            transparent 6px,
+            transparent 8px,
+            rgba(40, 40, 40, 0.3) 8px,
+            rgba(40, 40, 40, 0.3) 10px
+        ),
+        linear-gradient(to right,
+            #282828 0px,
+            #282828 4px,
+            transparent 4px,
+            transparent 8px
+        );
+    background-size: 8px 10px;
+    animation: moveGround 0.5s infinite linear;
+}
+
+.dark-mode .ground::before {
+    background-image: 
+        linear-gradient(to bottom, 
+            transparent 0px,
+            #ffffff 0px,
+            #ffffff 2px,
+            #cccccc 2px,
+            #cccccc 4px,
+            #ffffff 4px,
+            #ffffff 6px,
+            transparent 6px
+        ),
+        linear-gradient(to right,
+            #ffffff 0px,
+            #ffffff 4px,
+            transparent 4px,
+            transparent 8px
+        );
+}
+
+@keyframes moveGround {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-8px);
+    }
+}
+
+.score {
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    font-size: 24px;
+    color: #535353;
+    letter-spacing: 2px;
+    image-rendering: pixelated;
+    z-index: 3; /* Add this line */
+    text-shadow: 2px 2px 0px #000000;
+    border: 4px solid #535353;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px 15px;
+    color: #ffffff;
+    border-radius: 4px;
+}
+
+.game-over {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #535353;
+    image-rendering: pixelated;
+    z-index: 3; /* Add this line */
+    text-shadow: 4px 4px 0px #000000;
+    background: rgba(0, 0, 0, 0.8);
+    border: 4px solid #535353;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.game-over h2 {
+    color: #ffffff;
+}
+
+.game-over p {
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+
+.game-over .countdown {
+    font-size: 24px;
+    margin-top: 10px;
+    color: #ff4444;
+}
+
+@keyframes running-rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.jumping {
+    animation: jump 0.72s cubic-bezier(0.0, 0.0, 0.2, 1) forwards, running-rotation 1s linear infinite !important;
+}
+
+@keyframes jump {
+    0% {
+        bottom: 50px;
+        animation-timing-function: cubic-bezier(0.0, 0.0, 0.2, 1);
+    }
+    50% {
+        bottom: 280px; /* Increased from 240px to 280px for even lower gravity */
+        animation-timing-function: cubic-bezier(0.4, 0.0, 1, 1);
+    }
+    100% {
+        bottom: 50px;
+    }
+}
+
+.game-container {
+    animation: slideBackground 2s linear infinite;
+}
+
+.game-container.dark-mode {
+    animation: slideDarkBackground 2s linear infinite;
+}
+
+.background-layer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1; /* Change from -1 to 1 */
+    overflow: hidden;
+}
+
+.mountains-and-trees {
+    position: absolute;
+    bottom: 42px; /* Just above ground */
+    left: 0;
+    width: 300%; /* Make wide enough to scroll */
+    height: 200px;
+    animation: scrollBackground 20s linear infinite;
+}
+
+@keyframes scrollBackground {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-33.33%); /* Scroll one third of the width */
+    }
+}
+
+.mountains-and-trees .mountain {
+    fill: #a0a0a0; /* Lighter gray than cactuses */
+    filter: none; /* More pixelated mountains */
+}
+
+.mountains-and-trees .tree {
+    fill: #909090; /* Medium gray for tree trunks */
+    filter: none; /* More pixelated trees */
+}
+
+.mountains-and-trees .tree-top {
+    fill: #808080; /* Darker gray for tree tops */
+}
+
+.dark-mode .mountains-and-trees .mountain {
+    fill: #505050; /* Darker shade for mountains in dark mode */
+}
+
+.dark-mode .mountains-and-trees .tree {
+    fill: #656565; /* Medium shade for tree trunks in dark mode */
+}
+
+.dark-mode .mountains-and-trees .tree-top {
+    fill: #757575; /* Lighter shade for tree tops in dark mode */
+}
+
+.title-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.title-screen h1 {
+    color: white;
+    font-size: 48px;
+    margin-bottom: 40px;
+    text-shadow: 4px 4px 0px #000000, 
+                 8px 8px 0px rgba(0, 0, 0, 0.3);
+    letter-spacing: 4px;
+    transform: scale(1.1);
+    animation: glitch 2s infinite alternate;
+}
+
+@keyframes glitch {
+    0% {
+        text-shadow: 4px 4px 0px #000000;
+    }
+    2% {
+        text-shadow: 4px 4px 0px #ff0000;
+        transform: translate(-2px, 1px) scale(1.1);
+    }
+    4% {
+        text-shadow: 4px 4px 0px #000000;
+        transform: scale(1.1);
+    }
+    90% {
+        text-shadow: 4px 4px 0px #000000;
+    }
+    92% {
+        text-shadow: 4px 4px 0px #0000ff;
+        transform: translate(2px, -1px) scale(1.1);
+    }
+    94% {
+        text-shadow: 4px 4px 0px #000000;
+        transform: scale(1.1);
+    }
+}
+
+.title-screen .chrome-logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 30px;
+    animation: bounce 2s infinite ease-in-out;
+}
+
+.title-screen p {
+    color: white;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.title-screen.hide {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease-out;
+}
+
+.leaderboard {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 4px solid #535353;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    font-size: 12px;
+    min-width: 200px;
+    z-index: 3; /* Add this line */
+}
+
+.leaderboard h3 {
+    margin-bottom: 10px;
+    color: #fff;
+    font-size: 12px;
+}
+
+.current-scores-entry {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+    padding: 5px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.current-scores-entry.current-player {
+    color: #4CAF50;
+}
+
+.current-scores-entry:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .leaderboard {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #4CAF50;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: particle 0.6s ease-out forwards;
+    box-shadow: 0 0 10px #4CAF50, 
+                0 0 20px #4CAF50,
+                0 0 30px #4CAF50;
+    z-index: 1000; /* Add this line */
+}
+
+.sparkle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: gold;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sparkle 1s ease-out forwards;
+    box-shadow: 0 0 10px #FFD700,
+                0 0 20px #FFD700,
+                0 0 30px #FFD700;
+    z-index: 1000; /* Add this line */
+}
+
+@keyframes sparkle {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5) rotate(180deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.score-popup {
+    position: absolute;
+    color: #4CAF50;
+    font-size: 24px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 1000;
+    text-shadow: 2px 2px 0px #000000;
+    animation: scoreFloat 1s ease-out forwards;
+}
+
+@keyframes scoreFloat {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(var(--random-x, 0), -25px) scale(1.2);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(var(--random-x, 0), -50px) scale(1);
+        opacity: 0;
+    }
+}
+
+.jump-ring {
+    position: absolute;
+    border: 2px solid #4CAF50;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: jumpRing 0.6s ease-out forwards;
+    z-index: 1000; /* Add this line */
+}
+
+@keyframes jumpRing {
+    0% {
+        width: 20px;
+        height: 20px;
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        width: 100px;
+        height: 100px;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(2);
+    }
+}
+
+.trail {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(45deg, rgba(76, 175, 80, 0.3), rgba(76, 175, 80, 0));
+    border-radius: 50%;
+    pointer-events: none;
+    animation: trail 0.5s ease-out forwards;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
+    z-index: 1000; /* Add this line */
+}
+
+@keyframes particle {
+    0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--dx), var(--dy)) scale(0);
+        opacity: 0;
+    }
+}
+
+.score-popup {
+    position: absolute;
+    color: #4CAF50;
+    font-size: 16px;
+    pointer-events: none;
+    animation: scoreFloat 1s ease-out forwards;
+}
+
+@keyframes scoreFloat {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+}
+
+.flash {
+    animation: flash 0.3s ease-out;
+}
+
+@keyframes flash {
+    0% { filter: brightness(100%); }
+    50% { filter: brightness(150%); }
+    100% { filter: brightness(100%); }
+}
+
+.trail {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: rgba(76, 175, 80, 0.3);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: trail 0.5s ease-out forwards;
+}
+
+@keyframes trail {
+    0% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+.sun-moon {
+    position: absolute;
+    top: 40%;  /* Changed from top: 40px to 40% */
+    left: 50%; /* Changed from right: 80px */
+    transform: translate(-50%, -50%); /* Center the element */
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    z-index: 1;
+    transition: all 0.5s ease-out;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.4));
+}
+
+.sun {
+    background: radial-gradient(circle at center, #FFE566 0%, #FFD700 60%, #FFA500 100%);
+    animation: sunGlow 2s infinite alternate;
+}
+
+.moon {
+    background: radial-gradient(circle at center, #FFFFFF 0%, #F4F4F4 60%, #E0E0E0 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.moon::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: #2c2c2c;
+    border-radius: 50%;
+    transform: translateX(var(--moon-phase));
+    transition: transform 0.5s ease-out;
+}
+
+@keyframes sunGlow {
+    from {
+        box-shadow: 0 0 30px #FFD700;
+    }
+    to {
+        box-shadow: 0 0 60px #FFD700;
+    }
+}
+
+.sun-rays {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation: sunRaysRotate 10s linear infinite;
+}
+
+@keyframes sunRaysRotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.controls {
+    position: absolute;
+    top: 80px;  /* Position below the score */
+    right: 40px;
+    font-size: 12px;
+    color: #535353;
+    text-align: right;
+    z-index: 3;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 4px solid #535353;
+    background: rgba(0, 0, 0, 0.7);
+    color: #ffffff;
+    text-shadow: 2px 2px 0px #000000;
+}
+
+.discord-tag {
+    font-size: 10px;
+    opacity: 0.8;
+    margin-top: 4px;
+}
+
+.discord-tag span {
+    color: #5865F2;
+    font-weight: bold;
+}
+
+.dark-mode .controls {
+    color: #ffffff;
+}
+
+.key {
+    display: inline-block;
+    padding: 2px 6px;
+    border: 2px solid currentColor;
+    border-radius: 4px;
+    margin: 0 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 2px solid #ffffff;
+    background: #000000;
+    color: #ffffff;
+    padding: 4px 8px;
+    text-shadow: none;
+}
+
+.dark-mode .discord-tag span {
+    color: #7289DA;
+}
+
+.game-container::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%,
+        rgba(0, 0, 0, 0.25) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.15;
+}
+
+.game-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 1000;
+}
+
+// -----------------------------
+// JavaScript updates
+// Update score popup animation
+function createScorePopup(points, x, y) {
+    const popup = document.createElement('div');
+    popup.className = 'score-popup';
+    popup.textContent = `+${points}`;
+    popup.style.left = `${x}px`;
+    popup.style.top = `${y}px`;
+    popup.style.textShadow = '2px 2px 0px #000000';
+    gameContainer.appendChild(popup);
+    
+    // More pixelated movement
+    const randomX = Math.round((Math.random() - 0.5) * 40 / 4) * 4;
+    popup.style.transform = `translate(${randomX}px, 0)`;
+    
+    // Create a sparkly effect around the popup
+    for (let i = 0; i < 5; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        const angle = (i / 5) * Math.PI * 2;
+        const radius = 30;
+        sparkle.style.left = `${x + Math.cos(angle) * radius}px`;
+        sparkle.style.top = `${y + Math.sin(angle) * radius}px`;
+        gameContainer.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 1000);
+    }
+    
+    setTimeout(() => popup.remove(), 1000);
+}
+
+// Update particle creation for more retro feel
+function createParticles(x, y, count = 10) {
+    for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        // More chunky movement
+        const angle = Math.round(Math.random() * 8) * (Math.PI / 4);
+        const speed = Math.round(Math.random() * 5) * 20 + 50;
+        const dx = Math.cos(angle) * speed;
+        const dy = Math.sin(angle) * speed;
+        
+        particle.style.setProperty('--dx', `${dx}px`);
+        particle.style.setProperty('--dy', `${dy}px`);
+        particle.style.left = `${Math.round(x / 4) * 4}px`;
+        particle.style.top = `${Math.round(y / 4) * 4}px`;
+        
+        // More limited color palette
+        const hue = Math.round(Math.random() * 2) * 10 + 100;
+        particle.style.background = `hsl(${hue}, 70%, 50%)`;
+        
+        gameContainer.appendChild(particle);
+        setTimeout(() => particle.remove(), 600);
+    }
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap" rel="stylesheet">
+</head><body>
+<div class="game-container">
+    <div class="sun-moon sun">
+        <svg class="sun-rays" viewBox="0 0 100 100">
+            <line x1="50" y1="10" x2="50" y2="0" stroke="#FFD700" stroke-width="2"/>
+            <line x1="50" y1="90" x2="50" y2="100" stroke="#FFD700" stroke-width="2"/>
+            <line x1="10" y1="50" x2="0" y2="50" stroke="#FFD700" stroke-width="2"/>
+            <line x1="90" y1="50" x2="100" y2="50" stroke="#FFD700" stroke-width="2"/>
+            <line x1="22" y1="22" x2="15" y2="15" stroke="#FFD700" stroke-width="2"/>
+            <line x1="78" y1="78" x2="85" y2="85" stroke="#FFD700" stroke-width="2"/>
+            <line x1="22" y1="78" x2="15" y2="85" stroke="#FFD700" stroke-width="2"/>
+            <line x1="78" y1="22" x2="85" y2="15" stroke="#FFD700" stroke-width="2"/>
+        </svg>
+    </div>
+    <div class="title-screen" id="titleScreen">
+        <img src="/Pixelschrome.png" class="chrome-logo">
+        <h1>CHROME BALL</h1>
+        <p>Press SPACE to Start</p>
+    </div>
+    <div class="score">Score: <span id="score">0</span> HI: <span id="highScore">0</span></div>
+    <div class="controls">
+        <div>Jump: <span class="key">SPACE</span> <span class="key">W</span> <span class="key">&#x2191;</span></div>
+        <div class="discord-tag">Discord: <span>chr0m3e</span></div>
+    </div>
+    <div class="leaderboard">
+        <h3>Live Scores</h3>
+        <div id="current-scores"></div>
+    </div>
+    <img src="/Pixelschrome.png" class="chrome-ball" id="player">
+    <div class="ground"></div>
+    <div class="background-layer">
+        <svg class="mountains-and-trees" viewBox="0 0 3000 200" preserveAspectRatio="none">
+            <!-- Mountains -->
+            <polygon class="mountain" points="0,200 100,80 200,200" fill="#a0a0a0"/>
+            <polygon class="mountain" points="150,200 300,40 450,200" fill="#a0a0a0"/>
+            <polygon class="mountain" points="400,200 550,100 700,200" fill="#a0a0a0"/>
+            <polygon class="mountain" points="650,200 800,60 950,200" fill="#a0a0a0"/>
+            
+            <!-- Repeated for scrolling -->
+            <polygon class="mountain" points="1000,200 1100,80 1200,200" fill="#a0a0a0"/>
+            <polygon class="mountain" points="1150,200 1300,40 1450,200" fill="#a0a0a0"/>
+            <polygon class="mountain" points="1400,200 1550,100 1700,200" fill="#a0a0a0"/>
+            <polygon class="mountain" points="1650,200 1800,60 1950,200" fill="#a0a0a0"/>
+            
+            <polygon class="mountain" points="2000,200 2100,80 2200,200" fill="#a0a0a0"/>
+            <polygon class="mountain" points="2150,200 2300,40 2450,200" fill="#a0a0a0"/>
+            <polygon class="mountain" points="2400,200 2550,100 2700,200" fill="#a0a0a0"/>
+            <polygon class="mountain" points="2650,200 2800,60 2950,200" fill="#a0a0a0"/>
+            
+            <!-- Trees -->
+            <g class="tree">
+                <!-- Tree groups repeated across the width -->
+                <!-- First set -->
+                <rect x="50" y="150" width="10" height="30" fill="#909090"/>
+                <polygon class="tree-top" points="30,150 80,150 55,100" fill="#808080"/>
+                
+                <rect x="250" y="160" width="10" height="20" fill="#909090"/>
+                <polygon class="tree-top" points="230,160 280,160 255,120" fill="#808080"/>
+                
+                <rect x="450" y="155" width="10" height="25" fill="#909090"/>
+                <polygon class="tree-top" points="430,155 480,155 455,110" fill="#808080"/>
+                
+                <!-- Second set -->
+                <rect x="1050" y="150" width="10" height="30" fill="#909090"/>
+                <polygon class="tree-top" points="1030,150 1080,150 1055,100" fill="#808080"/>
+                
+                <rect x="1250" y="160" width="10" height="20" fill="#909090"/>
+                <polygon class="tree-top" points="1230,160 1280,160 1255,120" fill="#808080"/>
+                
+                <rect x="1450" y="155" width="10" height="25" fill="#909090"/>
+                <polygon class="tree-top" points="1430,155 1480,155 1455,110" fill="#808080"/>
+                
+                <!-- Third set -->
+                <rect x="2050" y="150" width="10" height="30" fill="#909090"/>
+                <polygon class="tree-top" points="2030,150 2080,150 2055,100" fill="#808080"/>
+                
+                <rect x="2250" y="160" width="10" height="20" fill="#909090"/>
+                <polygon class="tree-top" points="2230,160 2280,160 2255,120" fill="#808080"/>
+                
+                <rect x="2450" y="155" width="10" height="25" fill="#909090"/>
+                <polygon class="tree-top" points="2430,155 2480,155 2455,110" fill="#808080"/>
+            </g>
+        </svg>
+    </div>
+    <div class="game-over">
+        <h2>Game Over!</h2>
+        <p>Wait to restart...</p>
+        <div class="countdown"></div>
+    </div>
+</div>
+
+<audio id="jumpSound" src="/jump.mp3" preload="auto"></audio>
+<audio id="dieSound" src="/die.mp3" preload="auto"></audio>
+<audio id="pointSound" src="/point.mp3" preload="auto"></audio>
+<audio id="backgroundMusic" src="/8Bit Dino (1).mp3" loop preload="auto"></audio>
+
+<script>const room = new WebsimSocket();
+let currentScores = new Map();
+function updateCurrentScores() {
+  const currentScoresDiv = document.getElementById('current-scores');
+  currentScoresDiv.innerHTML = '';
+  const sortedScores = [...currentScores.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
+  sortedScores.forEach(([username, score]) => {
+    const scoreDiv = document.createElement('div');
+    scoreDiv.className = 'current-scores-entry';
+    if (username === room.party.client.username) {
+      scoreDiv.classList.add('current-player');
+    }
+    scoreDiv.innerHTML = `
+            <span>${username}</span>
+            <span>${score}</span>
+        `;
+    currentScoresDiv.appendChild(scoreDiv);
+  });
+}
+const player = document.querySelector('.chrome-ball');
+const scoreElement = document.getElementById('score');
+const highScoreElement = document.getElementById('highScore');
+const gameOver = document.querySelector('.game-over');
+const gameContainer = document.querySelector('.game-container');
+const jumpSound = document.getElementById('jumpSound');
+const dieSound = document.getElementById('dieSound');
+const pointSound = document.getElementById('pointSound');
+const backgroundMusic = document.getElementById('backgroundMusic');
+backgroundMusic.volume = 0.55;
+let maxScore = 9223372036854775807n;
+let score = 0n;
+let highScore = 0n;
+let isJumping = false;
+let isGameOver = false;
+let gameLoop;
+let lastPointSound = 0;
+let isDarkMode = false;
+let cacti = [];
+let gameStarted = false;
+const titleScreen = document.getElementById('titleScreen');
+function createScorePopup(points, x, y) {
+  const popup = document.createElement('div');
+  popup.className = 'score-popup';
+  popup.textContent = `+${points}`;
+  popup.style.left = `${x}px`;
+  popup.style.top = `${y}px`;
+  popup.style.textShadow = '2px 2px 0px #000000';
+  gameContainer.appendChild(popup);
+  const randomX = Math.round((Math.random() - 0.5) * 40 / 4) * 4;
+  popup.style.transform = `translate(${randomX}px, 0)`;
+  for (let i = 0; i < 5; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    const angle = i / 5 * Math.PI * 2;
+    const radius = 30;
+    sparkle.style.left = `${x + Math.cos(angle) * radius}px`;
+    sparkle.style.top = `${y + Math.sin(angle) * radius}px`;
+    gameContainer.appendChild(sparkle);
+    setTimeout(() => sparkle.remove(), 1000);
+  }
+  setTimeout(() => popup.remove(), 1000);
+}
+function getRandomVariant() {
+  const variants = ['variant1', 'variant2', 'variant3'];
+  return variants[Math.floor(Math.random() * variants.length)];
+}
+function getRandomNumberOfCacti() {
+  const rand = Math.random();
+  if (rand < 0.4) return 1;
+  if (rand < 0.7) return 2;
+  if (rand < 0.9) return 3;
+  if (rand < 0.95) return 4;
+  return 5;
+}
+function updateGameSpeed() {
+  const baseSpeed = 5;
+  cacti.forEach(cactus => {
+    cactus.style.animation = `moveCactus ${baseSpeed}s infinite linear`;
+  });
+}
+function createCactusGroup() {
+  cacti = cacti.filter(cactus => {
+    const rect = cactus.getBoundingClientRect();
+    if (rect.right < 0) {
+      cactus.remove();
+      return false;
+    }
+    return true;
+  });
+  const startPosition = window.innerWidth + 600;
+  const numberOfCacti = getRandomNumberOfCacti();
+  let lastPosition = startPosition;
+  for (let i = 0; i < numberOfCacti; i++) {
+    const cactus = document.createElement('div');
+    const variant = getRandomVariant();
+    cactus.className = `cactus ${variant}`;
+    cactus.style.left = `${lastPosition}px`;
+    cactus.style.bottom = '50px';
+    lastPosition += Math.floor(Math.random() * 21) + 40;
+    gameContainer.appendChild(cactus);
+    cacti.push(cactus);
+  }
+  updateGameSpeed();
+}
+function playSound(audio) {
+  audio.currentTime = 0;
+  audio.play().catch(err => {
+    console.warn('Audio playback failed:', err);
+  });
+}
+function createParticles(x, y, count = 10) {
+  for (let i = 0; i < count; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    const angle = Math.round(Math.random() * 8) * (Math.PI / 4);
+    const speed = Math.round(Math.random() * 5) * 20 + 50;
+    const dx = Math.cos(angle) * speed;
+    const dy = Math.sin(angle) * speed;
+    particle.style.setProperty('--dx', `${dx}px`);
+    particle.style.setProperty('--dy', `${dy}px`);
+    particle.style.left = `${Math.round(x / 4) * 4}px`;
+    particle.style.top = `${Math.round(y / 4) * 4}px`;
+    const hue = Math.round(Math.random() * 2) * 10 + 100;
+    particle.style.background = `hsl(${hue}, 70%, 50%)`;
+    gameContainer.appendChild(particle);
+    setTimeout(() => particle.remove(), 600);
+  }
+}
+function createJumpRing(x, y) {
+  const ring = document.createElement('div');
+  ring.className = 'jump-ring';
+  ring.style.left = `${x}px`;
+  ring.style.top = `${y}px`;
+  gameContainer.appendChild(ring);
+  setTimeout(() => ring.remove(), 600);
+}
+function createTrail(x, y) {
+  const trail = document.createElement('div');
+  trail.className = 'trail';
+  trail.style.left = `${x}px`;
+  trail.style.top = `${y}px`;
+  gameContainer.appendChild(trail);
+  setTimeout(() => trail.remove(), 500);
+}
+let trailInterval;
+function startTrailEffect() {
+  if (trailInterval) clearInterval(trailInterval);
+  trailInterval = setInterval(() => {
+    if (!isGameOver && gameStarted) {
+      const rect = player.getBoundingClientRect();
+      createTrail(rect.left + rect.width / 2 - 5, rect.bottom - 5);
+    }
+  }, 50);
+}
+async function jump() {
+  if (!isJumping && !isGameOver) {
+    isJumping = true;
+    player.classList.add('jumping');
+    playSound(jumpSound);
+    const rect = player.getBoundingClientRect();
+    createParticles(rect.left + rect.width / 2, rect.bottom, 15);
+    createJumpRing(rect.left + rect.width / 2, rect.bottom);
+    for (let i = 0; i < 5; i++) {
+      setTimeout(() => {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = `${rect.left + Math.random() * rect.width}px`;
+        sparkle.style.top = `${rect.top + Math.random() * rect.height}px`;
+        gameContainer.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 1000);
+      }, i * 100);
+    }
+    setTimeout(() => {
+      player.classList.remove('jumping');
+      isJumping = false;
+    }, 720);
+  }
+}
+async function toggleDarkMode() {
+  isDarkMode = !isDarkMode;
+  const sunMoon = document.querySelector('.sun-moon');
+  if (isDarkMode) {
+    gameContainer.classList.add('dark-mode');
+    sunMoon.classList.remove('sun');
+    sunMoon.classList.add('moon');
+    const moonPhases = [0, -25, -50, -75, -100];
+    const phaseIndex = Number(score / 500n) % moonPhases.length;
+    const phase = moonPhases[phaseIndex];
+    sunMoon.style.setProperty('--moon-phase', `${phase}%`);
+    const rays = sunMoon.querySelector('.sun-rays');
+    if (rays) {
+      rays.style.opacity = '0';
+    }
+  } else {
+    gameContainer.classList.remove('dark-mode');
+    sunMoon.classList.remove('moon');
+    sunMoon.classList.add('sun');
+    const rays = sunMoon.querySelector('.sun-rays');
+    if (rays) {
+      rays.style.opacity = '1';
+    }
+  }
+  sunMoon.style.transform = 'translate(-50%, -50%)';
+  const rect = sunMoon.getBoundingClientRect();
+  for (let i = 0; i < 10; i++) {
+    setTimeout(() => {
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.style.left = `${rect.left + Math.random() * rect.width}px`;
+      sparkle.style.top = `${rect.top + Math.random() * rect.height}px`;
+      gameContainer.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 1000);
+    }, i * 100);
+  }
+}
+async function startGame() {
+  if (!gameStarted) {
+    titleScreen.classList.add('hide');
+    gameStarted = true;
+    backgroundMusic.play().catch(err => {
+      console.warn('Background music playback failed:', err);
+    });
+  }
+  if (isGameOver) {
+    return;
+  }
+  cacti.forEach(cactus => cactus.remove());
+  cacti = [];
+  player.classList.remove('death-animation');
+  isGameOver = false;
+  score = 0n;
+  lastPointSound = 0;
+  scoreElement.textContent = '0';
+  highScoreElement.textContent = highScore.toLocaleString();
+  gameOver.style.display = 'none';
+  gameContainer.classList.remove('dark-mode');
+  isDarkMode = false;
+  createCactusGroup();
+  room.send({
+    type: 'score_update',
+    username: room.party.client.username,
+    score: 0
+  });
+  if (gameLoop) clearInterval(gameLoop);
+  gameLoop = setInterval(async () => {
+    const playerRect = player.getBoundingClientRect();
+    const hitboxPadding = 15;
+    const playerHitbox = {
+      left: playerRect.left + hitboxPadding,
+      right: playerRect.right - hitboxPadding,
+      top: playerRect.top + hitboxPadding,
+      bottom: playerRect.bottom - hitboxPadding
+    };
+    score = score + 1n;
+    scoreElement.textContent = score.toLocaleString();
+    if (score % 100n === 0n) {
+      const now = Date.now();
+      if (now - lastPointSound > 100) {
+        playSound(pointSound);
+        lastPointSound = now;
+        createScorePopup(100, playerRect.right, playerRect.top);
+        gameContainer.classList.add('flash-grid');
+        setTimeout(() => {
+          gameContainer.classList.remove('flash-grid');
+        }, 500);
+        if (score % 500n === 0n) {
+          toggleDarkMode();
+        }
+      }
+    }
+    if (score > highScore) {
+      highScore = score;
+      highScoreElement.textContent = highScore.toLocaleString();
+    }
+    room.send({
+      type: 'score_update',
+      username: room.party.client.username,
+      score: Number(score)
+    });
+    for (let cactus of cacti) {
+      const cactusRect = cactus.getBoundingClientRect();
+      const cactusHitbox = {
+        left: cactusRect.left + 2,
+        right: cactusRect.right - 2,
+        top: cactusRect.top,
+        bottom: cactusRect.bottom
+      };
+      if (cactus.classList.contains('variant1')) {
+        if (cactusHitbox.left > playerHitbox.right - 20 || cactusHitbox.right < playerHitbox.left + 20) {
+          continue;
+        }
+      }
+      if (cactusHitbox.left < playerHitbox.right && cactusHitbox.right > playerHitbox.left && cactusHitbox.top < playerHitbox.bottom && cactusHitbox.bottom > playerHitbox.top) {
+        endGame();
+        return;
+      }
+    }
+    if (cacti.length === 0 || cacti[cacti.length - 1].getBoundingClientRect().right < window.innerWidth) {
+      createCactusGroup();
+    }
+  }, 100);
+}
+function endGame() {
+  backgroundMusic.pause();
+  backgroundMusic.currentTime = 0;
+  isGameOver = true;
+  player.classList.add('death-animation');
+  playSound(dieSound);
+  if (score > highScore) {
+    highScore = score;
+    highScoreElement.textContent = highScore.toLocaleString();
+  }
+  if (trailInterval) {
+    clearInterval(trailInterval);
+  }
+  const countdown = document.querySelector('.countdown');
+  let timeLeft = 3;
+  setTimeout(() => {
+    gameOver.style.display = 'block';
+    const countdownInterval = setInterval(() => {
+      countdown.textContent = `${timeLeft} seconds`;
+      timeLeft--;
+      if (timeLeft < 0) {
+        clearInterval(countdownInterval);
+        countdown.textContent = '';
+        document.querySelector('.game-over p').textContent = 'Press Space to restart';
+        isGameOver = false;
+      }
+    }, 1000);
+  }, 500);
+  cacti.forEach(cactus => cactus.style.animation = 'none');
+  const rect = player.getBoundingClientRect();
+  createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 30);
+  room.send({
+    type: 'score_update',
+    username: room.party.client.username,
+    score: Number(score)
+  });
+  clearInterval(gameLoop);
+}
+function resumeBackgroundMusic() {
+  if (gameStarted && !isGameOver) {
+    backgroundMusic.play().catch(err => {
+      console.warn('Background music playback failed:', err);
+    });
+  }
+}
+document.addEventListener('keydown', event => {
+  if (event.code === 'Space' || event.code === 'KeyW' || event.code === 'ArrowUp') {
+    if (!isJumping && !isGameOver) {
+      jump();
+    }
+    if (!gameStarted) {
+      startGame();
+      startTrailEffect();
+    } else if (!isGameOver && gameOver.style.display === 'block') {
+      startGame();
+      resumeBackgroundMusic();
+    }
+  }
+});
+document.addEventListener('keyup', event => {});
+document.addEventListener('touchstart', () => {
+  if (!isJumping && !isGameOver) {
+    jump();
+  }
+  if (!gameStarted) {
+    startGame();
+    startTrailEffect();
+  } else if (!isGameOver && gameOver.style.display === 'block') {
+    startGame();
+    resumeBackgroundMusic();
+  }
+});
+document.addEventListener('touchend', () => {});
+const style = document.createElement('style');
+style.textContent = `
+@keyframes moveCactus {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-3000px);
+    }
+}`;
+document.head.appendChild(style);
+room.onmessage = event => {
+  const data = event.data;
+  if (data.type === 'score_update') {
+    currentScores.set(data.username, data.score);
+    updateCurrentScores();
+  }
+  if (data.type === 'disconnected') {
+    currentScores.delete(data.username);
+    updateCurrentScores();
+  }
+};</script></body></html>
