@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive 4D Tesseract</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Stars will be added dynamically -->
+    <canvas id="tesseractCanvas"></canvas>
+    
+    <div class="settings-panel">
+      <div class="angle-display">
+        <span class="angle-label">X-Y Rotation:</span>
+        <span class="angle-value" id="xyAngle">0°</span>
+        <span class="angle-label">Z-W Rotation:</span>
+        <span class="angle-value" id="zwAngle">0°</span>
+        <span class="angle-label">Camera X:</span>
+        <span class="angle-value" id="cameraX">0°</span>
+        <span class="angle-label">Camera Y:</span>
+        <span class="angle-value" id="cameraY">0°</span>
+      </div>
+    </div>
+    
+    <div class="direction-indicator">
+      <svg viewBox="-50 -50 100 100">
+        <defs>
+          <linearGradient id="axis-x" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:rgba(255,0,0,0.3)" />
+            <stop offset="100%" style="stop-color:rgba(255,0,0,0.8)" />
+          </linearGradient>
+          <linearGradient id="axis-y" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:rgba(0,255,0,0.3)" />
+            <stop offset="100%" style="stop-color:rgba(0,255,0,0.8)" />
+          </linearGradient>
+          <linearGradient id="axis-z" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:rgba(0,0,255,0.3)" />
+            <stop offset="100%" style="stop-color:rgba(0,0,255,0.8)" />
+          </linearGradient>
+        </defs>
+        <g>
+          <g class="axes">
+            <line x1="-30" y1="0" x2="30" y2="0" stroke="url(#axis-x)" />
+            <line x1="0" y1="-30" x2="0" y2="30" stroke="url(#axis-y)" />
+            <circle cx="0" cy="0" r="30" stroke="url(#axis-z)" fill="none" />
+          </g>
+          <path id="cube-path" />
+          <text id="front-label" x="35" y="0">Front</text>
+          <text id="back-label" x="-35" y="0">Back</text>
+          <text id="left-label" x="0" y="-35">Left</text>
+          <text id="right-label" x="0" y="35">Right</text>
+          <text id="top-label" x="0" y="40">Top</text>
+          <text id="bottom-label" x="0" y="-40">Bottom</text>
+        </g>
+      </svg>
+    </div>
+    
+    <div class="controls">
+      <div class="control-group">
+        <label>Rotation Speed X-Y:</label>
+        <input type="range" id="speedXY" min="0" max="0.05" step="0.001" value="0.01">
+      </div>
+      
+      <div class="control-group">
+        <label>Rotation Speed Z-W:</label>
+        <input type="range" id="speedZW" min="0" max="0.05" step="0.001" value="0.01">
+      </div>
+      
+      <div class="control-group">
+        <label>Size:</label>
+        <input type="range" id="size" min="50" max="200" value="100">
+      </div>
+      
+      <div class="control-group">
+        <label>Perspective:</label>
+        <input type="range" id="perspective" min="1" max="10" step="0.1" value="5">
+      </div>
+
+      <div class="control-group transparency-controls">
+        <label>Face Transparency:</label>
+        <div class="button-group">
+          <button id="transparent" class="active">Transparent</button>
+          <button id="translucent">Translucent</button>
+          <button id="opaque">Opaque</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="tesseract.js"></script>
+</body>
+</html>
