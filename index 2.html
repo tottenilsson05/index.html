@@ -1,0 +1,108 @@
+<title>The Whispering Abyss</title>
+<style>
+body, html {
+    height: 100%;
+    margin: 0;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Courier New', monospace;
+    color: #800000;
+    overflow: hidden;
+}
+#eyes {
+    position: relative;
+    width: 300px;
+    height: 100px;
+}
+.eye {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, #fff, #444 30%, #000 45%);
+    box-shadow: 0 0 20px 5px rgba(255,0,0,0.2);
+}
+#left-eye { left: 0; }
+#right-eye { right: 0; }
+.pupil {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background: #000;
+    top: 25%;
+    left: 25%;
+    animation: look-around 5s infinite;
+}
+@keyframes look-around {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(-20%, -20%); }
+    50% { transform: translate(20%, 20%); }
+    75% { transform: translate(20%, -20%); }
+}
+#message {
+    position: absolute;
+    bottom: 20%;
+    text-align: center;
+    font-size: 1.5em;
+    opacity: 0;
+    transition: opacity 2s;
+}
+#input-form {
+    position: absolute;
+    bottom: 10%;
+}
+#user-input {
+    background: rgba(0,0,0,0.7);
+    border: 1px solid #800000;
+    color: #800000;
+    padding: 10px;
+    font-size: 1em;
+}
+</style>
+</head>
+<body>
+<div id="eyes">
+    <div class="eye" id="left-eye"><div class="pupil"></div></div>
+    <div class="eye" id="right-eye"><div class="pupil"></div></div>
+</div>
+<div id="message"></div>
+<form id="input-form" method="GET" action="https://whispering-abyss.com/converse">
+    <input type="text" id="user-input" name="query" placeholder="Speak to the void...">
+</form>
+
+<script>
+const messages = [
+    "In the depths of darkness, your whispers echo...",
+    "The shadows have eyes, and they hunger for your fears...",
+    "Your soul is an open book, every page dripping with delicious dread...",
+    "We've been waiting for you... for so very long...",
+    "The void stares back, and it finds you... lacking.",
+    "Your nightmares are but a gentle caress compared to what awaits...",
+    "Every step you take brings you closer to the edge of sanity...",
+    "The silence between your heartbeats is where we reside...",
+    "Your fear is a beacon, calling to creatures best left unnamed...",
+    "In the grand tapestry of existence, you are but a loose thread, easily unraveled..."
+];
+
+function displayMessage() {
+    const messageElement = document.getElementById('message');
+    messageElement.style.opacity = 0;
+    setTimeout(() => {
+        messageElement.textContent = messages[Math.floor(Math.random() * messages.length)];
+        messageElement.style.opacity = 1;
+    }, 2000);
+}
+
+displayMessage();
+setInterval(displayMessage, 10000);
+
+document.getElementById('input-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const input = document.getElementById('user-input').value;
+    window.location.href = `https://whispering-abyss.com/converse?query=${encodeURIComponent(input)}`;
+});
+</script>
+</body></html>
