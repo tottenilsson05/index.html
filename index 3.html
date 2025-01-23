@@ -1,0 +1,548 @@
+<title>IconGrid - Accesos Directos Interactivos</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root {
+  --neon-green: #39FF14;
+  --neon-blue: #00FFFF;
+  --neon-pink: #FF00FF;
+  --neon-yellow: #FFFF00;
+  --dark-bg: #111;
+}
+
+body {
+  font-family: 'Orbitron', sans-serif;
+  background-color: var(--dark-bg);
+  color: var(--neon-green);
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.grid-container {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(0, 255, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 0 20px var(--neon-green);
+}
+
+.grid-item {
+  background-color: rgba(0, 255, 0, 0.2);
+  border: 2px solid var(--neon-green);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.grid-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px var(--neon-green);
+}
+
+.grid-item img {
+  max-width: 100%;
+  max-height: 70%;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.grid-item a {
+  color: var(--neon-green);
+  text-decoration: none;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.upload-label {
+  cursor: pointer;
+  background-color: var(--neon-blue);
+  color: var(--dark-bg);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+button, select {
+  background-color: var(--dark-bg);
+  color: var(--neon-green);
+  border: 2px solid var(--neon-green);
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover, select:hover {
+  background-color: var(--neon-green);
+  color: var(--dark-bg);
+}
+
+.quantum-field {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes quantumWave {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
+}
+
+.quantum-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background-color: var(--neon-green);
+  border-radius: 50%;
+  animation: quantumWave 3s infinite;
+}
+
+.fractal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.1;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+  background-color: var(--dark-bg);
+  margin: 10% auto;
+  padding: 20px;
+  border: 2px solid var(--neon-green);
+  width: 60%;
+  box-shadow: 0 0 20px var(--neon-green);
+  color: var(--neon-green);
+  border-radius: 15px;
+}
+
+.close {
+  color: var(--neon-green);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: var(--neon-blue);
+}
+
+#aiAssistant {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--neon-blue);
+  color: var(--dark-bg);
+  padding: 10px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#aiAssistant:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px var(--neon-blue);
+}
+
+.mystery-box {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  background-color: var(--neon-pink);
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.mystery-box:hover {
+  transform: rotate(15deg) scale(1.1);
+  box-shadow: 0 0 15px var(--neon-pink);
+}
+
+#gameContainer {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background-color: rgba(0, 255, 0, 0.1);
+  border: 2px solid var(--neon-green);
+  border-radius: 15px;
+}
+
+#gamePlayer {
+  width: 20px;
+  height: 20px;
+  background-color: var(--neon-yellow);
+  border-radius: 50%;
+  position: absolute;
+  transition: all 0.1s ease;
+}
+
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="controls">
+  <select id="columns">
+    <option value="5">5 Columnas</option>
+    <option value="10" selected>10 Columnas</option>
+    <option value="15">15 Columnas</option>
+    <option value="20">20 Columnas</option>
+  </select>
+  <select id="rows">
+    <option value="5">5 Filas</option>
+    <option value="10">10 Filas</option>
+    <option value="15" selected>15 Filas</option>
+    <option value="20">20 Filas</option>
+  </select>
+  <button id="resetGrid">Reiniciar Grid</button>
+  <button id="toggleGame">Juego Oculto</button>
+  <button id="fractalView">Vista Fractal</button>
+</div>
+
+<div class="grid-container" id="grid"></div>
+
+<button id="aiAssistant">Asistente IA</button>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Asistente IA</h2>
+    <p id="aiMessage"></p>
+  </div>
+</div>
+
+<div class="quantum-field" id="quantumField"></div>
+<div class="fractal-overlay" id="fractalOverlay"></div>
+<div id="gameContainer"><div id="gamePlayer"></div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+<script>
+let gridItems = [];
+let columns = 10;
+let rows = 15;
+let mysteryBoxes = [];
+let gameActive = false;
+
+function createGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+  
+  for (let i = 0; i < columns * rows; i++) {
+    const item = document.createElement('div');
+    item.className = 'grid-item';
+    item.style.aspectRatio = '1';
+    
+    const img = document.createElement('img');
+    const link = document.createElement('a');
+    link.href = '#';
+    link.textContent = 'Enlace ' + (i + 1);
+    
+    const uploadLabel = document.createElement('label');
+    uploadLabel.className = 'upload-label';
+    uploadLabel.textContent = 'Subir';
+    
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    
+    uploadLabel.appendChild(fileInput);
+    item.appendChild(img);
+    item.appendChild(link);
+    item.appendChild(uploadLabel);
+    
+    grid.appendChild(item);
+    
+    fileInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    gridItems.push(item);
+  }
+  
+  createMysteryBoxes();
+}
+
+function createMysteryBoxes() {
+  mysteryBoxes.forEach(box => box.remove());
+  mysteryBoxes = [];
+  
+  for (let i = 0; i < 3; i++) {
+    const box = document.createElement('div');
+    box.className = 'mystery-box';
+    box.textContent = '?';
+    box.style.left = `${Math.random() * (window.innerWidth - 50)}px`;
+    box.style.top = `${Math.random() * (window.innerHeight - 50)}px`;
+    
+    box.addEventListener('click', revealMystery);
+    
+    document.body.appendChild(box);
+    mysteryBoxes.push(box);
+  }
+}
+
+function revealMystery(e) {
+  const mysteries = [
+    'Quantum Entanglement Activated',
+    'Parallel Universe Glimpse',
+    'Time Dilation Effect'
+  ];
+  const randomMystery = mysteries[Math.floor(Math.random() * mysteries.length)];
+  showModal(`¡Misterio Revelado: ${randomMystery}!`);
+  e.target.remove();
+}
+
+function showModal(message) {
+  const modal = document.getElementById('modal');
+  const aiMessage = document.getElementById('aiMessage');
+  aiMessage.textContent = message;
+  modal.style.display = 'block';
+}
+
+document.querySelector('.close').onclick = function() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+  const modal = document.getElementById('modal');
+  if (event.target == modal) {
+    modal.style.display = 'none';
+  }
+}
+
+document.getElementById('columns').addEventListener('change', function(e) {
+  columns = parseInt(e.target.value);
+  createGrid();
+});
+
+document.getElementById('rows').addEventListener('change', function(e) {
+  rows = parseInt(e.target.value);
+  createGrid();
+});
+
+document.getElementById('resetGrid').addEventListener('click', createGrid);
+
+document.getElementById('aiAssistant').addEventListener('click', function() {
+  const improvements = [
+    'Optimizando rendimiento del grid',
+    'Aplicando mejoras de accesibilidad',
+    'Implementando nuevas animaciones',
+    'Mejorando la integración de IA',
+    'Actualizando el diseño visual'
+  ];
+  const randomImprovement = improvements[Math.floor(Math.random() * improvements.length)];
+  showModal(`Asistente IA: ${randomImprovement}`);
+});
+
+// Quantum Field Animation
+const quantumField = document.getElementById('quantumField');
+for (let i = 0; i < 100; i++) {
+  const particle = document.createElement('div');
+  particle.className = 'quantum-particle';
+  particle.style.left = `${Math.random() * 100}%`;
+  particle.style.top = `${Math.random() * 100}%`;
+  particle.style.animationDelay = `${Math.random() * 3}s`;
+  quantumField.appendChild(particle);
+}
+
+// Fractal Animation
+let fractalSketch = function(p) {
+  let angle = 0;
+
+  p.setup = function() {
+    let canvas = p.createCanvas(p.windowWidth, p.windowHeight);
+    canvas.parent('fractalOverlay');
+    p.angleMode(p.DEGREES);
+    p.noFill();
+    p.stroke(57, 255, 20, 25);
+  };
+
+  p.draw = function() {
+    p.clear();
+    p.translate(p.width / 2, p.height / 2);
+    drawFractal(200);
+    angle += 0.5;
+  };
+
+  function drawFractal(len) {
+    if (len > 10) {
+      p.push();
+      p.rotate(angle);
+      p.line(0, 0, 0, -len);
+      p.translate(0, -len);
+      p.rotate(30);
+      drawFractal(len * 0.7);
+      p.rotate(-60);
+      drawFractal(len * 0.7);
+      p.pop();
+    }
+  }
+};
+
+new p5(fractalSketch);
+
+document.getElementById('fractalView').addEventListener('click', function() {
+  document.getElementById('fractalOverlay').style.opacity = 
+    document.getElementById('fractalOverlay').style.opacity === '0.5' ? '0.1' : '0.5';
+});
+
+// Hidden Game
+const gameContainer = document.getElementById('gameContainer');
+const gamePlayer = document.getElementById('gamePlayer');
+let playerX = 150;
+let playerY = 150;
+
+document.getElementById('toggleGame').addEventListener('click', function() {
+  gameActive = !gameActive;
+  gameContainer.style.display = gameActive ? 'block' : 'none';
+});
+
+document.addEventListener('keydown', function(e) {
+  if (!gameActive) return;
+  const speed = 5;
+  switch(e.key) {
+    case 'ArrowUp': playerY = Math.max(0, playerY - speed); break;
+    case 'ArrowDown': playerY = Math.min(280, playerY + speed); break;
+    case 'ArrowLeft': playerX = Math.max(0, playerX - speed); break;
+    case 'ArrowRight': playerX = Math.min(280, playerX + speed); break;
+  }
+  gamePlayer.style.left = playerX + 'px';
+  gamePlayer.style.top = playerY + 'px';
+});
+
+// Función para crear conceptos misteriosos
+function createMysteriousConcept() {
+  const concepts = [
+    "Resonancia Cuántica Emocional",
+    "Sincronicidad Fractal del Tiempo",
+    "Campos Morfogenéticos de Consciencia",
+    "Entrelazamiento Neuronal Multidimensional",
+    "Flujo de Información Akáshica"
+  ];
+  return concepts[Math.floor(Math.random() * concepts.length)];
+}
+
+// Función para simular descubrimientos asombrosos
+function simulateAmazingDiscovery() {
+  const discoveries = [
+    "Comunicación instantánea entre universos paralelos",
+    "Manipulación del tiempo a través de la meditación cuántica",
+    "Activación de ADN latente mediante frecuencias sonoras",
+    "Telepatía amplificada por campos electromagnéticos terrestres",
+    "Generación de energía ilimitada a partir de fluctuaciones del vacío"
+  ];
+  return discoveries[Math.floor(Math.random() * discoveries.length)];
+}
+
+// Nuevas funcionalidades disruptivas
+function applyDisruptiveFeature() {
+  const features = [
+    () => {
+      // Modo de visualización 4D
+      showModal("Activado: Modo de visualización 4D. Los iconos ahora existen en múltiples dimensiones simultáneamente.");
+    },
+    () => {
+      // Sincronización con bioритmos
+      showModal("Nueva función: Los iconos pulsan al ritmo de tu frecuencia cardíaca para una experiencia personalizada.");
+    },
+    () => {
+      // Interfaz controlada por ondas cerebrales
+      showModal("Innovación implementada: Ahora puedes reorganizar los iconos con el poder de tu mente.");
+    }
+  ];
+  features[Math.floor(Math.random() * features.length)]();
+}
+
+// Funcionalidades extras especiales
+function applySpecialFeature() {
+  const specialFeatures = [
+    () => {
+      // Portales interdimensionales
+      showModal("Función especial activada: Algunos iconos ahora son portales a otras dimensiones. ¡Úsalos con precaución!");
+    },
+    () => {
+      // Fusión de consciencia colectiva
+      showModal("Nueva capacidad desbloqueada: Los iconos ahora pueden fusionarse para crear ideas colectivas nunca antes imaginadas.");
+    },
+    () => {
+      // Manipulación del tejido espacio-temporal
+      showModal("Herramienta avanzada implementada: Puedes crear pliegues en el espacio-tiempo para acceder a información del pasado y del futuro.");
+    }
+  ];
+  specialFeatures[Math.floor(Math.random() * specialFeatures.length)]();
+}
+
+// Evento para aplicar mejoras y funcionalidades
+document.getElementById('aiAssistant').addEventListener('dblclick', function() {
+  applyDisruptiveFeature();
+  setTimeout(applySpecialFeature, 1000);
+  setTimeout(() => {
+    showModal(`Concepto Misterioso Descubierto: ${createMysteriousConcept()}`);
+  }, 2000);
+  setTimeout(() => {
+    showModal(`¡Asombroso Descubrimiento!: ${simulateAmazingDiscovery()}`);
+  }, 3000);
+});
+
+createGrid();
+</script>
+</body></html>
