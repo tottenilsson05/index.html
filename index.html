@@ -1,0 +1,188 @@
+<style>
+  body {
+    font-family: "Times New Roman", serif;
+    background-color: #000000;
+    color: #00ff00;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  #container {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  h1 {
+    font-size: 48px;
+    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+    animation: glitch 1s linear infinite;
+  }
+  @keyframes glitch {
+    2%, 64% {
+      transform: translate(2px,0) skew(0deg);
+    }
+    4%, 60% {
+      transform: translate(-2px,0) skew(0deg);
+    }
+    62% {
+      transform: translate(0,0) skew(5deg); 
+    }
+  }
+  #progress {
+    width: 80%;
+    height: 30px;
+    background-color: #333;
+    margin: 20px 0;
+    position: relative;
+  }
+  #bar {
+    width: 0;
+    height: 100%;
+    background-color: #00ff00;
+    transition: width 0.5s;
+  }
+  #percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-weight: bold;
+  }
+  #message {
+    font-size: 24px;
+    margin-top: 20px;
+  }
+  .popup {
+    position: absolute;
+    background-color: #111;
+    border: 2px solid #00ff00;
+    padding: 20px;
+    display: none;
+  }
+  #matrix-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+</style>
+</head>
+<body>
+  <canvas id="matrix-bg"></canvas>
+  <div id="container">
+    <h1>Installing Totally Legit Software</h1>
+    <div id="progress">
+      <div id="bar"></div>
+      <div id="percentage">0%</div>
+    </div>
+    <div id="message">Initializing system takeover...</div>
+  </div>
+
+  <div class="popup" id="popup1" style="top: 20%; left: 20%;">
+    <p>Warning: Critical system files detected!</p>
+    <button onclick="closePopup('popup1')">Ignore</button>
+  </div>
+
+  <div class="popup" id="popup2" style="top: 30%; right: 20%;">
+    <p>Firewall disabled. Proceed?</p>
+    <button onclick="closePopup('popup2')">Yes</button>
+  </div>
+
+  <div class="popup" id="popup3" style="bottom: 20%; left: 30%;">
+    <p>Uploading personal data...</p>
+    <button onclick="closePopup('popup3')">Allow</button>
+  </div>
+
+  <script>
+    const bar = document.getElementById('bar');
+    const percentage = document.getElementById('percentage');
+    const message = document.getElementById('message');
+    let progress = 0;
+
+    function updateProgress() {
+      progress += Math.random() * 5;
+      if (progress > 100) progress = 100;
+      bar.style.width = progress + '%';
+      percentage.textContent = Math.round(progress) + '%';
+
+      if (progress < 20) {
+        message.textContent = "Disabling antivirus...";
+      } else if (progress < 40) {
+        message.textContent = "Injecting rootkit...";
+      } else if (progress < 60) {
+        message.textContent = "Encrypting files...";
+      } else if (progress < 80) {
+        message.textContent = "Mining cryptocurrency...";
+      } else if (progress < 100) {
+        message.textContent = "Finalizing takeover...";
+      } else {
+        message.textContent = "Installation complete! Enjoy your new overlord!";
+        setTimeout(() => {
+          window.location.href = "https://websim.ai/c/worstgametakeover";
+        }, 3000);
+      }
+
+      if (progress < 100) {
+        setTimeout(updateProgress, 200);
+      }
+    }
+
+    function showRandomPopup() {
+      const popups = document.getElementsByClassName('popup');
+      const randomPopup = popups[Math.floor(Math.random() * popups.length)];
+      randomPopup.style.display = 'block';
+    }
+
+    function closePopup(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    // Matrix rain effect
+    const canvas = document.getElementById('matrix-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const nums = '0123456789';
+    const alphabet = katakana + latin + nums;
+
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const rainDrops = [];
+
+    for (let x = 0; x < columns; x++) {
+      rainDrops[x] = 1;
+    }
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0F0';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < rainDrops.length; i++) {
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+        
+        if (rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
+      }
+    }
+
+    setInterval(draw, 30);
+    setInterval(showRandomPopup, 3000);
+    updateProgress();
+  </script>
+</body></html>
