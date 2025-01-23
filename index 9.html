@@ -1,0 +1,180 @@
+<title>M.O.T.H.E.R. - Dashboard</title>
+<style>
+    body {
+        background-color: #000;
+        color: #FFB000;
+        font-family: 'Courier New', monospace;
+        margin: 0;
+        padding: 20px;
+        line-height: 1.6;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        border: 2px solid #FFB000;
+        padding: 20px;
+        box-shadow: 0 0 20px #FFB000;
+    }
+    h1, h2 {
+        text-align: center;
+        text-shadow: 0 0 5px #FFB000;
+    }
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        margin-top: 20px;
+    }
+    .panel {
+        border: 1px solid #FFB000;
+        padding: 15px;
+    }
+    .panel h3 {
+        margin-top: 0;
+        border-bottom: 1px solid #FFB000;
+        padding-bottom: 10px;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    li {
+        margin-bottom: 10px;
+    }
+    a {
+        color: #FFB000;
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
+    .flicker {
+        animation: flicker 0.15s infinite;
+    }
+    @keyframes flicker {
+        0% {opacity: 1;}
+        50% {opacity: 0.8;}
+        100% {opacity: 1;}
+    }
+    .scan-line {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(
+            0deg,
+            rgba(255,176,0,0) 0%,
+            rgba(255,176,0,0.1) 50%,
+            rgba(255,176,0,0) 100%
+        );
+        animation: scan 10s linear infinite;
+        pointer-events: none;
+    }
+    @keyframes scan {
+        0% {transform: translateY(-100%);}
+        100% {transform: translateY(100vh);}
+    }
+    .alert {
+        color: #FF0000;
+        font-weight: bold;
+        animation: blink 1s infinite;
+    }
+    @keyframes blink {
+        0% {opacity: 1;}
+        50% {opacity: 0;}
+        100% {opacity: 1;}
+    }
+    .warning {
+        color: #FFFF00;
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+<div class="scan-line"></div>
+<div class="container">
+    <h1 class="flicker">M.O.T.H.E.R.</h1>
+    <h2>Main Systems Interface</h2>
+    
+    <div class="grid">
+        <div class="panel">
+            <h3>Ship Status</h3>
+            <ul>
+                <li>Hull Integrity: 98%</li>
+                <li>Life Support: Optimal</li>
+                <li>Fuel Reserves: 75%</li>
+                <li>Current Speed: 0.32c</li>
+                <li class="warning">Warning: Unscheduled course deviation detected</li>
+            </ul>
+        </div>
+        
+        <div class="panel">
+            <h3>Navigation</h3>
+            <ul>
+                <li>Current Location: Approaching LV-426</li>
+                <li>Original Destination: Sol System (Earth)</li>
+                <li>ETA to LV-426: 2 hours, 17 minutes</li>
+                <li class="alert">ALERT: Course change initiated</li>
+                <li><a href="https://mother.weyland-yutani.ai/navigation">Detailed Navigation</a></li>
+            </ul>
+        </div>
+        
+        <div class="panel">
+            <h3>Crew</h3>
+            <ul>
+                <li class="alert">ALERT: Crew awakening sequence initiated</li>
+                <li>Hypersleep termination in progress</li>
+                <li>Vital signs: Fluctuating (normal for wake-up)</li>
+                <li><a href="https://mother.weyland-yutani.ai/manifest">View Crew Manifest</a></li>
+                <li><a href="https://mother.weyland-yutani.ai/crew-details">Detailed Crew Information</a></li>
+            </ul>
+        </div>
+        
+        <div class="panel">
+            <h3>Cargo</h3>
+            <ul>
+                <li>Mineral Ore: 20,000,000 tons</li>
+                <li>Refinery Status: Standby</li>
+                <li><a href="https://mother.weyland-yutani.ai/cargo">Cargo Details</a></li>
+            </ul>
+        </div>
+        
+        <div class="panel">
+            <h3>Communications</h3>
+            <ul>
+                <li>Signal Source: LV-426</li>
+                <li>Signal Type: Unknown (possible distress beacon)</li>
+                <li>Signal Strength: Moderate</li>
+                <li><a href="https://mother.weyland-yutani.ai/comms">Access Comms</a></li>
+                <li class="alert">NEW: Analyzing unknown signal</li>
+            </ul>
+        </div>
+        
+        <div class="panel">
+            <h3>Special Order 937</h3>
+            <ul>
+                <li>Status: Active</li>
+                <li>Priority: High</li>
+                <li class="warning">Crew expendable</li>
+                <li><a href="https://mother.weyland-yutani.ai/special-order-937">View Details</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="panel" style="margin-top: 20px;">
+        <h3>Recent System Logs</h3>
+        <ul>
+            <li>2179-06-16 03:42: Course change initiated. New destination: LV-426</li>
+            <li>2179-06-16 03:45: Crew revival sequence initiated</li>
+            <li>2179-06-16 03:50: Analyzing unknown signal from LV-426</li>
+            <li class="alert">2179-06-16 04:00: Special Order 937 activated</li>
+        </ul>
+    </div>
+    
+    <p style="text-align: center; margin-top: 20px;">
+        <a href="https://mother.weyland-yutani.ai/logout">Logout</a> | 
+        <a href="https://mother.weyland-yutani.ai/system-preferences">System Preferences</a>
+    </p>
+</div>
+</body></html>
