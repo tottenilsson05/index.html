@@ -1,0 +1,185 @@
+<title>Interstellar Federation Document - 2356</title>
+<style>
+:root {
+  --hologram-blue: #00f7ff;
+  --document-bg: #001922;
+}
+
+body {
+  background: #000;
+  font-family: 'Arial', sans-serif;
+  color: var(--hologram-blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.document {
+  background: var(--document-bg);
+  width: 800px;
+  padding: 40px;
+  border: 2px solid var(--hologram-blue);
+  position: relative;
+  box-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 20px rgba(0, 247, 255, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(0, 247, 255, 0.5); }
+  100% { box-shadow: 0 0 20px rgba(0, 247, 255, 0.3); }
+}
+
+.hologram-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 247, 255, 0.1) 0px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events: none;
+  animation: scan 8s linear infinite;
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo {
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 20px;
+}
+
+.title {
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+}
+
+.content {
+  line-height: 1.6;
+}
+
+.signature {
+  margin-top: 40px;
+  text-align: right;
+}
+
+.verification {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.stamp {
+  position: absolute;
+  right: 40px;
+  bottom: 40px;
+  width: 120px;
+  height: 120px;
+  animation: rotate 10s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+</style>
+</head>
+<body>
+
+<div class="document">
+  <div class="hologram-overlay"></div>
+  
+  <div class="header">
+    <svg class="logo" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="none" stroke="var(--hologram-blue)" stroke-width="2"/>
+      <path d="M50 5 L95 50 L50 95 L5 50 Z" fill="none" stroke="var(--hologram-blue)" stroke-width="2"/>
+      <circle cx="50" cy="50" r="20" fill="none" stroke="var(--hologram-blue)" stroke-width="2"/>
+      <text x="50" y="55" text-anchor="middle" fill="var(--hologram-blue)" font-size="12">IFG</text>
+    </svg>
+    <h1 class="title">Interstellar Federation Government</h1>
+    <p>Document Classification: GAMMA-7 CLEARANCE REQUIRED</p>
+  </div>
+
+  <div class="content">
+    <p>DATE: 15 Quantum Month, 2356</p>
+    <p>DOCUMENT ID: IFG-2356-QX-11947</p>
+    <p>SUBJECT: Authorization for Neural Network Enhancement</p>
+    <br>
+    <p>This document hereby authorizes the bearer, [REDACTED], to undergo voluntary neural network enhancement procedures as specified under Interstellar Code §789.456.123.</p>
+    <p>The bearer has been cleared for:</p>
+    <ul>
+      <li>Quantum Processing Integration</li>
+      <li>Telepathic Communication Suite</li>
+      <li>Memory Crystal Implementation</li>
+      <li>Bio-Digital Interface Enhancement</li>
+    </ul>
+    <p>This authorization is valid for one (1) solar cycle from the date of issuance and must be validated at any certified Enhancement Center within the Alpha Quadrant.</p>
+    
+    <div class="signature">
+      <p>Authorized by:</p>
+      <p>Dr. X-Δ-7 Quantum Administrator</p>
+    </div>
+  </div>
+
+  <div class="verification">
+    SHA-512 Verification Hash: 
+    f7c3bc1d808e04732adf679965ccc34ca7ae3441
+  </div>
+
+  <svg class="stamp" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="48" fill="none" stroke="var(--hologram-blue)" stroke-width="1"/>
+    <circle cx="50" cy="50" r="45" fill="none" stroke="var(--hologram-blue)" stroke-width="1"/>
+    <text>
+      <textPath href="#stampPath" fill="var(--hologram-blue)" font-size="8">
+        INTERSTELLAR FEDERATION • OFFICIAL DOCUMENT • 2356
+      </textPath>
+    </text>
+    <path id="stampPath" d="M50,95 A45,45 0 1,1 50,5 A45,45 0 1,1 50,95" fill="none"/>
+    <path d="M25,50 L75,50 M50,25 L50,75" stroke="var(--hologram-blue)" stroke-width="1"/>
+  </svg>
+</div>
+
+<script>
+document.addEventListener('mousemove', (e) => {
+  const doc = document.querySelector('.document');
+  const rect = doc.getBoundingClientRect();
+  const x = (e.clientX - rect.left) / rect.width;
+  const y = (e.clientY - rect.top) / rect.height;
+  
+  doc.style.setProperty('--hologram-blue', `hsl(${180 + x * 30}, 100%, ${50 + y * 20}%)`);
+});
+
+// Add some random glitch effects
+setInterval(() => {
+  if (Math.random() > 0.97) {
+    const doc = document.querySelector('.document');
+    doc.style.transform = `translateX(${Math.random() * 2 - 1}px)`;
+    setTimeout(() => {
+      doc.style.transform = 'none';
+    }, 50);
+  }
+}, 100);
+</script>
+
+</body></html>
