@@ -1,0 +1,117 @@
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.title {
+    color: #f00;
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    text-shadow: 0 0 10px rgba(255,0,0,0.5);
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+.message-box {
+    background-color: #300;
+    color: #f00; 
+    padding: 40px;
+    border: 2px solid #f00;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 24px;
+    max-width: 600px;
+    animation: fadeIn 1s ease-in;
+}
+
+.password-box {
+    background-color: #200;
+    border: 1px solid #f00;
+    color: #f00;
+    padding: 10px;
+    margin: 20px 0;
+    width: 100%;
+    font-size: 16px;
+    text-align: center;
+}
+
+.copy-btn {
+    background-color: #500;
+    color: #f00;
+    border: 1px solid #f00;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.copy-btn:hover {
+    background-color: #700;
+}
+
+.link {
+    color: #f00;
+    text-decoration: underline;
+    transition: color 0.3s;
+}
+
+.link:hover {
+    color: #ff5555;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px rgba(255,0,0,0.5);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(255,0,0,0.8),
+                     0 0 30px rgba(255,0,0,0.6);
+    }
+}
+</style>
+</head>
+<body>
+    <div class="title">GOOGLE 2 BETA LEAKED</div>
+    <div class="message-box">
+        People rely on AI too much. Here is the password. In the original version it got shutdown. Who knows I may crack the next one :)<br><br>
+        Password:<br>
+        <input type="text" class="password-box" value="=;H+}&V(qM#QurWNo%*X1w*zR('G$2jL" readonly id="passwordInput">
+        <button class="copy-btn" onclick="copyPassword()">Copy Password</button>
+        <br><br>
+        <a href="https://websim.ai/p/x_jpgsxcah4i2e7itui9/36" class="link">Version 36 before shutdown</a>
+        <br><br>
+        - dorker
+    </div>
+
+    <script>
+    function copyPassword() {
+        const passwordInput = document.getElementById('passwordInput');
+        passwordInput.select();
+        passwordInput.setSelectionRange(0, 99999); // For mobile devices
+        document.execCommand('copy');
+        
+        // Change button text temporarily
+        const btn = document.querySelector('.copy-btn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => {
+            btn.textContent = originalText;
+        }, 2000);
+    }
+    </script>
+</body>
+</html>
