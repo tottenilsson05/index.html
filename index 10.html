@@ -1,0 +1,83 @@
+body {
+    background-color: #000;
+    color: #0f0;
+    font-family: 'Courier New', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+.container {
+    text-align: center;
+    animation: glitch 0.5s infinite;
+}
+@keyframes glitch {
+    0% { transform: translate(0) }
+    20% { transform: translate(-5px, 5px) }
+    40% { transform: translate(-5px, -5px) }
+    60% { transform: translate(5px, 5px) }
+    80% { transform: translate(5px, -5px) }
+    100% { transform: translate(0) }
+}
+h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+.blink {
+    animation: blink 0.8s infinite;
+}
+@keyframes blink {
+    0% { opacity: 0 }
+    50% { opacity: 1 }
+    100% { opacity: 0 }
+}
+#code {
+    font-size: 1.2em;
+    margin-top: 20px;
+}
+</style></head><body>
+<div class="container">
+    <h1>WARNING</h1>
+    <p class="blink">YOUR PC HAS BEEN HACKED</p>
+    <div id="code"></div>
+</div>
+
+<script>
+const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+{}|:"<>?';
+const codeElement = document.getElementById('code');
+
+function generateRandomCode() {
+    let result = '';
+    const length = Math.floor(Math.random() * 20) + 10;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+}
+
+function updateCode() {
+    codeElement.textContent = generateRandomCode();
+}
+
+setInterval(updateCode, 100);
+
+// Fullscreen API
+function launchFullscreen(element) {
+    if(element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if(element.mozRequestFullScreen) {
+        element.mozRequestFullScreen();
+    } else if(element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+    } else if(element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+    }
+}
+
+document.addEventListener('click', function() {
+    launchFullscreen(document.documentElement);
+});
+</script>
+</body></html>
