@@ -1,0 +1,419 @@
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #020202, #0a0a0a);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  color: #5aff5a;
+  overflow: hidden;
+  perspective: 1500px;
+}
+
+#dark-room {
+  width: 80vw;
+  height: 80vh;
+  position: relative;
+  background-color: #0c0c0c;
+  box-shadow: 
+    0 0 80px rgba(90, 255, 90, 0.2), 
+    0 0 150px rgba(90, 255, 90, 0.1),
+    inset 0 0 250px rgba(0, 0, 0, 0.6);
+  border: 3px solid #5aff5a;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  perspective: 3000px;
+  overflow: hidden;
+}
+
+#dark-room::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(90, 255, 90, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 255, 90, 0.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.4;
+  z-index: 1;
+}
+
+#dark-room::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: 
+    linear-gradient(
+      rgba(90, 255, 90, 0.05) 1px, 
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg, 
+      rgba(90, 255, 90, 0.05) 1px, 
+      transparent 1px
+    );
+  background-size: 60px 60px;
+  transform: rotate(45deg);
+  opacity: 0.2;
+  z-index: 2;
+}
+
+.wooden-board {
+  background: linear-gradient(135deg, #1a1a1a, #0e0e0e);
+  border: 2px solid #5aff5a;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 15px;
+  color: #5aff5a;
+  font-weight: bold;
+  box-shadow: 
+    inset 0 0 30px rgba(90, 255, 90, 0.1),
+    0 5px 20px rgba(0,0,0,0.4);
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.wooden-board::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    linear-gradient(
+      rgba(90, 255, 90, 0.05) 1px, 
+      transparent 1px
+    );
+  transform: rotate(45deg);
+  opacity: 0.2;
+}
+
+.wooden-board h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  text-shadow: 
+    0 0 10px rgba(90, 255, 90, 0.6),
+    0 0 20px rgba(90, 255, 90, 0.4);
+  letter-spacing: 2px;
+}
+
+#project-doors {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  padding: 20px;
+  perspective: 3000px;
+  max-height: 60vh;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.project-door {
+  width: 220px;
+  height: 340px;
+  position: relative;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transition: all 0.5s ease;
+  margin: 10px;
+  perspective: 1000px;
+  box-shadow: 
+    0 15px 30px rgba(0,0,0,0.4),
+    0 0 30px rgba(90, 255, 90, 0.2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.project-door-frame {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 6px solid #5a4235;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+  box-shadow: 
+    0 10px 20px rgba(0,0,0,0.4),
+    inset 0 0 40px rgba(0,0,0,0.6);
+  z-index: 1;
+  backface-visibility: hidden;
+  border-radius: 10px;
+}
+
+.project-door-panel {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #1a1a1a, #0a0a0a);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 3px solid #5aff5a;
+  box-sizing: border-box;
+  z-index: 2;
+  opacity: 0.9;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  transform-origin: right center;
+  transition: transform 0.5s ease;
+}
+
+.project-door-preview {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #111, #050505);
+  border: 3px solid #5aff5a;
+  box-sizing: border-box;
+  z-index: 3;
+  opacity: 0;
+  visibility: hidden;
+  transform-origin: right center;
+  transition: all 0.5s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.project-door-cover {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+  border: 3px solid #5a4235;
+  box-sizing: border-box;
+  z-index: 3;
+  transform-origin: right center;
+  transition: transform 0.5s ease;
+  backface-visibility: hidden;
+  border-radius: 10px;
+}
+
+.project-door-handle {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 40px;
+  background: linear-gradient(to right, #5aff5a, #3ad13a);
+  border-radius: 3px;
+  z-index: 10;
+  box-shadow: 
+    0 0 15px rgba(90, 255, 90, 0.5),
+    inset 0 0 5px rgba(255,255,255,0.3);
+}
+
+.project-door:hover .project-door-cover {
+  transform: perspective(1000px) rotateY(135deg);
+}
+
+.project-door:hover .project-door-preview {
+  opacity: 1;
+  visibility: visible;
+}
+
+.project-door-preview h3 {
+  color: #5aff5a;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  text-shadow: 
+    0 0 5px rgba(90, 255, 90, 0.5),
+    0 0 10px rgba(90, 255, 90, 0.3);
+  letter-spacing: 1px;
+}
+
+.project-door-preview .project-screenshot {
+  max-width: 80%;
+  max-height: 60%;
+  border: 2px solid #5aff5a;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  box-shadow: 
+    0 0 20px rgba(90, 255, 90, 0.2),
+    inset 0 0 15px rgba(90, 255, 90, 0.1);
+}
+
+.project-door-preview .project-details {
+  color: #5aff5a;
+  font-size: 0.9em;
+  text-shadow: 
+    0 0 3px rgba(90, 255, 90, 0.3);
+}
+
+.project-door h3 {
+  color: #5aff5a;
+  margin: 10px 0;
+  font-size: 1.1em;
+  padding: 0 10px;
+  word-wrap: break-word;
+  max-width: 100%;
+  text-shadow: 
+    0 0 5px rgba(90, 255, 90, 0.4);
+}
+
+.project-door p {
+  margin: 5px 0;
+  color: #5aff5a;
+  font-size: 0.9em;
+  text-shadow: 
+    0 0 3px rgba(90, 255, 90, 0.3);
+}
+
+.no-projects {
+  width: 100%;
+  text-align: center;
+  color: #5aff5a;
+  padding: 20px;
+  text-shadow: 
+    0 0 5px rgba(90, 255, 90, 0.4);
+}
+
+#project-doors::-webkit-scrollbar {
+  width: 12px;
+}
+
+#project-doors::-webkit-scrollbar-track {
+  background: #0a0a0a;
+  border-radius: 6px;
+}
+
+#project-doors::-webkit-scrollbar-thumb {
+  background: linear-gradient(to right, #5aff5a, #3ad13a);
+  border-radius: 6px;
+  box-shadow: 
+    0 0 5px rgba(90, 255, 90, 0.3);
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(90, 255, 90, 0.1) 50%,
+    transparent 50%
+  );
+  pointer-events: none;
+  animation: scanline 5s linear infinite;
+  z-index: 9999;
+  opacity: 0.5;
+}
+
+@keyframes floatParticle {
+  0% { 
+    transform: translateY(0) translateX(0) rotate(0deg);
+    opacity: 0.5;
+  }
+  50% { 
+    transform: translateY(-50px) translateX(20px) rotate(180deg);
+    opacity: 0.7;
+  }
+  100% { 
+    transform: translateY(0) translateX(0) rotate(360deg);
+    opacity: 0.5;
+  }
+}
+
+.particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9998;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: rgba(90, 255, 90, 0.2);
+  border-radius: 50%;
+  animation: floatParticle 10s infinite;
+  box-shadow: 0 0 10px rgba(90, 255, 90, 0.3);
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  position: relative;
+  padding: 20px;
+}
+
+.profile-frame {
+  width: 120px;
+  height: 120px;
+  border: 4px solid #5aff5a;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 20px rgba(90, 255, 90, 0.3),
+    inset 0 0 30px rgba(90, 255, 90, 0.1);
+  overflow: hidden;
+  margin-right: 30px;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.profile-frame::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    linear-gradient(
+      rgba(90, 255, 90, 0.05) 1px, 
+      transparent 1px
+    );
+  transform: rotate(45deg);
+  opacity: 0.2;
+}
+
+.profile-frame:hover {
+  transform: scale(1.05);
+}
+
+#profile-picture {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.profile-section h2 {
+  margin: 0;
+  font-size: 1.8em;
+  text-shadow: 
+    0 0 10px rgba(90, 255, 90, 0.5), 
+    0 0 20px rgba(90, 255, 90, 0.3);
+}
