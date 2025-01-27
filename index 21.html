@@ -1,0 +1,392 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix Cellular Automaton</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;700&display=swap');
+
+  :root {
+    --primary-color: #00ff00;
+    --secondary-color: #0066ff;
+    --background-color: #000000;
+    --text-color: #00ff00;
+    --panel-bg: rgba(0, 20, 0, 0.8);
+  }
+
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--background-color);
+    font-family: 'Roboto Mono', monospace;
+    color: var(--text-color);
+  }
+
+  #canvas {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  #overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  #header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  #logo-title {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 255, 0, 0.1);
+    padding: 5px 10px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px var(--primary-color);
+  }
+
+  #title {
+    margin-left: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-shadow: 0 0 5px var(--primary-color);
+  }
+
+  .panel {
+    background: var(--panel-bg);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 5px;
+    pointer-events: auto;
+  }
+
+  #controls-panel {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 600px;
+    transition: max-height 0.3s ease-out;
+    overflow: hidden;
+  }
+
+  .button {
+    font-size: 14px;
+    color: var(--text-color);
+    background: rgba(0, 255, 0, 0.1);
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+
+  .button:hover {
+    background: rgba(0, 255, 0, 0.2);
+    box-shadow: 0 0 10px var(--primary-color);
+  }
+
+  #instructions {
+    position: absolute;
+    top: 60px;
+    left: 10px;
+    font-size: 12px;
+    max-width: 250px;
+  }
+
+  .slider-container {
+    margin-bottom: 10px;
+  }
+
+  .slider-container label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    background: rgba(0, 255, 0, 0.2);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity .2s;
+  }
+
+  input[type="range"]:hover {
+    opacity: 1;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  #toggle-controls {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    cursor: pointer;
+    background: var(--panel-bg);
+    width: 60px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px 10px 0 0;
+  }
+
+  #controls-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .control-group {
+    flex-basis: 48%;
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="overlay">
+  <div id="header">
+    <div id="logo-title">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="30" height="30" rx="6" fill="url(#paint0_radial)"/>
+        <path d="M7 5L23 5" stroke="#00FF00" stroke-width="2"/>
+        <path d="M7 10L23 10" stroke="#00FF00" stroke-width="2"/>
+        <path d="M7 15L23 15" stroke="#00FF00" stroke-width="2"/>
+        <path d="M7 20L23 20" stroke="#00FF00" stroke-width="2"/>
+        <path d="M7 25L23 25" stroke="#00FF00" stroke-width="2"/>
+        <defs>
+          <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(15 15) rotate(45) scale(21.2132)">
+            <stop stop-color="#00FF00" stop-opacity="0.2"/>
+            <stop offset="1" stop-color="#000000" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+      </svg>
+      <h1 id="title">Matrix Cellular</h1>
+    </div>
+  </div>
+  <div id="instructions" class="panel">
+    Click and drag to create new structures. Use controls to adjust simulation parameters.
+  </div>
+  <div id="controls-panel" class="panel">
+    <div id="toggle-controls">Controls</div>
+    <div id="controls-content">
+      <div class="control-group">
+        <div id="reset" class="button">Reset</div>
+        <div id="pause" class="button">Pause</div>
+        <div id="colorMode" class="button">Toggle Blue Mode</div>
+      </div>
+      <div class="control-group">
+        <div class="slider-container">
+          <label for="speed">Speed:</label>
+          <input type="range" id="speed" min="1" max="10" value="5">
+        </div>
+        <div class="slider-container">
+          <label for="density">Initial Density:</label>
+          <input type="range" id="density" min="1" max="100" value="20">
+        </div>
+        <div class="slider-container">
+          <label for="fontSize">Font Size:</label>
+          <input type="range" id="fontSize" min="8" max="24" value="14">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+let width, height, fontSize;
+let grid, nextGrid;
+let frameCount = 0;
+let isPaused = false;
+let speed = 5;
+let initialDensity = 20;
+let isBlueMode = false;
+
+const matrixChars = "日ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃﾏｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ012345789Z:・.";
+
+function initGrid() {
+  width = Math.ceil(window.innerWidth / fontSize);
+  height = Math.ceil(window.innerHeight / fontSize);
+  grid = new Array(width).fill().map(() => new Array(height).fill(0));
+  nextGrid = new Array(width).fill().map(() => new Array(height).fill(0));
+  
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      if (Math.random() * 100 < initialDensity) {
+        grid[x][y] = Math.floor(Math.random() * matrixChars.length);
+      }
+    }
+  }
+}
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  fontSize = parseInt(document.getElementById('fontSize').value);
+  initGrid();
+}
+
+function setup() {
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+}
+
+function drawCell(x, y, value) {
+  if (value === 0) return;
+  const char = matrixChars[value];
+  if (isBlueMode && Math.random() < 0.1) {
+    ctx.fillStyle = '#0066ff';
+  } else {
+    ctx.fillStyle = '#00ff00';
+  }
+  const alpha = Math.random() * 0.5 + 0.5;
+  ctx.globalAlpha = alpha;
+  ctx.fillText(char, x * fontSize, y * fontSize);
+  ctx.globalAlpha = 1;
+}
+
+function updateGrid() {
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      let neighbors = 0;
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          if (i === 0 && j === 0) continue;
+          const nx = (x + i + width) % width;
+          const ny = (y + j + height) % height;
+          neighbors += grid[nx][ny] !== 0 ? 1 : 0;
+        }
+      }
+      
+      if (grid[x][y] !== 0) {
+        nextGrid[x][y] = (neighbors === 2 || neighbors === 3) ? 
+          Math.floor(Math.random() * matrixChars.length) : 0;
+      } else {
+        nextGrid[x][y] = (neighbors === 3) ? 
+          Math.floor(Math.random() * matrixChars.length) : 0;
+      }
+      
+      if (Math.random() < 0.00002) nextGrid[x][y] = Math.floor(Math.random() * matrixChars.length);
+    }
+  }
+  
+  [grid, nextGrid] = [nextGrid, grid];
+}
+
+function draw() {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  ctx.font = `${fontSize}px 'Roboto Mono'`;
+  
+  for (let x = 0; x < width; x++) {
+    for (let y = 0; y < height; y++) {
+      drawCell(x, y, grid[x][y]);
+    }
+  }
+  
+  frameCount++;
+  if (!isPaused && frameCount % (11 - speed) === 0) {
+    updateGrid();
+  }
+  
+  requestAnimationFrame(draw);
+}
+
+function handleClick(event) {
+  const x = Math.floor(event.clientX / fontSize);
+  const y = Math.floor(event.clientY / fontSize);
+  
+  if (x >= 0 && x < width && y >= 0 && y < height) {
+    grid[x][y] = Math.floor(Math.random() * matrixChars.length);
+  }
+}
+
+function handleMouseMove(event) {
+  if (event.buttons !== 1) return;
+  handleClick(event);
+}
+
+setup();
+canvas.addEventListener('click', handleClick);
+canvas.addEventListener('mousemove', handleMouseMove);
+
+document.getElementById('reset').addEventListener('click', initGrid);
+document.getElementById('pause').addEventListener('click', () => {
+  isPaused = !isPaused;
+  document.getElementById('pause').textContent = isPaused ? 'Resume' : 'Pause';
+});
+
+document.getElementById('speed').addEventListener('input', (e) => {
+  speed = parseInt(e.target.value);
+});
+
+document.getElementById('density').addEventListener('input', (e) => {
+  initialDensity = parseInt(e.target.value);
+  initGrid();
+});
+
+document.getElementById('fontSize').addEventListener('input', (e) => {
+  fontSize = parseInt(e.target.value);
+  resizeCanvas();
+});
+
+document.getElementById('colorMode').addEventListener('click', () => {
+  isBlueMode = !isBlueMode;
+  document.getElementById('colorMode').textContent = isBlueMode ? 'Toggle Green Mode' : 'Toggle Blue Mode';
+});
+
+const controlsPanel = document.getElementById('controls-panel');
+const toggleControls = document.getElementById('toggle-controls');
+const controlsContent = document.getElementById('controls-content');
+
+toggleControls.addEventListener('click', () => {
+  if (controlsContent.style.display === 'none') {
+    controlsContent.style.display = 'flex';
+    toggleControls.textContent = 'Hide Controls';
+  } else {
+    controlsContent.style.display = 'none';
+    toggleControls.textContent = 'Show Controls';
+  }
+});
+
+draw();
+</script>
+
+</body></html>
