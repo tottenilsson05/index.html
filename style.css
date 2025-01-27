@@ -1,0 +1,295 @@
+/* Estilos generales */
+body {
+  font-family: 'Orbitron', sans-serif;
+  background-color: #111;
+  color: #64ffda;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Fondo animado con estrellas */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><circle cx="50" cy="50" r="1" fill="white" /><circle cx="200" cy="150" r="1" fill="white" /><circle cx="300" cy="300" r="1" fill="white" /><circle cx="400" cy="100" r="1" fill="white" /><circle cx="500" cy="250" r="1" fill="white" /></svg>');
+  animation: moveStars 50s linear infinite;
+  z-index: -1;
+}
+
+@keyframes moveStars {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+/* Estilos para el menú principal */
+.menu-screen {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40px;
+  border-radius: 20px;
+  border: 2px solid #64ffda;
+  box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+  animation: fadeIn 1s ease-out;
+  position: fixed;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.menu-screen h1 {
+  font-size: 3.5em;
+  margin-bottom: 20px;
+  text-shadow: 0 0 3px #64ffda;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 3px #64ffda;
+  }
+  to {
+    text-shadow: 0 0 6px #64ffda;
+  }
+}
+
+/* Estilos para los botones */
+button {
+  padding: 15px 35px;
+  font-size: 1.2em;
+  margin: 12px 0;
+  border-radius: 12px;
+  border: 2px solid #64ffda;
+  background: transparent;
+  color: #64ffda;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300%;
+  height: 300%;
+  background-color: rgba(100, 255, 218, 0.1);
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: all 0.5s ease;
+  z-index: 0;
+}
+
+button:hover::before {
+  width: 0;
+  height: 0;
+}
+
+button:hover {
+  background-color: #64ffda;
+  color: #000;
+  box-shadow: 0 0 5px #64ffda;
+}
+
+/* Estilos para el campo de entrada de nombre */
+#playerNameInput {
+  padding: 10px;
+  font-size: 1em;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 2px solid #64ffda;
+  background: transparent;
+  color: #64ffda;
+  text-align: center;
+  outline: none;
+}
+
+#playerNameInput::placeholder {
+  color: #64ffda;
+  opacity: 0.7;
+}
+
+#confirmNameButton {
+  margin-top: 10px;
+}
+
+/* Estilos para el menú de la tienda */
+#shopMenu {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40px;
+  border-radius: 20px;
+  border: 2px solid #64ffda;
+  box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+  animation: fadeIn 1s ease-out;
+}
+
+#shopMenu h2 {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  text-shadow: 0 0 3px #64ffda;
+}
+
+#weaponSelection {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.weapon-button {
+  padding: 15px 25px;
+  font-size: 1.1em;
+  border: 2px solid #64ffda;
+  background: transparent;
+  color: #64ffda;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.weapon-button.owned {
+  background-color: rgba(100, 255, 218, 0.1);
+  cursor: default;
+}
+
+.weapon-button.selected {
+  background-color: #64ffda;
+  color: #000;
+  box-shadow: 0 0 5px #64ffda;
+  cursor: default;
+}
+
+.weapon-button.denied {
+  background-color: rgba(255, 0, 0, 0.2);
+  border-color: red;
+  color: red;
+  cursor: not-allowed;
+}
+
+.weapon-button.denied:hover {
+  background-color: rgba(255, 0, 0, 0.2);
+  color: red;
+  box-shadow: none;
+}
+
+.weapon-button:hover {
+  background-color: #64ffda;
+  color: #000;
+  box-shadow: 0 0 5px #64ffda;
+}
+
+/* Eliminar el efecto de desenfoque en pausa */
+.paused {
+  filter: none;
+}
+
+/* Animación de fadeIn */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animación y estilo para la notificación de oleada */
+@keyframes waveNotificationFade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+}
+
+#waveNotification {
+  text-shadow: 0 0 10px #64ffda, 0 0 20px #64ffda;
+  animation: waveNotificationFade 1s ease-out forwards;
+}
+
+#waveCountdown {
+  margin-top: 10px;
+  text-shadow: 0 0 10px #ff6464, 0 0 20px #ff6464;
+  animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.1); }
+}
+
+/* Mejorar la visibilidad en dificultades media y alta */
+canvas {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  position: fixed;
+  top: 0;
+  left: 0;
+  outline: none;
+}
+
+/* Pop-up de bienvenida */
+#welcomePopup {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #64ffda;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 2px solid #64ffda;
+  box-shadow: 0 0 10px rgba(100, 255, 218, 0.5);
+  animation: fadeIn 0.5s ease-out;
+  z-index: 1000;
+}
+
+/* Estilos para 3D */
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+#gameStats, #statusBars {
+  position: fixed;
+  z-index: 100;
+  pointer-events: none;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+#gameOver, #pauseScreen {
+  z-index: 1000;
+}
+
+/* Agregar efecto de brillo para elementos 3D */
+.glow {
+  text-shadow: 0 0 10px #64ffda;
+}
