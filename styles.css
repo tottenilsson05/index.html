@@ -1,0 +1,108 @@
+body {
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: monospace;
+  color: red;
+}
+
+.hal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.hal-eye {
+  width: 300px;
+  height: 300px;
+  background-color: red;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  animation: pulse 2s infinite;
+}
+
+.hal-lens {
+  width: 200px;
+  height: 200px;
+  background-color: black;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 0 50px rgba(255, 0, 0, 0.7);
+}
+
+.hal-frame {
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border: 10px solid gray;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.hal-dialog {
+  margin-top: 20px;
+  color: red;
+  font-size: 24px;
+  text-align: center;
+}
+
+.hal-input-container {
+  display: flex;
+  margin-top: 20px;
+  width: 100%;
+}
+
+#user-input {
+  flex-grow: 1;
+  padding: 10px;
+  background-color: #111;
+  color: red;
+  border: 2px solid red;
+  font-family: monospace;
+}
+
+#send-btn {
+  padding: 10px 20px;
+  background-color: red;
+  color: black;
+  border: none;
+  cursor: pointer;
+  font-family: monospace;
+}
+
+.conversation-history {
+  margin-top: 20px;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  text-align: left;
+}
+
+.user-message, .hal-message {
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.user-message {
+  background-color: #222;
+  text-align: right;
+}
+
+.hal-message {
+  background-color: #111;
+  text-align: left;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}

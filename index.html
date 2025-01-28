@@ -1,0 +1,24 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HAL 9000 Interactive AI</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="hal-container">
+    <div class="hal-eye">
+      <div class="hal-lens"></div>
+      <div class="hal-frame"></div>
+    </div>
+    <div class="hal-dialog">
+      <p id="hal-text">I'm sorry, Dave. I'm afraid I can't do that.</p>
+    </div>
+    <div class="hal-input-container">
+      <input type="text" id="user-input" placeholder="Speak to HAL...">
+      <button id="send-btn">Send</button>
+    </div>
+    <div id="conversation-history" class="conversation-history"></div>
+  </div>
+  <script type="module" src="hal.js"></script>
+</body>
+</html>
