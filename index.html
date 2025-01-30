@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>Generated Page</title>
+    <link rel='icon' type='image/x-icon' href='favicon.ico'>
+    <link rel='stylesheet' href='styles.css'>
+</head>
+<body>
+    <div class='page-container'>
+        <header class='header'><label>Autoplay Period Randomness:</label><input type="range" id="autoplayPeriodRandomness" min="0" max="100" step="1" value="0"><span>0 (100)</span></header>
+        <main class='main-content'>
+            <div class='hero-section'><div class='hero-content'><h2>Featured Content</h2></div></div>
+            <div class='content-section'><div class='content-block'><p>This advanced simulation demonstrates keyboard interrupt masking logic with ghost key detection. In addition to masking interrupts, the system now prevents false positives caused by multiple simultaneous key presses.</p><p>The masking logic allows the system to ignore certain key presses based on the current mask value, while the ghost key detection prevents erroneous interrupts from phantom key presses.</p><p>Try pressing multiple keys simultaneously to see how the system handles potential ghost keys.</p></div>
+<div class='content-block'><p>Advanced Masking Logic:</p><ol><li>Each key is assigned a bit in the 8-bit mask.</li><li>If the corresponding bit in the mask is 1, the key&apos;s interrupt is enabled.</li><li>If the corresponding bit in the mask is 0, the key&apos;s interrupt is disabled.</li><li>The system performs a bitwise AND operation between the key&apos;s bit and the mask.</li><li>If the result is non-zero, an interrupt is generated.</li><li>Ghost key detection is applied to prevent false positives from multiple key presses.</li></ol></div>
+<div class='content-block'><div id="newWindow" style="margin-bottom: 20px; padding: 10px; background-color: rgba(185, 103, 255, 0.1); border: 1px solid var(--border-color); border-radius: 5px;"><h3 style="color: var(--highlight-color); margin-top: 0; padding-top: 10px; font-size: 8px; line-height: 8px;"><div style="overflow: hidden; display: flex; justify-content: center; align-items: center; height: auto; min-height: 100px; max-height: 200px; width: 100%; max-width: 400px; margin: 0 auto;"><pre style="margin: 0; white-space: pre; font-family: monospace; font-size: clamp(3.456px, 1.3824vw, 6.912px); line-height: 1.2; text-align: center;"><span class="ascii-art" data-text="██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+███████████████████████████████▓▒▓████████████████████████████▒▓██████████████████████████
+██████████████▒▓▓█▓▓▓▓▒▒▒▒░░░░░▓█▓██████▒▒███████▓▓████████▓██▓░░░▓█████▓█████▓▒▓▓████████
+███████▓▓▒░░░░░░░░░░░░░░░░░░░▒██▒▒███▓░░░█████▒███▒░░▓█████▓░▓█▓░░░▓███▓░▒░░░▒▓███████████
+████████████▓▒░░░▓▓▓▓▓██▒░░░▓██░░▒████░░▒██▓░░▒░▒▓█▓░░░▒████░░▓█░░░██▒░░░░░▒▓█████████████
+████████████████▓█████▒░░░▒████░░▒████░░▓█░░▒▓▓▓░░▒█░░░░░▓██░░▓█░░░▒░░░▒▓█████████████████
+████████████████████▓░░░░░▒▓███░░░░░░░░░▓▒░░████▓░░▓░░▒▒░░░▓░░▓▓░░░░░▓████████████████████
+███████████████████▒░░░░▓█████▓░░▒▓▓▓▓░░▓▓░░▓███▒░░█░░███▒░░░░▓█░░░░░░▓███████████████████
+█████████████████▒░░░░▓███████▓░░▒████░░▓█▓░░░░░░░█▓░░▓████░░░█▓░░░▓▒░░░▓█████████████████
+████████████████▓░░░▓█████▓▓███▒▓▓████▒░▒████▒░▓███▒░▓██████▒░██░░▒█▓█▒░░░▒▓█▓████████████
+██████████████▒░░░░▓▓▒░░░░░░░▒▓▒██▓▓███▓▒█████▓████▓█▒████▒▒█▓▒█░█▓▒▒██▓░░░░▒█████████████
+█████████████▒░░░░░░░░▒▓▓▓▒█████▒░▒▓█▒░░░░░▒█▒▒▓█▓▒░░░░░▒█▓░░▒██▓▓░░▓█████▒░░░▓███████████
+███████████▓░░░░▒▓██████▓▒░░███▒░▒▓░▓░░▓██▓▓█▓░▒▓░░▓███▒░▒▓░░░░██▓░░▓██████▓▒░░▒██████████
+██████████▒░▒▓▒███████████▒░▒█▒░░█░░█▓▒░░░░░▓▓░▒░░▓█████░░▓░░▓░░▓▓░░██████████▓▒░▓████████
+█████████▓▓████████████████░░▒░░██░▒█▒████▓░░▓░▒▒░░▓███▒░░▓░░█▓░░░░░▓████████████▓▒▓██████
+███████▓▓███████████████████░░░███░░█▒░░▒░░▒▓█░▓█▓▒░░░░░▒█▓░▒███▒░░░██████████████████████
+████████████████████████████▓░▒███▒▒████▒█████░▓████▓▒████▓░██████░░██████████████████████
+█████████████████████████████▒█████▓██████████▒███████████▓▓███████▓▒█████████████████████
+██████████████████████████████████████████████▓███████████▓█████████▓▓████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████">██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+███████████████████████████████▓▒▓████████████████████████████▒▓██████████████████████████
+██████████████▒▓▓█▓▓▓▓▒▒▒▒░░░░░▓█▓██████▒▒███████▓▓████████▓██▓░░░▓█████▓█████▓▒▓▓████████
+███████▓▓▒░░░░░░░░░░░░░░░░░░░▒██▒▒███▓░░░█████▒███▒░░▓█████▓░▓█▓░░░▓███▓░▒░░░▒▓███████████
+████████████▓▒░░░▓▓▓▓▓██▒░░░▓██░░▒████░░▒██▓░░▒░▒▓█▓░░░▒████░░▓█░░░██▒░░░░░▒▓█████████████
+████████████████▓█████▒░░░▒████░░▒████░░▓█░░▒▓▓▓░░▒█░░░░░▓██░░▓█░░░▒░░░▒▓█████████████████
+████████████████████▓░░░░░▒▓███░░░░░░░░░▓▒░░████▓░░▓░░▒▒░░░▓░░▓▓░░░░░▓████████████████████
+███████████████████▒░░░░▓█████▓░░▒▓▓▓▓░░▓▓░░▓███▒░░█░░███▒░░░░▓█░░░░░░▓███████████████████
+█████████████████▒░░░░▓███████▓░░▒████░░▓█▓░░░░░░░█▓░░▓████░░░█▓░░░▓▒░░░▓█████████████████
+████████████████▓░░░▓█████▓▓███▒▓▓████▒░▒████▒░▓███▒░▓██████▒░██░░▒█▓█▒░░░▒▓█▓████████████
+██████████████▒░░░░▓▓▒░░░░░░░▒▓▒██▓▓███▓▒█████▓████▓█▒████▒▒█▓▒█░█▓▒▒██▓░░░░▒█████████████
+█████████████▒░░░░░░░░▒▓▓▓▒█████▒░▒▓█▒░░░░░▒█▒▒▓█▓▒░░░░░▒█▓░░▒██▓▓░░▓█████▒░░░▓███████████
+███████████▓░░░░▒▓██████▓▒░░███▒░▒▓░▓░░▓██▓▓█▓░▒▓░░▓███▒░▒▓░░░░██▓░░▓██████▓▒░░▒██████████
+██████████▒░▒▓▒███████████▒░▒█▒░░█░░█▓▒░░░░░▓▓░▒░░▓█████░░▓░░▓░░▓▓░░██████████▓▒░▓████████
+█████████▓▓████████████████░░▒░░██░▒█▒████▓░░▓░▒▒░░▓███▒░░▓░░█▓░░░░░▓████████████▓▒▓██████
+███████▓▓███████████████████░░░███░░█▒░░▒░░▒▓█░▓█▓▒░░░░░▒█▓░▒███▒░░░██████████████████████
+████████████████████████████▓░▒███▒▒████▒█████░▓████▓▒████▓░██████░░██████████████████████
+█████████████████████████████▒█████▓██████████▒███████████▓▓███████▓▒█████████████████████
+██████████████████████████████████████████████▓███████████▓█████████▓▓████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████
+██████████████████████████████████████████████████████████████████████████████████████████</span></pre></div></h3><p style="font-size: 14px;">ZhonkVision | Parameter: Dynamic 3D visualization that responds to audio amplitude using raymarching and color blending using mathematical formula. Interact for more ...</p></div><div id="controls"><div id="cli-prompt" style="margin-bottom: 10px;"><div id="asciiContainer" style="display: none;"></div></div><div id="parameterUI"><div class="parameter-group"><h3>Colors</h3><div class="parameter"><label for="color1">Color 1 (Bass)</label><input type="color" id="color1" value="#551a8b"></div><div class="parameter"><label for="color2">Color 2 (Mid)</label><input type="color" id="color2" value="#ff69b4"></div><div class="parameter"><label for="color3">Color 3 (Treble)</label><input type="color" id="color3" value="#00ffff"></div></div><div class="parameter-group"><h3>Shape</h3><div class="parameter"><label for="iterationCount">Iteration Count</label><input type="range" id="iterationCount" min="1" max="20" step="1" value="5"></div><div class="parameter"><label for="shapeComplexity">Shape Complexity</label><input type="range" id="shapeComplexity" min="0.1" max="2" step="0.1" value="1.0"></div><div class="parameter"><label for="particleShape">Particle Shape</label><select id="particleShape"><option value="0">Sphere</option><option value="1">Cube</option><option value="2">Torus</option><option value="3">Octahedron</option><option value="4">Tetrahedron</option></select></div></div><div class="parameter-group"><h3>Animation</h3><div class="parameter"><label for="rotationSpeed">Rotation Speed</label><input type="range" id="rotationSpeed" min="0.001" max="0.1" step="0.001" value="0.01"></div><div class="parameter"><label for="zoom">Zoom</label><input type="range" id="zoom" min="0.1" max="2" step="0.1" value="1.0"></div></div><div class="parameter-group"><h3>Audio Reactivity</h3><div class="parameter"><label for="audioReactivity">Audio Reactivity</label><input type="range" id="audioReactivity" min="0" max="1" step="0.1" value="0.5"></div><div class="parameter"><label for="hueRotateSpeed">Hue Rotate Speed</label><input type="range" id="hueRotateSpeed" min="0" max="1" step="0.1" value="0.1"></div><div class="parameter"><label for="hueRotateAmplitude">Hue Rotate Amplitude</label><input type="range" id="hueRotateAmplitude" min="0" max="1" step="0.1" value="0.1"></div><div class="parameter"><label for="bassIntensity">Bass Intensity</label><input type="range" id="bassIntensity" min="0" max="1" step="0.1" value="0.5"></div><div class="parameter"><label for="midIntensity">Mid Intensity</label><input type="range" id="midIntensity" min="0" max="1" step="0.1" value="0.5"></div><div class="parameter"><label for="trebleIntensity">Treble Intensity</label><input type="range" id="trebleIntensity" min="0" max="1" step="0.1" value="0.5"></div></div><div class="parameter-group"><h3>Effects</h3><div class="parameter"><label for="effectOption">Effect Type</label><select id="effectOption"><option value="0">None</option><option value="1">Vignette</option><option value="2">Chromatic Aberration</option><option value="3">Pulse</option><option value="4">Radial Blur</option><option value="5">Glitch</option></select></div><div class="parameter"><label for="effectIntensity">Effect Intensity</label><input type="range" id="effectIntensity" min="0" max="1" step="0.1" value="0.5"></div></div><div class="parameter-group"><h3>Formula</h3><div><div><pre style="font-size: 10px; line-height: 1.2; white-space: pre-wrap; overflow-x: auto; max-height: 500px; background-color: rgba(0, 0, 0, 0.1); padding: 10px; border-radius: 5px;"><span id="typed-text"></span><span class="cursor">|</span></pre></div></div></div><button id="resetButton">RESET</button></div></div><div id="audioControls"><label for="uploadMp3">Upload MP3</label><input type="file" id="uploadMp3" accept=".mp3"><button id="toggleMic">Toggle Microphone</button><audio id="audioPlayer" controls="" style="width: 100%; height: 40px; background-color: var(--bg-color); border: 2px solid var(--border-color); border-radius: 10px; margin-top: 15px; outline: none; box-shadow: 0 0 10px var(--highlight-color);"><source src="" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio></div></div></div>
+            <div class='features-section'><div class='features-grid'><div class='feature'>Featured Item</div></div></div>
+        </main>
+        <footer class='footer'><div class='footer-content'><p>Footer content</p></div></footer>
+    </div>
+</body>
+</html>
