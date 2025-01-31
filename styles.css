@@ -1,0 +1,71 @@
+
+:root {
+    --primary: hsl(183, 65%, 46%);
+    --secondary: hsl(59, 39%, 66%);
+    --accent: hsl(26, 85%, 44%);
+    --text: var(--primary);
+    --bg: #2F739C;
+    --spacing: 10px;
+    --radius: 1px;
+    --shadow: 4px 4px 15px 5px rgba(0,0,0,0.1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: linear-gradient(318deg, var(--primary), var(--secondary), var(--accent));
+    color: var(--text);
+    font-family: 'Georgia', serif;
+    line-height: 1,5;
+    background-image: repeating-linear-gradient(45deg, var(--primary) 0, var(--primary) 5px, transparent 5px, transparent 15px);
+}
+
+.page-container {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: var(--spacing);
+    padding: 17px;
+}
+
+
+.header {
+    background: linear-gradient(142deg, var(--primary), var(--secondary));
+    padding: 34px;
+    border-radius: var(--radius);
+    text-align: right;
+    transform: skew(-1deg)
+}
+
+.content-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 22px;
+}
+
+.content-block {
+    background: var(--bg);
+    padding: 21px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.content-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(237deg, var(--primary), var(--secondary), var(--accent));
+    opacity: 0.1;
+    transition: opacity 0.3s ease;
+}
+
+.content-block:hover::before {
+    opacity: 0.2;
+}
+
