@@ -1,0 +1,135 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TeamTEX: MSS (Monster Support Services) - 1998 Edition</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+  <script src="settings.js" defer></script>
+  <script src="achievements.js" defer></script>
+</head>
+<body>
+  <div class="screen-effect screen-noise"></div>
+  <div id="mainMenu" class="">
+    <div class="title-screen">
+      <div class="logo">TeamTEX: MSS</div>
+      <div class="subtitle">Monster Support Services - Est. 1983</div>
+      <div class="startup-text">
+        <div style="margin-bottom: 5px;">TEAMTEX OPERATING SYSTEM V3.2.1</div>
+        <div style="margin-bottom: 5px;">[ INITIALIZING MONSTER SUPPORT SERVICES ]</div>
+      </div>
+      <div class="menu-buttons">
+        <button id="startGame">BEGIN SHIFT</button>
+        <button id="openSettingsMenu" class="menu-secondary-btn">SETTINGS</button>
+        <button id="openAchievementsMenu" class="menu-secondary-btn">ACHIEVEMENTS</button>
+      </div>
+      <div class="company-info">
+        <p class="secret-text" data-secret="Click this text 5 times quickly to enable debug mode">WARNING: This software is property of TeamTEX Corporation.</p>
+        <p>Unauthorized access will be prosecuted to the full extent of the law.</p>
+        <p class="secret-text" data-secret="Type 'COFFEE' anywhere to reveal a hidden message"> 1998 TeamTEX Corp. All rights reserved.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="gameContainer" style="display: none;">
+    <div class="top-bar">
+      <button id="backToMenu" class="menu-btn">Back to Menu</button>
+    </div>
+    <nav id="monsterMenu">
+      <h2>Monster Index</h2>
+      <h3>TeamTEX</h3>
+      <div class="search-container">
+        <input type="text" id="monsterSearch" placeholder="Search monsters..." spellcheck="false">
+      </div>
+      <ul id="monsterList">
+        <!-- Monster list will be populated by JavaScript -->
+      </ul>
+    </nav>
+
+    <main id="monsterLogDisplay">
+      <button id="newCallBtn">New Call</button>
+
+      <div id="callDisplay">
+        <h3>Incoming Call</h3>
+        <!-- Call text will be inserted here by script.js -->
+      </div>
+
+      <div id="callInputArea">
+        <input type="text" id="monsterGuessInput" placeholder="Enter Monster Name">
+        <button id="submitGuessBtn">Submit</button>
+      </div>
+
+      <div id="feedbackDisplay">
+        <!-- Feedback message will be inserted here by script.js -->
+      </div>
+
+      <!-- bossFeedbackDisplay and accuracyDisplay are inserted here by script.js -->
+
+      <div id="logContent">
+        <!-- Loading message and monster logs will be inserted here by script.js -->
+      </div>
+    </main>
+  </div>
+
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <h2>Settings</h2>
+      <div class="settings-group">
+        <h3>Sound Effects</h3>
+        <label>
+          <input type="checkbox" id="sfxToggle" checked>
+          Enable Sound Effects
+        </label>
+      </div>
+      <div class="settings-group">
+        <h3>Visual Effects</h3>
+        <label>
+          <input type="checkbox" id="screenEffectsToggle" checked>
+          Enable Screen Effects
+        </label>
+        <label>
+          <input type="checkbox" id="glitchEffectsToggle" checked>
+          Enable Glitch Effects
+        </label>
+      </div>
+      <div class="settings-group">
+        <h3>Accessibility</h3>
+        <label>
+          <input type="checkbox" id="reducedMotionToggle">
+          Reduced Motion
+        </label>
+        <label>
+          <input type="checkbox" id="highContrastToggle">
+          High Contrast
+        </label>
+      </div>
+      <div class="settings-group">
+        <h3>Music</h3>
+        <label>
+          Music Volume:
+          <input type="range" id="musicVolumeSlider" min="0" max="100" value="50">
+        </label>
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <button id="closeSettings">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="achievementsModal" class="modal">
+    <div class="modal-content">
+      <h2>Achievements</h2>
+      <div id="achievementsList">
+        <!-- Populated by achievements.js -->
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <button id="closeAchievements">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>V1.4 - MSS Terminal Build 3.2.1</p>
+  </footer>
+</body>
+</html>
