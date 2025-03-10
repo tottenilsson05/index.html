@@ -1,0 +1,66 @@
+body {
+    background-color: #ffe6f2; /* Light pink background */
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Hide scrollbars */
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+}
+
+h1 {
+    color: #ff66b3; /* Hot pink heading */
+    text-shadow: 2px 2px 4px #800040; /* Darker pink shadow */
+}
+
+.logo {
+    width: 200px; /* Adjust as needed */
+    margin-bottom: 20px;
+}
+
+.lollipop-field {
+    position: relative;
+    width: 100%;
+    height: 80vh; /* Take up most of the viewport height */
+}
+
+.lollipop {
+    position: absolute;
+    width: 50px;
+    height: 100px;
+    /* background-color: #ff00ff; Example color - will be set by JS */
+    border-radius: 50%;
+    bottom: 0; /* Start at the bottom */
+    animation: rise 5s linear infinite; /* Float upwards */
+}
+
+.lollipop::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 4px;
+    height: 30px;
+    background-color: brown; /* Lollipop stick */
+    transform: translateX(-50%);
+}
+
+@keyframes rise {
+    0% {
+        transform: translateY(0);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-120vh); /* Rise above the viewport */
+        opacity: 0;
+    }
+}
