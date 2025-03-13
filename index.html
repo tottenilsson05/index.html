@@ -1,0 +1,133 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Ouija Board</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="ghost-container">
+            <div class="ghost">
+                <div class="ghost-body">
+                    <div class="ghost-face">
+                        <div class="eyes">
+                            <div class="eye left"></div>
+                            <div class="eye right"></div>
+                        </div>
+                        <div class="mouth"></div>
+                    </div>
+                </div>
+                <div class="ghost-tail"></div>
+            </div>
+        </div>
+        
+        <div class="ouija-board">
+            <div class="board-top">
+                <div class="title">OUIJA</div>
+                <div class="subtitle">SPIRIT BOARD</div>
+            </div>
+            
+            <div class="board-letters">
+                <div class="letter-row">
+                    <div class="letter" data-letter="A">A</div>
+                    <div class="letter" data-letter="B">B</div>
+                    <div class="letter" data-letter="C">C</div>
+                    <div class="letter" data-letter="D">D</div>
+                    <div class="letter" data-letter="E">E</div>
+                    <div class="letter" data-letter="F">F</div>
+                    <div class="letter" data-letter="G">G</div>
+                </div>
+                <div class="letter-row">
+                    <div class="letter" data-letter="H">H</div>
+                    <div class="letter" data-letter="I">I</div>
+                    <div class="letter" data-letter="J">J</div>
+                    <div class="letter" data-letter="K">K</div>
+                    <div class="letter" data-letter="L">L</div>
+                    <div class="letter" data-letter="M">M</div>
+                </div>
+                <div class="letter-row">
+                    <div class="letter" data-letter="N">N</div>
+                    <div class="letter" data-letter="O">O</div>
+                    <div class="letter" data-letter="P">P</div>
+                    <div class="letter" data-letter="Q">Q</div>
+                    <div class="letter" data-letter="R">R</div>
+                    <div class="letter" data-letter="S">S</div>
+                </div>
+                <div class="letter-row">
+                    <div class="letter" data-letter="T">T</div>
+                    <div class="letter" data-letter="U">U</div>
+                    <div class="letter" data-letter="V">V</div>
+                    <div class="letter" data-letter="W">W</div>
+                    <div class="letter" data-letter="X">X</div>
+                    <div class="letter" data-letter="Y">Y</div>
+                    <div class="letter" data-letter="Z">Z</div>
+                </div>
+                <div class="letter-row">
+                    <div class="letter" data-letter="0">0</div>
+                    <div class="letter" data-letter="1">1</div>
+                    <div class="letter" data-letter="2">2</div>
+                    <div class="letter" data-letter="3">3</div>
+                    <div class="letter" data-letter="4">4</div>
+                    <div class="letter" data-letter="5">5</div>
+                </div>
+                <div class="letter-row">
+                    <div class="letter" data-letter="6">6</div>
+                    <div class="letter" data-letter="7">7</div>
+                    <div class="letter" data-letter="8">8</div>
+                    <div class="letter" data-letter="9">9</div>
+                    <div class="letter" data-letter="YES">YES</div>
+                    <div class="letter" data-letter="NO">NO</div>
+                </div>
+                <div class="letter-row">
+                    <div class="letter" data-letter=" ">SPACE</div>
+                    <div class="letter" data-letter=".">.</div>
+                </div>
+            </div>
+            
+            <div class="planchette-container">
+                <div class="planchette">
+                    <div class="planchette-window"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="personality-container">
+                <div class="personality-label">Spirit personality (describe who/what you're contacting):</div>
+                <input type="text" id="personality-input" placeholder="a mysterious spirit communicating through a Ouija board">
+            </div>
+            <div class="question-container">
+                <input type="text" id="question-input" placeholder="Ask the spirits a question...">
+                <button id="ask-button">ASK</button>
+            </div>
+            <div class="output-container">
+                <div class="output-label">Spirit says:</div>
+                <div id="output-text"></div>
+            </div>
+            <div class="emotion-display">
+                <div class="emotion-label">Ghost's Emotion:</div>
+                <div id="current-emotion">Neutral</div>
+                <div class="audio-toggle">
+                    <input type="checkbox" id="enable-audio" checked>
+                    <label for="enable-audio">Spirit Box Audio</label>
+                </div>
+            </div>
+            <button id="ai-info-button">AI Learning Info</button>
+            <!-- Neural Network Debug display will be added dynamically -->
+        </div>
+    </div>
+    
+    <script type="importmap">
+    {
+        "imports": {
+            "reinforcement-learning": "https://cdn.jsdelivr.net/npm/reinforcement-learning@1.0.0/+esm"
+        }
+    }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
