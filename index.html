@@ -1,0 +1,58 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>$TREG</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1 class="title">$TREG</h1>
+  
+  <svg class="swiss-background" viewBox="0 0 1000 500">
+    <!-- Red background -->
+    <rect width="1000" height="500" fill="#ff0000"/>
+    
+    <!-- Sun -->
+    <g class="sun">
+      <circle cx="100" cy="100" r="40"/>
+      <path d="M100 40 L100 0 M100 160 L100 200 M40 100 L0 100 M160 100 L200 100 M60 60 L30 30 M140 140 L170 170 M140 60 L170 30 M60 140 L30 170"/>
+    </g>
+    
+    <!-- Trees -->
+    <g class="tree" transform="translate(800, 200)">
+      <path class="tree-trunk" d="M-10 150 L10 150 L10 200 L-10 200 Z"/>
+      <path d="M0 0 L-40 150 L40 150 Z"/>
+    </g>
+    <g class="tree" transform="translate(700, 250)">
+      <path class="tree-trunk" d="M-8 100 L8 100 L8 150 L-8 150 Z"/>
+      <path d="M0 0 L-30 100 L30 100 Z"/>
+    </g>
+    
+    <!-- Flowers -->
+    <g class="flower" transform="translate(200, 400)">
+      <path class="flower-stem" d="M0 0 L0 -30"/>
+      <circle class="flower-head" cx="0" cy="-35" r="8"/>
+    </g>
+    <g class="flower" transform="translate(250, 420)">
+      <path class="flower-stem" d="M0 0 L0 -40"/>
+      <circle class="flower-head" cx="0" cy="-45" r="10"/>
+    </g>
+    <g class="flower" transform="translate(150, 410)">
+      <path class="flower-stem" d="M0 0 L0 -35"/>
+      <circle class="flower-head" cx="0" cy="-40" r="9"/>
+    </g>
+    <g class="flower" transform="translate(600, 430)">
+      <path class="flower-stem" d="M0 0 L0 -30"/>
+      <circle class="flower-head" cx="0" cy="-35" r="8"/>
+    </g>
+    <g class="flower" transform="translate(500, 410)">
+      <path class="flower-stem" d="M0 0 L0 -35"/>
+      <circle class="flower-head" cx="0" cy="-40" r="9"/>
+    </g>
+  </svg>
+
+  <div class="frog-container">
+    <img class="frog-image" src="FRegmed.png" alt="Swiss Frog">
+  </div>
+</body>
+</html>
