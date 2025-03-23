@@ -1,0 +1,121 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  background-color: pink;
+  overflow: hidden;
+}
+
+.swiss-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+rect {
+  fill: pink;
+}
+
+.cross {
+  fill: #fff;
+}
+
+.frog-container {
+  width: 300px;
+  height: 300px;
+  animation: bounce 2s infinite ease-in-out;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.3));
+}
+
+.frog-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.title {
+  position: fixed;
+  top: 20px;
+  text-align: center;
+  font-family: 'Impact', sans-serif;
+  font-size: 4em;
+  -webkit-text-stroke: 2px #000;
+  color: #fff;
+  text-shadow: 
+    0 0 10px rgba(255, 192, 203, 0.5),
+    0 0 20px rgba(255, 255, 255, 0.5);
+  animation: titleWave 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes titleWave {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(2deg);
+  }
+}
+
+.sun {
+  fill: #FFD700;
+  animation: sunRotate 20s linear infinite;
+  transform-origin: center;
+}
+
+.tree {
+  fill: #2D5A27;
+}
+
+.tree-trunk {
+  fill: #8B4513;
+}
+
+.flower {
+  animation: flowerSway 3s ease-in-out infinite alternate;
+  transform-origin: bottom;
+}
+
+.flower-stem {
+  fill: #2D5A27;
+}
+
+.flower-head {
+  fill: #FF69B4;
+}
+
+.grass {
+  fill: #4CAF50;
+}
+
+@keyframes sunRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes flowerSway {
+  from {
+    transform: rotate(-5deg);
+  }
+  to {
+    transform: rotate(5deg);
+  }
+}
