@@ -1,0 +1,123 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+#tsparticles {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.usa-background {
+  display: none;
+}
+
+.stripe {
+  fill: #fff;
+}
+
+.star {
+  fill: #fff;
+  transform-origin: center;
+  animation: twinkle 3s infinite ease-in-out;
+}
+
+.soltoga-container {
+  position: relative;
+  z-index: 2;
+  animation: float 3s infinite ease-in-out;
+  width: 300px;
+  height: auto;
+}
+
+.soltoga-image {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+}
+
+.poop-container {
+  display: none;
+}
+
+.poop-body {
+  fill: #8B4513;
+  stroke: #663300;
+  stroke-width: 2;
+}
+
+.poop-eye {
+  fill: #000;
+  animation: blink 3s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes blink {
+  0%, 95%, 100% {
+    transform: scaleY(1);
+  }
+  97.5% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.title {
+  position: fixed;
+  top: 20px;
+  text-align: center;
+  font-family: 'Impact', sans-serif;
+  font-size: 4em;
+  -webkit-text-stroke: 2px #cc9900;
+  color: #ffff00;
+  text-shadow: 
+    0 0 10px rgba(255, 255, 0, 0.5),
+    0 0 20px rgba(204, 153, 0, 0.5);
+  z-index: 2;
+  animation: titleWave 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes titleWave {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(2deg);
+  }
+}
