@@ -1,0 +1,94 @@
+
+:root {
+    --primary: hsl(128, 82%, 66%);
+    --secondary: hsl(239, 68%, 49%);
+    --accent: hsl(350, 80%, 63%);
+    --text: #A51C3E;
+    --bg: #AF6F73;
+    --spacing: 10px;
+    --radius: 18px;
+    --shadow: -4px 1px 10px 5px rgba(0,0,0,0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Verdana', sans-serif;
+    line-height: 1,8;
+    background-image: repeating-radial-gradient(var(--primary) 0, var(--primary) 5px, transparent 5px, transparent 15px);
+}
+
+.page-container {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 30% 1fr;
+    gap: var(--spacing);
+    padding: 13px;
+}
+
+.main-content {
+    grid-column: 2;
+    grid-row: 1 / -1;
+}
+
+.header, .footer {
+    grid-column: 1;
+}
+
+
+.header {
+    background: linear-gradient(7deg, var(--primary), var(--secondary), var(--accent));
+    padding: 38px;
+    border-radius: var(--radius);
+    text-align: center;
+    transform: rotate(5deg)
+}
+
+.content-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(272px, 1fr));
+    gap: 27px;
+    padding: 28px;
+}
+
+.content-block {
+    background: var(--bg);
+    padding: 21px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.content-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(14deg, var(--primary), var(--secondary), var(--accent));
+    opacity: 0.1;
+    transition: opacity 0.3s ease;
+}
+
+.content-block:hover::before {
+    opacity: 0.2;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-11px); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1,03); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px var(--accent); }
+    50% { box-shadow: 0 0 20px var(--accent); }
+}
