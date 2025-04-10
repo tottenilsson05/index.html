@@ -1,0 +1,28 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: yellow; /* Updated background color */
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.logo-container {
+    text-align: center;
+}
+
+.logo-image {
+    display: block;
+    margin: 0 auto 20px; /* Center image and add space below */
+    width: 250px; /* Make the image larger */
+    height: auto; /* Maintain aspect ratio */
+}
+
+.logo-title {
+    font-size: 4rem; /* Make the title large */
+    color: #2c3e50; /* A nice dark color */
+    margin: 0; /* Remove default margin */
+    font-weight: bold;
+    text-transform: uppercase; /* Make it uppercase like a logo */
+}
