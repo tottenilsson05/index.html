@@ -1,0 +1,140 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #1a1a2e;
+    color: #e0e0fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background-color: #162447;
+    border: 2px solid #1f4068;
+    border-radius: 15px;
+    padding: 30px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 0 20px rgba(27, 38, 59, 0.7);
+    text-align: center;
+}
+
+h1 {
+    color: #e43f5a;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    text-shadow: 0 0 5px #e43f5a;
+}
+
+.ai-status {
+    background-color: #1b1b3a;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    border: 1px dashed #4a4a7f;
+}
+
+#intelligence-level {
+    font-weight: bold;
+    color: #50fa7b; /* Brighter color for the level */
+}
+
+.puzzle-area {
+    background-color: #1b1b3a;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px dashed #4a4a7f;
+}
+
+#ai-message {
+    font-style: italic;
+    color: #bd93f9; /* Lighter purple for AI message */
+    margin-bottom: 15px;
+}
+
+#puzzle-text {
+    font-size: 1.2em;
+    color: #f8f8f2; /* Off-white for puzzle text */
+    font-weight: bold;
+    line-height: 1.5;
+}
+
+.input-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #4a4a7f;
+    border-radius: 5px;
+    background-color: #282a36; /* Darker input background */
+    color: #f8f8f2;
+    font-family: inherit;
+    font-size: 1em;
+}
+
+input[type="text"]::placeholder {
+    color: #6272a4; /* Muted placeholder color */
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e43f5a;
+    color: white;
+    font-family: inherit;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: #ff5c77;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+#new-puzzle-button {
+    background-color: #1f8a70; /* Different color for new puzzle */
+}
+
+#new-puzzle-button:hover {
+    background-color: #25a88a;
+}
+
+.feedback {
+    margin-top: 15px;
+    font-size: 1.1em;
+    min-height: 25px; /* Reserve space for feedback */
+    transition: opacity 0.5s ease-in-out;
+}
+
+.feedback.correct {
+    color: #50fa7b; /* Green for correct */
+    font-weight: bold;
+}
+
+.feedback.incorrect {
+    color: #ff5555; /* Red for incorrect */
+    font-weight: bold;
+}
+
+.feedback.thinking {
+     color: #f1fa8c; /* Yellow for thinking */
+     font-style: italic;
+}
+
