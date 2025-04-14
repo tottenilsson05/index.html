@@ -1,0 +1,28 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0; /* Optional: Add a background color */
+    font-family: sans-serif;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px; /* Space between title and logo */
+    font-size: 3em; /* Adjust title size as needed */
+    font-weight: bold;
+}
+
+.logo {
+    max-width: 80%; /* Make logo responsive */
+    height: auto;
+    display: block;
+    margin: 0 auto; /* Center image */
+}
+
