@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #000; /* Black background as seen in the asset */
+    font-family: sans-serif;
+    color: #fff; /* White text for contrast */
+}
+
+.container {
+    text-align: center;
+}
+
+.logo {
+    display: block;
+    margin: 0 auto 20px; /* Center logo and add space below */
+    width: 300px; /* Adjust size as needed */
+    max-width: 80%; /* Ensure it doesn't overflow small screens */
+    height: auto;
+}
+
+.title {
+    font-size: 6rem; /* Make title large */
+    font-weight: bold;
+    color: #4CAF50; /* Green color similar to the logo */
+    margin: 0;
+    text-transform: uppercase; /* Match the case */
+    letter-spacing: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .title {
+        font-size: 4rem;
+    }
+    .logo {
+        width: 200px;
+    }
+}
+
