@@ -1,0 +1,28 @@
+body {
+    background-color: black;
+    color: white; /* Set default text color to white for visibility */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: sans-serif;
+}
+
+.container {
+    text-align: center;
+}
+
+/*
+h1 {
+    font-size: 3rem; 
+    margin-bottom: 20px;
+}
+*/
+
+.logo {
+    display: block;
+    max-width: 80%; /* Prevent image from exceeding viewport width */
+    height: auto; /* Maintain aspect ratio */
+    margin: 0 auto; /* Center the image */
+}
