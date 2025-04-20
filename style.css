@@ -1,0 +1,58 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f0e4a4; /* Light yellow background */
+    overflow: hidden; /* Hide scrollbars caused by animation */
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Full viewport height */
+    text-align: center;
+}
+
+#logo {
+    max-width: 50%; /* Make the logo large, but responsive */
+    height: auto;
+    max-height: 40vh; /* Limit height */
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite; /* Apply floating animation */
+}
+
+h1 {
+    font-size: clamp(2.5rem, 8vw, 5rem); /* Responsive font size */
+    color: #5c4e4e; /* Dark gray color */
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+     animation: pulse 2s ease-in-out infinite alternate; /* Subtle pulse effect */
+}
+
+/* Floating animation */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px); /* Float up */
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Pulse animation */
+@keyframes pulse {
+    from {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    to {
+        transform: scale(1.03);
+        opacity: 1;
+    }
+}
+
