@@ -1,0 +1,28 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0e68c; /* Light Khaki - lemon-ish background */
+    font-family: 'Arial', sans-serif;
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    color: #8b4513; /* Saddle Brown */
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+#logo {
+    max-width: 80%; /* Responsive width */
+    height: auto;
+    max-height: 400px; /* Limit maximum height */
+    display: block;
+    margin: 0 auto; /* Center image */
+}
+
