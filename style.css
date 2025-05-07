@@ -1,0 +1,50 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #2c3e50; /* Dark, "cool" background */
+    color: #ecf0f1; /* Light text color */
+    overflow: hidden; /* Hide scrollbars if content slightly overflows */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Default font for the page */
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+#mainLogo {
+    max-width: 60vw; /* Makes the logo "big" relative to viewport width */
+    max-height: 60vh; /* Makes the logo "big" relative to viewport height */
+    object-fit: contain; /* Ensures the image aspect ratio is maintained */
+    animation: coolAnimation 8s ease-in-out infinite;
+}
+
+@keyframes coolAnimation {
+    0% {
+        transform: translateY(0px) rotate(-2deg) scale(1);
+        filter: drop-shadow(0px 0px 15px rgba(236, 240, 241, 0.3));
+    }
+    50% {
+        transform: translateY(-25px) rotate(2deg) scale(1.05);
+        filter: drop-shadow(0px 0px 25px rgba(236, 240, 241, 0.5));
+    }
+    100% {
+        transform: translateY(0px) rotate(-2deg) scale(1);
+        filter: drop-shadow(0px 0px 15px rgba(236, 240, 241, 0.3));
+    }
+}
+
+/* Media query for smaller screens to adjust sizes */
+@media (max-width: 768px) {
+    #mainLogo {
+        max-width: 70vw;
+        max-height: 50vh;
+    }
+}
