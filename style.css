@@ -1,0 +1,70 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400&display=swap');
+
+body {
+    background-color: #006400; /* DarkGreen */
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
+    color: #333; /* Default text color */
+}
+
+.container {
+    text-align: center;
+}
+
+#logo {
+    width: 250px; /* Increased size for "big logo" */
+    height: auto;
+    animation: float 3s ease-in-out infinite;
+    display: block; /* Ensure it's a block for margin auto to work if needed */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#title {
+    font-family: 'Pacifico', cursive; /* Fun, cool font */
+    font-size: 5em; /* Large and impactful title */
+    color: #FFFFFF; /* White text for contrast */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Basic shadow for depth */
+    margin-top: 20px;
+    animation: glow 2.5s ease-in-out infinite alternate;
+}
+
+/* Animation for the logo to float up and down */
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-25px); /* Increased float distance */
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Animation for the title to have a glowing effect */
+@keyframes glow {
+    from {
+        text-shadow: 0 0 5px #fff, 
+                     0 0 10px #fff, 
+                     0 0 15px #69f0ae, /* Lighter, minty green glow */
+                     0 0 20px #69f0ae, 
+                     0 0 25px #69f0ae, 
+                     0 0 30px #69f0ae, 
+                     0 0 35px #69f0ae;
+    }
+    to {
+        text-shadow: 0 0 10px #fff, 
+                     0 0 20px #e0ffe0, /* Very light green/whiteish glow */
+                     0 0 30px #00c853, /* Darker, vibrant green glow */
+                     0 0 40px #00c853, 
+                     0 0 50px #00c853, 
+                     0 0 60px #00c853, 
+                     0 0 70px #00c853;
+    }
+}
