@@ -1,0 +1,97 @@
+body {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Arial', sans-serif; /* A common, clean font */
+    overflow: hidden; /* Hide scrollbars if animations cause overflow */
+}
+
+.container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#logo {
+    width: 250px; /* Adjust size as needed for "big" */
+    max-width: 60vw; /* Responsive max width */
+    height: auto;
+    margin-bottom: 20px;
+    animation: pumpAnimation 2s infinite ease-in-out;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+#logo:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    animation-play-state: paused; /* Pause animation on hover for a different feel */
+}
+
+#logo:active {
+    transform: scale(1.05); /* Slightly shrink on click */
+}
+
+#title {
+    font-size: 4.5em; /* Large title */
+    color: #333; /* Dark grey for good contrast on white */
+    margin: 0;
+    font-weight: bold;
+    animation: titlePopIn 1s ease-out forwards, titleGlow 3s infinite alternate 1s; /* Chain animations */
+    opacity: 0; /* Start hidden for pop-in */
+    letter-spacing: 2px;
+}
+
+/* Logo animation: a "pumping" or breathing effect */
+@keyframes pumpAnimation {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.08);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Title animation: pop in effect */
+@keyframes titlePopIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Title animation: subtle glow, matching character color theme */
+@keyframes titleGlow {
+    0% {
+        text-shadow: 0 0 5px rgba(144, 238, 144, 0.5); /* Light green glow */
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(60, 179, 113, 0.8), 0 0 30px rgba(60, 179, 113, 0.5); /* Medium sea green glow */
+    }
+    100% {
+        text-shadow: 0 0 5px rgba(144, 238, 144, 0.5);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    #logo {
+        width: 180px;
+    }
+    #title {
+        font-size: 3em;
+    }
+}
+
