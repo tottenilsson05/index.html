@@ -1,0 +1,70 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif; /* Fallback font */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(45deg, #499bea, #7db5f0, #3c84d0, #87CEEB);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.container {
+    text-align: center;
+}
+
+.logo {
+    width: 250px; 
+    height: auto;
+    display: block;
+    margin: 0 auto 20px;
+    cursor: pointer; /* Indicate interactivity */
+    /* Initial state set by browser defaults, animations handled by JS */
+}
+
+.title {
+    font-family: 'Luckiest Guy', cursive;
+    font-size: 6em; 
+    color: #FFFFFF;
+    
+    /* Initial state for JS animation */
+    opacity: 0;
+    transform: translateY(30px);
+    
+    /* Base shadow for depth, applied before glow animation starts */
+    text-shadow: 2px 2px 4px #00000030; 
+}
+
+.title.pulse-glow-active {
+    /* This class is added by JS after intro animation */
+    /* Initial shadow state for the start of the pulseGlow animation */
+    text-shadow: 2px 2px 4px #00000050, 
+                 0 0 8px #FFF, 0 0 12px #FFF, 
+                 0 0 18px #87CEFA, 0 0 30px #87CEFA, 
+                 0 0 35px #87CEFA, 0 0 45px #87CEFA;
+    animation: pulseGlow 2.5s infinite alternate ease-in-out;
+}
+
+@keyframes pulseGlow {
+    from {
+        text-shadow: 2px 2px 4px #00000050, 
+                     0 0 8px #FFF, 0 0 12px #FFF, 
+                     0 0 18px #87CEFA, 0 0 30px #87CEFA, 
+                     0 0 35px #87CEFA, 0 0 45px #87CEFA;
+    }
+    to {
+        text-shadow: 2px 2px 4px #00000060, 
+                     0 0 20px #FFF, 0 0 30px #FFF, 
+                     0 0 40px #00BFFF, 0 0 70px #00BFFF, 
+                     0 0 80px #00BFFF, 0 0 100px #00BFFF;
+    }
+}
+
