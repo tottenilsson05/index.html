@@ -1,0 +1,82 @@
+
+:root {
+    --primary: hsl(216, 37%, 48%);
+    --secondary: hsl(81, 41%, 60%);
+    --accent: hsl(341, 50%, 68%);
+    --text: var(--primary);
+    --bg: var(--secondary);
+    --spacing: 10px;
+    --radius: 6px;
+    --shadow: 3px 4px 9px 4px rgba(0,0,0,0.2);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1,0;
+    background-image: radial-gradient(circle at center, var(--primary) 0%, transparent 60%);
+}
+
+.page-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing);
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 27px;
+}
+
+
+.header {
+    background: linear-gradient(71deg, var(--primary), var(--secondary));
+    padding: 40px;
+    border-radius: var(--radius);
+    text-align: right;
+    transform: skew(-5deg)
+}
+
+.content-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    padding: 13px;
+}
+
+.content-block {
+    background: var(--bg);
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.content-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(9deg, var(--primary), var(--secondary), var(--accent));
+    opacity: 0.1;
+    transition: opacity 0.3s ease;
+}
+
+.content-block:hover::before {
+    opacity: 0.2;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1,00); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px var(--accent); }
+    50% { box-shadow: 0 0 20px var(--accent); }
+}
