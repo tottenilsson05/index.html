@@ -1,0 +1,94 @@
+
+:root {
+    --primary: hsl(300, 56%, 57%);
+    --secondary: hsl(196, 31%, 46%);
+    --accent: hsl(137, 61%, 61%);
+    --text: #03ED69;
+    --bg: #37D040;
+    --spacing: 5px;
+    --radius: 13px;
+    --shadow: 1px 3px 9px 4px rgba(0,0,0,0.2);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Roboto', sans-serif;
+    line-height: 1,3;
+    background-image: linear-gradient(45deg, var(--primary) 25%, transparent 25%), linear-gradient(-45deg, var(--primary) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, var(--primary) 75%), linear-gradient(-45deg, transparent 75%, var(--primary) 75%);
+}
+
+.page-container {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 37% 1fr;
+    gap: var(--spacing);
+    padding: 28px;
+}
+
+.main-content {
+    grid-column: 2;
+    grid-row: 1 / -1;
+}
+
+.header, .footer {
+    grid-column: 1;
+}
+
+
+.header {
+    background: linear-gradient(227deg, var(--primary), var(--secondary), var(--accent));
+    padding: 35px;
+    border-radius: var(--radius);
+    text-align: center;
+    
+}
+
+.content-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(254px, 1fr));
+    gap: 17px;
+    padding: 14px;
+}
+
+.content-block {
+    background: var(--bg);
+    padding: 21px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.content-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(50deg, var(--primary), var(--secondary), var(--accent));
+    opacity: 0.1;
+    transition: opacity 0.3s ease;
+}
+
+.content-block:hover::before {
+    opacity: 0.2;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0,95); }
+}
+
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 5px var(--accent); }
+    50% { box-shadow: 0 0 20px var(--accent); }
+}
