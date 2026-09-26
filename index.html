@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>OFFLINE</title>
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/tottenilsson05/index.html/main/offline/favicon.png">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/tottenilsson05/index.html/main/offline/apple-touch-icon.png">
 <meta name="description" content="Crypto is entering the kind of market where every hour offline feels expensive. OFFLINE — every hour matters.">
 <meta property="og:title" content="OFFLINE">
 <meta property="og:description" content="In this market, being offline has a cost. Every hour matters.">
-<meta property="og:image" content="bg.webp">
+<meta property="og:image" content="https://raw.githubusercontent.com/tottenilsson05/index.html/main/offline/bg.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
@@ -38,7 +38,7 @@
   }
   .breathe{position:absolute;inset:0;animation:breathe 48s ease-in-out infinite alternate;transform-origin:50% 62%}
   @keyframes breathe{from{transform:scale(1)}to{transform:scale(1.035)}}
-  .layer{position:absolute;inset:0;background:url(bg.webp) center/100% 100% no-repeat}
+  .layer{position:absolute;inset:0;background:url(https://raw.githubusercontent.com/tottenilsson05/index.html/main/offline/bg.webp) center/100% 100% no-repeat}
 
   /* sky drifts slowly; its lower edge fades into the still horizon */
   .sky{
@@ -184,11 +184,10 @@
       <div class="tag"><b>OFFLINE</b> — every hour matters.</div>
       <div class="player"><span class="hint" id="hint" hidden>Tap anywhere for sound</span>
       <button class="sound" id="sound" type="button" aria-pressed="false">
-        <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="soundLabel">Play</span><span class="track">Someone Out of Town</span>
+        <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="soundLabel">Play</span><span class="track">Birdsong</span>
       </button></div>
     </div>
   </main>
-  <audio id="song" src="song.mp3" loop autoplay preload="auto"></audio>
 
 <script>
 /* ---------- TV static ---------- */
@@ -297,40 +296,100 @@
   if (!reduce) requestAnimationFrame(tick);
 })();
 
-/* ---------- music: starts on landing, one button to pause/play ---------- */
+/* ---------- ambience: birdsong + soft wind, synthesized (no audio file) ---------- */
 (() => {
-  const audio = document.getElementById('song');
   const btn = document.getElementById('sound'), label = document.getElementById('soundLabel');
   const hint = document.getElementById('hint');
-  audio.volume = 0.6;
-  let userPaused = false, unlocked = false;
+  let ctx, master, on = false, userPaused = false, timer;
+  const rand = (a, b) => a + Math.random() * (b - a);
 
-  function setUI(on){
-    btn.classList.toggle('on', on);
-    btn.setAttribute('aria-pressed', on);
-    btn.setAttribute('aria-label', on ? 'Pause music' : 'Play music');
-    label.textContent = on ? 'Pause' : 'Play';
+  function setUI(v){
+    btn.classList.toggle('on', v);
+    btn.setAttribute('aria-pressed', v);
+    btn.setAttribute('aria-label', v ? 'Pause sound' : 'Play sound');
+    label.textContent = v ? 'Pause' : 'Play';
   }
-  setUI(true);                                   // the song is meant to be on from the start
-  audio.addEventListener('playing', () => { unlocked = true; hint.hidden = true; setUI(true); });
-  audio.addEventListener('pause', () => { if (userPaused) setUI(false); });
+
+  function build(){
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+    // wind: looping filtered noise, slowly breathing
+    const len = ctx.sampleRate * 4, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+    let last = 0;
+    for (let i = 0; i < len; i++){ last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.5; }
+    const src = ctx.createBufferSource(); src.buffer = buf; src.loop = true;
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 500;
+    const wg = ctx.createGain(); wg.gain.value = 0.18;
+    const lfo = ctx.createOscillator(), lfoG = ctx.createGain();
+    lfo.frequency.value = 0.07; lfoG.gain.value = 0.08; lfo.connect(lfoG).connect(wg.gain); lfo.start();
+    src.connect(lp).connect(wg).connect(master); src.start();
+  }
+
+  // one chirp: fast pitch sweep with a sharp envelope, panned somewhere in the field
+  function chirp(t, f0, f1, dur, vol, pan){
+    const o = ctx.createOscillator(), g = ctx.createGain(), p = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    o.type = 'sine';
+    o.frequency.setValueAtTime(f0, t);
+    o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + dur * 0.15);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    if (p){ p.pan.value = pan; o.connect(g).connect(p).connect(master); } else o.connect(g).connect(master);
+    o.start(t); o.stop(t + dur + 0.02);
+  }
+
+  // a few different "species" so it doesn't sound like one looping bird
+  const songs = [
+    (t, v, p) => { const n = Math.round(rand(3, 7)), base = rand(3200, 4200);          // quick trill
+      for (let i = 0; i < n; i++) chirp(t + i * 0.075, base, base * 1.35, 0.06, v, p); },
+    (t, v, p) => { const base = rand(2400, 3000);                                        // two-note whistle
+      chirp(t, base * 1.4, base * 1.3, 0.22, v * 0.8, p); chirp(t + 0.32, base, base * 0.92, 0.28, v * 0.8, p); },
+    (t, v, p) => { const n = Math.round(rand(2, 4));                                      // down-slurred tweets
+      for (let i = 0; i < n; i++) chirp(t + i * 0.18, rand(5200, 6000), rand(2800, 3300), 0.12, v, p); },
+    (t, v, p) => { const base = rand(3800, 4600);                                        // rising question
+      chirp(t, base, base * 1.6, 0.16, v, p); chirp(t + 0.2, base * 1.1, base * 1.7, 0.14, v * 0.7, p); }
+  ];
+
+  function schedule(){
+    if (!on) return;
+    const t = ctx.currentTime + 0.05;
+    const far = Math.random();
+    songs[Math.floor(Math.random() * songs.length)](t, 0.03 + far * 0.07, rand(-0.8, 0.8));
+    if (Math.random() < 0.3) songs[Math.floor(Math.random() * songs.length)](t + rand(0.4, 1.2), 0.02 + Math.random() * 0.04, rand(-0.9, 0.9));
+    timer = setTimeout(schedule, rand(900, 3400));
+  }
+
+  function start(){
+    if (on) return;
+    try {
+      if (!ctx) build();
+      ctx.resume().then(() => {
+        if (on || userPaused || ctx.state !== 'running') return;
+        on = true; hint.hidden = true; setUI(true);
+        master.gain.cancelScheduledValues(ctx.currentTime);
+        master.gain.setTargetAtTime(0.9, ctx.currentTime, 0.6);
+        schedule();
+        events.forEach(ev => removeEventListener(ev, auto, true));
+      });
+    } catch (e) {}
+  }
+  function stop(){
+    on = false; clearTimeout(timer); setUI(false);
+    master.gain.setTargetAtTime(0, ctx.currentTime, 0.2);
+  }
 
   btn.addEventListener('click', e => {
     e.stopPropagation();
-    if (!unlocked){ start(); return; }           // first click while blocked: start, don't pause
-    if (audio.paused){ userPaused = false; audio.play(); } else { userPaused = true; audio.pause(); }
+    if (on){ userPaused = true; stop(); } else { userPaused = false; start(); }
   });
 
-  // Browsers block sound until the visitor interacts, so the first tap, key or scroll starts it.
-  const events = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'mousemove'];
-  function start(){
-    if (unlocked || userPaused) return;
-    audio.play().then(() => events.forEach(ev => removeEventListener(ev, start, true))).catch(() => {});
-  }
-  audio.play().catch(() => {
-    hint.hidden = false;
-    events.forEach(ev => addEventListener(ev, start, { capture: true, passive: true }));
-  });
+  // Start on landing; browsers that block sound start it on the first tap, key or scroll.
+  const events = ['pointerdown', 'keydown', 'touchstart', 'wheel'];
+  const auto = () => { if (!userPaused) start(); };
+  setUI(true);
+  start();
+  setTimeout(() => { if (!on && !userPaused){ hint.hidden = false; setUI(false);
+    events.forEach(ev => addEventListener(ev, auto, { capture: true, passive: true })); } }, 400);
 })();
 </script>
 </body>
