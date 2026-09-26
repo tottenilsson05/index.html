@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OFFLINE</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="description" content="Crypto is entering the kind of market where every hour offline feels expensive. OFFLINE — every hour matters.">
+<meta property="og:title" content="OFFLINE">
+<meta property="og:description" content="In this market, being offline has a cost. Every hour matters.">
+<meta property="og:image" content="bg.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap">
+<style>
+  :root{
+    color-scheme: dark;
+    --night:#120c1f;
+    --dusk:#2a1d46;
+    --ink:#f3ecff;
+    --ink-soft:rgba(243,236,255,.72);
+    --signal:#4f5dff;
+    --signal-glow:rgba(79,93,255,.55);
+    --mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --serif:"Newsreader", "Iowan Old Style", Georgia, serif;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{background:var(--night);color:var(--ink);overflow:hidden;font-family:var(--serif);-webkit-font-smoothing:antialiased}
+
+  /* ---------- scene: a square stage that always covers the viewport ---------- */
+  .stage{
+    position:fixed;left:50%;top:50%;
+    width:max(100vw,100vh);height:max(100vw,100vh);
+    transform:translate(-50%,-50%);
+    overflow:hidden;
+  }
+  .breathe{position:absolute;inset:0;animation:breathe 48s ease-in-out infinite alternate;transform-origin:50% 62%}
+  @keyframes breathe{from{transform:scale(1)}to{transform:scale(1.035)}}
+  .layer{position:absolute;inset:0;background:url(bg.webp) center/100% 100% no-repeat}
+
+  /* sky drifts slowly; its lower edge fades into the still horizon */
+  .sky{
+    -webkit-mask-image:linear-gradient(#000 0 34%, transparent 41.5%);
+            mask-image:linear-gradient(#000 0 34%, transparent 41.5%);
+    animation:drift 70s ease-in-out infinite alternate;
+  }
+  @keyframes drift{from{transform:scale(1.05) translateX(-1.6%)}to{transform:scale(1.05) translateX(1.6%)}}
+
+  /* grass moves in the wind (TV area cut out so the set stays solid) */
+  .grass{
+    filter:url(#wind);
+    clip-path:inset(47% 0 0 0);
+    -webkit-mask-image:linear-gradient(#000,#000),linear-gradient(#000,#000);
+    -webkit-mask-size:100% 100%,32% 28.5%;
+    -webkit-mask-position:0 0,50.7% 65%;
+    -webkit-mask-repeat:no-repeat;
+    -webkit-mask-composite:xor;
+            mask-image:linear-gradient(#000,#000),linear-gradient(#000,#000);
+            mask-size:100% 100%,32% 28.5%;
+            mask-position:0 0,50.7% 65%;
+            mask-repeat:no-repeat;
+            mask-composite:exclude;
+  }
+
+  /* low mist rolling along the horizon */
+  .mist{position:absolute;left:-20%;right:-20%;top:36%;height:14%;pointer-events:none;mix-blend-mode:screen}
+  .mist i{position:absolute;top:0;height:100%;width:50%;border-radius:50%;
+    background:radial-gradient(closest-side, rgba(190,160,255,.16), transparent);
+    filter:blur(12px);animation:mist 90s linear infinite}
+  .mist i:nth-child(2){left:30%;top:20%;animation-duration:120s;animation-delay:-40s;opacity:.8}
+  .mist i:nth-child(3){left:60%;top:-10%;animation-duration:105s;animation-delay:-70s;opacity:.6}
+  @keyframes mist{from{transform:translateX(-30%)}to{transform:translateX(60%)}}
+
+  /* the TV: static, flicker and the light it throws on the grass */
+  .screen{position:absolute;left:38.2%;top:50.8%;width:24.4%;height:17%;border-radius:6%/9%;overflow:hidden;pointer-events:none}
+  .screen canvas{width:100%;height:100%;display:block;mix-blend-mode:screen;opacity:.42}
+  .screen .roll{position:absolute;left:0;right:0;height:14%;top:-20%;
+    background:linear-gradient(transparent,rgba(160,175,255,.18),transparent);
+    animation:roll 7s linear infinite}
+  @keyframes roll{0%{top:-20%}60%,100%{top:120%}}
+  .screen .flick{position:absolute;inset:0;background:rgba(120,140,255,.08);animation:flick 4s steps(1) infinite}
+  @keyframes flick{0%,100%{opacity:0}12%{opacity:1}14%{opacity:0}57%{opacity:.6}58%{opacity:0}83%{opacity:1}84%{opacity:0}}
+  .spill{position:absolute;left:28%;top:62%;width:44%;height:22%;pointer-events:none;
+    background:radial-gradient(ellipse at 50% 40%, var(--signal-glow), transparent 65%);
+    mix-blend-mode:screen;opacity:.35;animation:spill 3.2s ease-in-out infinite}
+  @keyframes spill{0%,100%{opacity:.28}40%{opacity:.4}45%{opacity:.25}70%{opacity:.38}}
+
+  canvas.birds{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none}
+  .grain{position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    animation:grain 1s steps(6) infinite}
+  @keyframes grain{0%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-4%)}60%{transform:translate(-4%,-1%)}80%{transform:translate(3%,3%)}}
+  .shade{position:fixed;inset:0;pointer-events:none;
+    background:linear-gradient(100deg, rgba(18,12,31,.55) 0%, rgba(18,12,31,.15) 42%, transparent 60%),
+               radial-gradient(ellipse at 50% 55%, transparent 55%, rgba(10,6,20,.55) 100%)}
+
+  /* ---------- copy ---------- */
+  .ui{position:fixed;inset:0;display:flex;flex-direction:column;justify-content:space-between;
+    padding:max(28px, env(safe-area-inset-top)) clamp(16px,5vw,64px) max(24px, env(safe-area-inset-bottom));pointer-events:none}
+  .ui > *{pointer-events:auto}
+  .mark{font-family:var(--mono);font-weight:600;font-size:13px;letter-spacing:.32em;display:flex;align-items:center;gap:12px;text-shadow:0 1px 12px rgba(0,0,0,.5)}
+  .dot{width:8px;height:8px;border-radius:50%;background:#ff4d6d;box-shadow:0 0 10px #ff4d6d;animation:blink 2s steps(1) infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .about{max-width:34ch;margin-top:clamp(28px,7vh,80px);display:grid;gap:.55em;
+    font-size:clamp(17px,1.55vw,22px);line-height:1.45;color:var(--ink-soft);text-shadow:0 1px 18px rgba(10,6,20,.8)}
+  .about p{margin:0;opacity:0;transform:translateY(6px);animation:in .9s ease forwards}
+  .about .lead{font-size:1.18em;color:var(--ink);font-style:italic;margin-bottom:.4em;text-wrap:balance}
+  .about .cost{color:var(--ink);margin-top:.4em}
+  .about p:nth-child(1){animation-delay:.3s}.about p:nth-child(2){animation-delay:.9s}.about p:nth-child(3){animation-delay:1.4s}
+  .about p:nth-child(4){animation-delay:1.9s}.about p:nth-child(5){animation-delay:2.5s}
+  @keyframes in{to{opacity:1;transform:none}}
+  .foot{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .tag{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);text-shadow:0 1px 10px rgba(0,0,0,.6)}
+  .tag b{color:var(--ink);font-weight:600}
+
+  .sound{font:600 12px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink);
+    display:inline-flex;align-items:center;gap:12px;padding:12px 16px 12px 14px;border-radius:999px;cursor:pointer;
+    background:rgba(18,12,31,.45);border:1px solid rgba(243,236,255,.22);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    transition:border-color .2s, background .2s}
+  .sound:hover{border-color:rgba(243,236,255,.5);background:rgba(18,12,31,.6)}
+  .sound:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
+  .eq{display:flex;align-items:flex-end;gap:2px;height:12px;width:14px}
+  .eq i{flex:1;background:var(--ink);height:30%;border-radius:1px}
+  .sound.on .eq i{animation:eq .9s ease-in-out infinite}
+  .sound.on .eq i:nth-child(2){animation-delay:-.3s}.sound.on .eq i:nth-child(3){animation-delay:-.6s}
+  @keyframes eq{0%,100%{height:25%}50%{height:100%}}
+  .track{font-weight:400;color:var(--ink-soft);letter-spacing:.12em;padding-left:12px;border-left:1px solid rgba(243,236,255,.22)}
+
+  .player{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  .hint{font:400 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);animation:blink 2.4s ease-in-out infinite;text-shadow:0 1px 10px rgba(0,0,0,.6)}
+  @media (max-width:640px){.player{align-items:flex-start}}
+  @media (max-width:640px){
+    .shade{background:linear-gradient(180deg, rgba(18,12,31,.7) 0%, rgba(18,12,31,.25) 45%, transparent 60%),
+               radial-gradient(ellipse at 50% 55%, transparent 55%, rgba(10,6,20,.55) 100%)}
+    .about{margin-top:20px;font-size:16px}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none!important}
+    .about p{opacity:1;transform:none}
+    .grass{filter:none}
+  }
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="wind" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.05" numOctaves="2" seed="4" result="t">
+        <animate attributeName="baseFrequency" dur="11s" repeatCount="indefinite"
+          values="0.006 0.05;0.0075 0.056;0.0055 0.047;0.006 0.05"/>
+      </feTurbulence>
+      <feColorMatrix in="t" type="matrix" values="1 0 0 0 0  0 0 0 0 .5  0 0 0 0 0  0 0 0 1 0" result="m"/>
+      <feDisplacementMap in="SourceGraphic" in2="m" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
+  <div class="stage" id="stage" aria-hidden="true">
+    <div class="breathe">
+      <div class="layer base"></div>
+      <div class="layer sky"></div>
+      <div class="layer grass"></div>
+      <div class="mist"><i></i><i></i><i></i></div>
+      <div class="spill"></div>
+      <div class="screen"><canvas id="static" width="160" height="110"></canvas><div class="flick"></div><div class="roll"></div></div>
+    </div>
+  </div>
+  <canvas class="birds" id="birds" aria-hidden="true"></canvas>
+  <div class="shade"></div>
+  <div class="grain"></div>
+
+  <main class="ui">
+    <div>
+      <div class="mark"><span class="dot"></span>OFFLINE</div>
+      <section class="about" aria-label="About">
+        <p class="lead">Crypto is entering the kind of market where every hour offline feels expensive.</p>
+        <p>You sleep and a new meta starts.</p>
+        <p>You go outside and three runners appear.</p>
+        <p>You come back and everyone is already talking about something new.</p>
+        <p class="cost">In this market, being offline has a cost.</p>
+      </section>
+    </div>
+    <div class="foot">
+      <div class="tag"><b>OFFLINE</b> — every hour matters.</div>
+      <div class="player"><span class="hint" id="hint" hidden>Tap anywhere for sound</span>
+      <button class="sound" id="sound" type="button" aria-pressed="false">
+        <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span id="soundLabel">Play</span><span class="track">Someone Out of Town</span>
+      </button></div>
+    </div>
+  </main>
+  <audio id="song" src="song.mp3" loop autoplay preload="auto"></audio>
+
+<script>
+/* ---------- TV static ---------- */
+(() => {
+  const c = document.getElementById('static'), x = c.getContext('2d');
+  const img = x.createImageData(c.width, c.height), d = img.data;
+  let last = 0;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function frame(t){
+    if (t - last > 42){
+      last = t;
+      for (let i = 0; i < d.length; i += 4){
+        const v = Math.random() * 255;
+        d[i] = v * .55; d[i+1] = v * .62; d[i+2] = v; d[i+3] = 255;
+      }
+      x.putImageData(img, 0, 0);
+    }
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ---------- birds ---------- */
+(() => {
+  const cv = document.getElementById('birds'), ctx = cv.getContext('2d');
+  const stage = document.getElementById('stage');
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W, H, dpr, sky = {top:0, bottom:0};
+  function resize(){
+    dpr = Math.min(devicePixelRatio || 1, 2);
+    W = innerWidth; H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const r = stage.getBoundingClientRect();
+    sky.top = Math.max(0, r.top + r.height * .06);
+    sky.bottom = r.top + r.height * .38;
+  }
+  addEventListener('resize', resize); resize();
+
+  const birds = [];
+  const rand = (a, b) => a + Math.random() * (b - a);
+
+  function spawnFlock(initial){
+    const dir = Math.random() < .5 ? 1 : -1;
+    const depth = rand(.35, 1);                 // 1 = close, small = far away
+    const n = Math.random() < .35 ? 1 : Math.round(rand(3, 11));
+    const y0 = rand(sky.top + 20, sky.bottom - 30 * depth);
+    const x0 = initial ? rand(0, W) : (dir > 0 ? -40 : W + 40);
+    const speed = rand(28, 55) * (0.5 + depth * .7);
+    const vee = Math.random() < .45 && n > 4;
+    for (let i = 0; i < n; i++){
+      const k = i === 0 ? 0 : Math.ceil(i / 2) * (i % 2 ? 1 : -1);
+      const off = vee ? Math.abs(k) * 16 * depth : rand(0, 70) * depth;
+      birds.push({
+        x: x0 - dir * (off + rand(0, 10)),
+        y: y0 + (vee ? k * 9 * depth : rand(-26, 26) * depth),
+        vx: dir * speed * rand(.94, 1.06),
+        vy: rand(-3, 3),
+        size: rand(5, 8) * (0.4 + depth * .9),
+        phase: rand(0, Math.PI * 2),
+        rate: rand(7, 10) * (1.2 - depth * .3),
+        glide: 0, depth, dir
+      });
+    }
+  }
+  for (let i = 0; i < 2; i++) spawnFlock(true);
+  let next = 3;
+
+  function drawBird(b){
+    const s = b.size;
+    const flap = b.glide > 0 ? .15 : Math.sin(b.phase);
+    const tip = -flap * s * .9;
+    const a = .55 + b.depth * .4;
+    ctx.strokeStyle = `rgba(22,12,34,${a})`;
+    ctx.fillStyle = `rgba(22,12,34,${a})`;
+    ctx.lineWidth = Math.max(.9, s * .22);
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(b.x - s * 1.4, b.y + tip);
+    ctx.quadraticCurveTo(b.x - s * .6, b.y - s * .35 + tip * .35, b.x, b.y);
+    ctx.quadraticCurveTo(b.x + s * .6, b.y - s * .35 + tip * .35, b.x + s * 1.4, b.y + tip);
+    ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(b.x, b.y + s * .08, s * .32, s * .16, 0, 0, Math.PI * 2); ctx.fill();
+  }
+
+  let prev = performance.now();
+  function tick(now){
+    const dt = Math.min(.05, (now - prev) / 1000); prev = now;
+    ctx.clearRect(0, 0, W, H);
+    next -= dt;
+    if (next <= 0){ spawnFlock(false); next = rand(5, 13); }
+    for (let i = birds.length - 1; i >= 0; i--){
+      const b = birds[i];
+      if (b.glide > 0) b.glide -= dt;
+      else if (Math.random() < dt * .12) b.glide = rand(.8, 2.2);
+      b.phase += dt * b.rate * (b.glide > 0 ? .2 : 1);
+      b.vy += (Math.random() - .5) * 6 * dt;
+      b.vy *= .98;
+      b.x += b.vx * dt;
+      b.y += (b.vy + (b.glide > 0 ? 2 : -Math.sin(b.phase) * .6)) * dt;
+      drawBird(b);
+      if ((b.dir > 0 && b.x > W + 60) || (b.dir < 0 && b.x < -60)) birds.splice(i, 1);
+    }
+    requestAnimationFrame(tick);
+  }
+  if (!reduce) requestAnimationFrame(tick);
+})();
+
+/* ---------- music: starts on landing, one button to pause/play ---------- */
+(() => {
+  const audio = document.getElementById('song');
+  const btn = document.getElementById('sound'), label = document.getElementById('soundLabel');
+  const hint = document.getElementById('hint');
+  audio.volume = 0.6;
+  let userPaused = false, unlocked = false;
+
+  function setUI(on){
+    btn.classList.toggle('on', on);
+    btn.setAttribute('aria-pressed', on);
+    btn.setAttribute('aria-label', on ? 'Pause music' : 'Play music');
+    label.textContent = on ? 'Pause' : 'Play';
+  }
+  setUI(true);                                   // the song is meant to be on from the start
+  audio.addEventListener('playing', () => { unlocked = true; hint.hidden = true; setUI(true); });
+  audio.addEventListener('pause', () => { if (userPaused) setUI(false); });
+
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (!unlocked){ start(); return; }           // first click while blocked: start, don't pause
+    if (audio.paused){ userPaused = false; audio.play(); } else { userPaused = true; audio.pause(); }
+  });
+
+  // Browsers block sound until the visitor interacts, so the first tap, key or scroll starts it.
+  const events = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'mousemove'];
+  function start(){
+    if (unlocked || userPaused) return;
+    audio.play().then(() => events.forEach(ev => removeEventListener(ev, start, true))).catch(() => {});
+  }
+  audio.play().catch(() => {
+    hint.hidden = false;
+    events.forEach(ev => addEventListener(ev, start, { capture: true, passive: true }));
+  });
+})();
+</script>
+</body>
+</html>
