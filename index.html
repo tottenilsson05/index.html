@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="In a world full of AI, we are still human.">
+<meta property="og:title" content="HUMAN">
+<meta property="og:description" content="In a world full of AI, we are still human.">
+<meta property="og:image" content="/poster.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<title>HUMAN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap">
+<style>
+/* Layout: one full-bleed screen — field video behind, neon word centered over the horizon line */
+:root{
+  --ink:#ffffff;
+  --glow:rgba(255,255,255,.85);
+  --halo:rgba(200,235,255,.55);
+  --shade:rgba(6,14,10,.28);
+  --ground:#0b1410;
+  --neon:"Tilt Neon", "Arial Rounded MT Bold", system-ui, sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%;margin:0}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);overflow:hidden}
+.stage{position:fixed;inset:0;display:grid;place-items:center;padding-inline:16px}
+.stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+#intro{z-index:1}
+.stage.done #intro{visibility:hidden}
+.stage::after{content:"";position:absolute;inset:0;z-index:2;
+  background:radial-gradient(ellipse at 50% 40%,transparent 35%,var(--shade) 100%)}
+h1{position:relative;z-index:3;margin:0;
+  font-family:var(--neon);font-weight:400;
+  font-size:clamp(4rem,17vw,13rem);letter-spacing:.14em;padding-left:.14em;
+  color:var(--ink);line-height:1;text-wrap:balance;
+  text-shadow:
+    0 0 4px var(--ink),
+    0 0 10px var(--glow),
+    0 0 22px var(--glow),
+    0 0 44px var(--halo),
+    0 0 90px var(--halo),
+    0 0 140px var(--halo);
+  opacity:0}
+.entered h1{animation:on 1.6s steps(1,end) .5s both, hum 4s ease-in-out 2.1s infinite}
+@keyframes on{
+  0%{opacity:.1}8%{opacity:1}12%{opacity:.2}20%{opacity:1}24%{opacity:.35}30%,100%{opacity:1}
+}
+@keyframes hum{0%,100%{opacity:1}50%{opacity:.9}}
+@media (prefers-reduced-motion:reduce){.entered h1{animation:none;opacity:1}}
+.copy{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:1.1rem;margin-top:-22vh;text-align:center;min-width:0}
+.copy h1{margin-top:0}
+.tag{margin:0;max-width:34ch;font:400 clamp(.95rem,2.2vw,1.35rem)/1.45 var(--neon);letter-spacing:.06em;color:var(--ink);
+  text-shadow:0 0 6px var(--glow),0 0 18px var(--halo),0 1px 2px rgba(0,0,0,.35);text-wrap:balance}
+.bar{position:fixed;z-index:4;left:0;right:0;bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;
+  align-items:center;gap:10px;padding-inline:16px}
+.pill{display:flex;align-items:center;gap:.7em;min-width:0;max-width:100%;padding:.75em 1.1em;border:1px solid var(--glow);border-radius:999px;
+  background:rgba(6,14,10,.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--ink);
+  font:400 .85rem/1 var(--neon);letter-spacing:.08em;cursor:pointer;box-shadow:0 0 12px var(--halo),inset 0 0 8px rgba(255,255,255,.12);
+  text-shadow:0 0 6px var(--glow);text-decoration:none}
+.pill:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.pill b{font-weight:400;opacity:.7;letter-spacing:.18em}
+.ca{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font-variant-numeric:tabular-nums}
+.x{flex:none;width:2.75rem;height:2.75rem;justify-content:center;padding:0;font-size:1.25rem}
+
+/* loader: a heartbeat trace — proof of life before the page lets you in */
+.loader{position:fixed;inset:0;z-index:10;display:grid;place-items:center;align-content:center;gap:2.2rem;padding-inline:16px;
+  background:var(--ground);color:var(--ink);cursor:default;transition:opacity 1.1s ease,visibility 0s linear 1.1s;text-align:center}
+.loader.ready{cursor:pointer}
+.loader.gone{opacity:0;visibility:hidden;pointer-events:none}
+.loader:focus-visible{outline:none}
+.ecg{width:min(560px,100%);height:auto;overflow:visible;filter:drop-shadow(0 0 4px var(--glow)) drop-shadow(0 0 14px var(--halo))}
+.ecg path{fill:none;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.ecg .base{opacity:.12}
+.ecg .trace{stroke-dasharray:140 900;stroke-dashoffset:1040;animation:trace 1.9s linear infinite}
+@keyframes trace{to{stroke-dashoffset:0}}
+.lname{margin:0;font:400 clamp(1.6rem,6vw,2.6rem)/1 var(--neon);letter-spacing:.32em;padding-left:.32em;
+  text-shadow:0 0 6px var(--glow),0 0 20px var(--halo)}
+.lstat{margin:0;min-height:1.2em;font:400 .85rem/1.2 var(--neon);letter-spacing:.24em;padding-left:.24em;opacity:.85;font-variant-numeric:tabular-nums;
+  text-shadow:0 0 6px var(--glow)}
+.lbar{width:min(260px,70vw);height:1px;background:rgba(255,255,255,.15);position:relative;overflow:hidden}
+.lbar i{position:absolute;inset:0;transform-origin:left;transform:scaleX(0);background:var(--ink);box-shadow:0 0 8px var(--glow)}
+.ready .lstat{animation:breathe 1.8s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.45}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.ecg .trace{animation:none;stroke-dasharray:none;stroke-dashoffset:0}.ready .lstat{animation:none}}
+</style>
+</head>
+<body>
+<div class="loader" id="loader" role="button" tabindex="0" aria-label="Loading HUMAN">
+  <svg class="ecg" viewBox="0 0 600 120" aria-hidden="true">
+    <path class="base" d="M0 60H170l14-10 12 10h22l10 16 18-70 18 92 12-38h30l16-14 18 14H600"/>
+    <path class="trace" pathLength="1040" d="M0 60H170l14-10 12 10h22l10 16 18-70 18 92 12-38h30l16-14 18 14H600"/>
+  </svg>
+  <p class="lname">HUMAN</p>
+  <div class="lbar"><i id="lfill"></i></div>
+  <p class="lstat" id="lstat">VERIFYING HUMAN 0%</p>
+</div>
+
+<main class="stage">
+  <video id="hold" src="hold.mp4" muted loop playsinline preload="auto" aria-hidden="true"></video>
+  <video id="intro" src="intro.mp4" poster="poster.jpg" muted playsinline preload="auto" aria-hidden="true"></video>
+  <div class="copy">
+    <h1>HUMAN</h1>
+    <p class="tag">In a world full of AI, we are still human.</p>
+  </div>
+</main>
+<nav class="bar">
+  <button class="pill" id="ca" type="button" title="Copy contract address"><b>CA</b><span class="ca" id="caText">5hsJB33y3yKsExDb9QDCzBK41ydNxspuEgcVqpF2w6yh</span></button>
+  <a class="pill x" href="https://x.com/humanHIMS" target="_blank" rel="noopener" aria-label="HUMAN on X">&#x1D54F;</a>
+</nav>
+<script>
+const stage=document.querySelector('.stage'),intro=document.getElementById('intro'),hold=document.getElementById('hold');
+let switched=false;
+function toHold(){
+  if(switched)return; switched=true;
+  hold.currentTime=0;
+  const p=hold.play();
+  const hide=()=>stage.classList.add('done');
+  if(p&&p.then)p.then(()=>requestAnimationFrame(hide)).catch(hide); else hide();
+}
+intro.addEventListener('ended',toHold);
+intro.addEventListener('error',toHold);
+
+/* ---- Blåsig höstmusik, genererad live i webbläsaren ---- */
+let ctx,master,on=false,timer;
+function noiseBuf(sec){const b=ctx.createBuffer(1,ctx.sampleRate*sec,ctx.sampleRate),d=b.getChannelData(0);
+  let last=0;for(let i=0;i<d.length;i++){const w=Math.random()*2-1;last=(last+0.02*w)/1.02;d[i]=last*3.5}return b}
+function impulse(sec){const n=ctx.sampleRate*sec,b=ctx.createBuffer(2,n,ctx.sampleRate);
+  for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.6)}return b}
+const hz=m=>440*Math.pow(2,(m-69)/12);
+function build(){
+  ctx=new (window.AudioContext||window.webkitAudioContext)();
+  master=ctx.createGain();master.gain.value=0;
+  const comp=ctx.createDynamicsCompressor();master.connect(comp).connect(ctx.destination);
+  const verb=ctx.createConvolver();verb.buffer=impulse(4.5);
+  const wet=ctx.createGain();wet.gain.value=.55;verb.connect(wet).connect(master);
+  ctx.verb=verb;
+  // vind: brun brus genom svepande bandpass + byar
+  const nb=noiseBuf(6);
+  [[420,.9,.55],[1400,6,.08]].forEach(([f,q,g])=>{
+    const s=ctx.createBufferSource();s.buffer=nb;s.loop=true;s.playbackRate.value=f>1000?1.3:1;
+    const bp=ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=f;bp.Q.value=q;
+    const gn=ctx.createGain();gn.gain.value=g*.5;
+    s.connect(bp).connect(gn);gn.connect(master);gn.connect(verb);s.start();
+    (function gust(){if(!ctx)return;const t=ctx.currentTime,d=1.5+Math.random()*3,k=Math.random();
+      gn.gain.setTargetAtTime(g*(.25+k),t,d/2.5);bp.frequency.setTargetAtTime(f*(.7+k*.9),t,d/2);
+      setTimeout(gust,d*1000)})();
+  });
+  ctx.dry=ctx.createGain();ctx.dry.gain.value=.5;ctx.dry.connect(master);
+}
+// ackord i a-moll: Am – Fmaj7 – C – Em
+const chords=[[45,57,60,64],[41,57,60,64],[48,55,60,64],[40,55,59,64]];
+const scale=[69,72,74,76,79,81,84];
+let step=0,next=0;
+function pad(notes,t,len){notes.forEach(m=>{[-4,4].forEach(det=>{
+  const o=ctx.createOscillator();o.type='triangle';o.frequency.value=hz(m);o.detune.value=det;
+  const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=m<50?500:1100;
+  const g=ctx.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(m<50?.05:.025,t+2.5);
+  g.gain.setValueAtTime(m<50?.05:.025,t+len-1);g.gain.linearRampToValueAtTime(0,t+len+2.5);
+  o.connect(lp).connect(g);g.connect(ctx.dry);g.connect(ctx.verb);o.start(t);o.stop(t+len+3)})})}
+function pluck(m,t,v){const o=ctx.createOscillator(),o2=ctx.createOscillator();o.type='sine';o2.type='triangle';
+  o.frequency.value=hz(m);o2.frequency.value=hz(m)*2;
+  const g=ctx.createGain(),g2=ctx.createGain();g2.gain.value=.25;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+2.8);
+  o.connect(g);o2.connect(g2).connect(g);g.connect(ctx.dry);g.connect(ctx.verb);
+  o.start(t);o2.start(t);o.stop(t+3);o2.stop(t+3)}
+function schedule(){
+  const len=8;
+  while(next<ctx.currentTime+1){
+    const c=chords[step%chords.length];pad(c,next,len);
+    for(let b=0;b<8;b++){if(Math.random()<.45){
+      const pool=scale.filter(n=>c.some(x=>(n-x)%12===0)||Math.random()<.35);
+      const n=pool[Math.floor(Math.random()*pool.length)]||scale[0];
+      pluck(n,next+b+Math.random()*.15,.05+Math.random()*.04)}}
+    next+=len;step++;
+  }
+}
+function start(){
+  try{
+    if(!ctx){build();next=ctx.currentTime+.2;schedule();timer=setInterval(schedule,400);
+      master.gain.setTargetAtTime(.9,ctx.currentTime,1.5)}
+    if(ctx.state!=='running')ctx.resume();
+  }catch(e){}
+}
+['pointerdown','touchstart','keydown','wheel','click'].forEach(ev=>
+  document.addEventListener(ev,function h(){start();if(ctx&&ctx.state==='running')['pointerdown','touchstart','keydown','wheel','click'].forEach(x=>document.removeEventListener(x,h,true))},{capture:true,passive:true}));
+
+/* ---- Copy CA ---- */
+const caBtn=document.getElementById('ca'),caText=document.getElementById('caText'),CA=caText.textContent;
+caBtn.addEventListener('click',()=>{
+  const done=()=>{caText.textContent='COPIED';setTimeout(()=>caText.textContent=CA,1400)};
+  const fallback=()=>{const r=document.createRange();r.selectNodeContents(caText);const sel=getSelection();sel.removeAllRanges();sel.addRange(r)};
+  try{navigator.clipboard.writeText(CA).then(done,fallback)}catch(e){fallback()}
+});
+
+/* ---- Loader ---- */
+const loader=document.getElementById('loader'),lfill=document.getElementById('lfill'),lstat=document.getElementById('lstat');
+const t0=performance.now();let shown=0,ready=false,entered=false,fontOk=false;
+document.fonts&&document.fonts.ready.then(()=>fontOk=true);
+function frac(v){try{if(v.readyState>=4)return 1;if(!v.duration||!v.buffered.length)return v.readyState>=2?.3:0;
+  return Math.min(1,v.buffered.end(v.buffered.length-1)/v.duration)}catch(e){return 0}}
+(function tick(){
+  if(ready)return;
+  const el=performance.now()-t0;
+  let real=frac(intro)*.65+frac(hold)*.25+(fontOk?.1:0);
+  if(el>12000)real=1;
+  const target=Math.min(real,el/1600);
+  shown+=(target-shown)*.12;if(target>=1&&shown>.995)shown=1;
+  lfill.style.transform='scaleX('+shown+')';
+  if(shown>=1){ready=true;loader.classList.add('ready');lstat.textContent='HUMAN VERIFIED · TAP TO ENTER';loader.setAttribute('aria-label','Enter HUMAN');return}
+  lstat.textContent='VERIFYING HUMAN '+Math.floor(shown*100)+'%';
+  requestAnimationFrame(tick);
+})();
+function enter(){
+  if(!ready||entered)return;entered=true;
+  start();
+  intro.currentTime=0;intro.play().catch(()=>{});
+  document.body.classList.add('entered');
+  loader.classList.add('gone');
+}
+loader.addEventListener('click',enter);
+loader.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();enter()}});
+</script>
+
+</body>
+</html>
