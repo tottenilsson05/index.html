@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Your life savings will be inside a random market bubble — and somehow, it will feel completely normal.">
+<meta property="og:title" content="Internet Money Bubble">
+<meta property="og:description" content="Your life savings will be inside a random market bubble — and somehow, it will feel completely normal.">
+<meta property="og:image" content="/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1d5ee8">
+<link rel="icon" href="/pixel.webp">
+<title>Internet Money Bubble</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@500;600;700&family=VT323&display=swap">
+<style>
+/* Layout: a dreamy pixel-art internet sky. Hero = giant pixel speech bubble floating over clouds with
+   pixel coins, cursors, globe and retro windows around it; content lives in light retro windows with hard
+   pixel shadows; the page ends on a glowing grid sea. Fixed XP taskbar is the navigation.
+   Single deliberate look (daylight), so no dark variant. */
+:root{
+  color-scheme: light;
+  --sky-top:#1d5ee8;
+  --sky:#3f86f6;
+  --sky-mid:#79b4ff;
+  --sky-low:#d6ebff;
+  --haze:#eef6ff;
+  --ink:#0f1430;
+  --muted:#4f5a78;
+  --paper:#ffffff;
+  --face:#f3f6fd;
+  --face-2:#e3e9f6;
+  --rule:#b9c4dc;
+  --title-a:#1f56db; --title-b:#6ea4ff;
+  --gold:#ffc93a; --pink:#ff7fc8; --lilac:#c7b6ff;
+  --start-a:#5cbf48; --start-b:#2f8a22;
+  --tray:#0f8de6;
+  --white:#ffffff;
+  --px:4px;                 /* pixel unit for borders */
+  --shadow:6px 6px 0 rgba(15,20,48,.22);
+  --f-pixel:"Pixelify Sans","VT323","Lucida Console",ui-monospace,monospace;
+  --f-term:"VT323","Lucida Console",ui-monospace,monospace;
+  --f-ui:Tahoma,"Segoe UI",Verdana,Geneva,sans-serif;
+  --taskbar:40px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background-color:var(--sky);
+  background-image:linear-gradient(180deg,var(--sky-top) 0%,var(--sky) 22%,var(--sky-mid) 62%,var(--sky-low) 100%);
+  color:var(--ink);font:14px/1.55 var(--f-ui);
+  overflow-x:hidden;padding-bottom:calc(var(--taskbar) + env(safe-area-inset-bottom,0px));
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+:focus-visible{outline:2px dashed var(--ink);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.px{display:block;image-rendering:pixelated;shape-rendering:crispEdges}
+.px svg{display:block;width:100%;height:100%;shape-rendering:crispEdges}
+
+/* ---------- pixel speech bubble ---------- */
+.speech{
+  position:relative;background:var(--paper);color:var(--ink);
+  box-shadow:
+    0 calc(var(--px)*-1) 0 0 var(--ink), 0 var(--px) 0 0 var(--ink),
+    calc(var(--px)*-1) 0 0 0 var(--ink), var(--px) 0 0 0 var(--ink),
+    inset calc(var(--px)*-1) calc(var(--px)*-1) 0 0 #d9e1f2,
+    calc(var(--px)*3) calc(var(--px)*3) 0 0 rgba(15,20,48,.18);
+}
+.speech::before,.speech::after{content:"";position:absolute;left:30%;top:100%;width:calc(var(--px)*12);height:calc(var(--px)*12)}
+.speech::before{background:var(--ink);margin-top:var(--px);
+  clip-path:polygon(0 0,100% 0,100% 16.66%,83.33% 16.66%,83.33% 33.33%,66.66% 33.33%,66.66% 50%,50% 50%,50% 66.66%,33.33% 66.66%,33.33% 83.33%,16.66% 83.33%,16.66% 100%,0 100%)}
+.speech::after{background:var(--paper);left:calc(30% + var(--px));width:calc(var(--px)*9);height:calc(var(--px)*9);
+  clip-path:polygon(0 0,100% 0,100% 11%,77.7% 11%,77.7% 33.3%,55.5% 33.3%,55.5% 55.5%,33.3% 55.5%,33.3% 77.7%,11% 77.7%,11% 100%,0 100%)}
+.speech.right::before{left:auto;right:30%;transform:scaleX(-1)}
+.speech.right::after{left:auto;right:calc(30% + var(--px));transform:scaleX(-1)}
+
+/* ---------- retro window ---------- */
+.win{background:var(--face);border:2px solid var(--ink);box-shadow:var(--shadow);min-width:0;position:relative}
+.win-t{display:flex;align-items:center;gap:6px;height:30px;padding:0 4px 0 8px;color:var(--white);
+  font:600 15px/1 var(--f-pixel);letter-spacing:.02em;border-bottom:2px solid var(--ink);
+  background:linear-gradient(90deg,var(--title-a),var(--title-b))}
+.win-t .ttl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px;text-shadow:1px 1px 0 rgba(0,0,0,.35)}
+.win-t .ttl .px{width:16px;height:16px;flex:none}
+.wb{width:20px;height:20px;display:grid;place-items:center;background:var(--face);border:2px solid var(--ink);padding:0;cursor:pointer;
+  box-shadow:inset -2px -2px 0 #b5bfd6,inset 2px 2px 0 #fff}
+.wb svg{width:10px;height:10px;shape-rendering:crispEdges}
+.wb:active{box-shadow:inset 2px 2px 0 #b5bfd6}
+.menu{display:flex;gap:16px;padding:3px 10px;font-size:12px;border-bottom:1px solid var(--rule);background:var(--face)}
+.menu span::first-letter{text-decoration:underline}
+.status{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 10px;font:16px/1.1 var(--f-term);color:var(--muted);border-top:1px solid var(--rule);background:var(--face-2)}
+.xbtn{font:600 15px/1 var(--f-pixel);min-width:84px;padding:7px 14px;text-decoration:none;text-align:center;color:var(--ink);cursor:pointer;display:inline-block;
+  background:var(--face);border:2px solid var(--ink);box-shadow:inset -2px -2px 0 #b5bfd6,inset 2px 2px 0 #fff,3px 3px 0 rgba(15,20,48,.2)}
+.xbtn:hover{background:#fff7d6}
+.xbtn:active{transform:translate(2px,2px);box-shadow:inset 2px 2px 0 #b5bfd6}
+.xbtn.default{background:var(--gold)}
+.xbtn.default:hover{background:#ffd966}
+
+/* ---------- hero ---------- */
+.hero{position:relative;overflow:hidden;isolation:isolate;padding:clamp(70px,10vw,120px) 16px clamp(150px,18vw,220px)}
+.hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-4;max-width:none}
+.hero .glow{position:absolute;inset:0;z-index:-3;pointer-events:none;
+  background:
+    radial-gradient(ellipse 40% 30% at 50% 42%,rgba(255,255,255,.55),transparent 70%),
+    radial-gradient(ellipse 30% 25% at 85% 18%,rgba(199,182,255,.45),transparent 70%),
+    radial-gradient(ellipse 30% 25% at 12% 70%,rgba(255,180,230,.3),transparent 70%),
+    linear-gradient(180deg,rgba(40,100,240,.25),transparent 40%)}
+.sea{position:absolute;left:-20%;right:-20%;bottom:0;height:clamp(120px,18vw,210px);z-index:-2;pointer-events:none;overflow:hidden;
+  background:linear-gradient(180deg,#bfe0ff 0%,#5aa4ff 35%,#2a6be8 100%)}
+.sea::before{content:"";position:absolute;inset:-50% 0 0;transform:perspective(220px) rotateX(58deg);transform-origin:50% 100%;
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.55) 1px,transparent 1px) 0 0/48px 48px,
+    linear-gradient(0deg,rgba(255,255,255,.55) 1px,transparent 1px) 0 0/48px 48px;
+  animation:grid 3s linear infinite}
+.sea::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 30% 60% at 50% 0%,rgba(255,255,255,.95),transparent 70%)}
+@keyframes grid{to{background-position:0 48px,0 48px}}
+.cloudbank{position:absolute;left:-5%;right:-5%;z-index:-1;pointer-events:none;height:120px;
+  background:
+    radial-gradient(circle at 3% 100%,#fff 0 46px,transparent 47px),
+    radial-gradient(circle at 10% 100%,#fff 0 70px,transparent 71px),
+    radial-gradient(circle at 18% 100%,#fff 0 52px,transparent 53px),
+    radial-gradient(circle at 26% 100%,#fff 0 80px,transparent 81px),
+    radial-gradient(circle at 35% 100%,#fff 0 44px,transparent 45px),
+    radial-gradient(circle at 44% 100%,#fff 0 60px,transparent 61px),
+    radial-gradient(circle at 53% 100%,#fff 0 38px,transparent 39px),
+    radial-gradient(circle at 62% 100%,#fff 0 66px,transparent 67px),
+    radial-gradient(circle at 71% 100%,#fff 0 48px,transparent 49px),
+    radial-gradient(circle at 80% 100%,#fff 0 84px,transparent 85px),
+    radial-gradient(circle at 89% 100%,#fff 0 54px,transparent 55px),
+    radial-gradient(circle at 97% 100%,#fff 0 72px,transparent 73px),
+    linear-gradient(#fff,#fff) bottom/100% 24px no-repeat;
+  filter:drop-shadow(0 -4px 10px rgba(140,170,255,.55)) drop-shadow(0 6px 0 rgba(200,215,255,.6))}
+.hero .cloudbank{bottom:clamp(96px,14vw,170px);opacity:.92}
+
+.hero-in{position:relative;max-width:1120px;margin:0 auto;display:grid;justify-items:center;gap:clamp(40px,5vw,56px);text-align:center}
+.globe-wrap{position:absolute;left:50%;top:clamp(-50px,-4vw,-20px);transform:translateX(-50%);width:min(560px,86vw);aspect-ratio:2/1;overflow:hidden;z-index:-1;opacity:.85;pointer-events:none}
+.globe{width:100%;aspect-ratio:1;border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 30%,rgba(255,255,255,.55),transparent 45%),
+    repeating-linear-gradient(0deg,transparent 0 34px,rgba(255,255,255,.55) 34px 36px),
+    repeating-linear-gradient(90deg,transparent 0 34px,rgba(255,255,255,.4) 34px 36px),
+    radial-gradient(circle,rgba(150,210,255,.5),rgba(70,140,255,.55) 70%,rgba(255,255,255,.8) 100%);
+  box-shadow:0 0 60px rgba(255,255,255,.6);animation:spin 60s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+h1.speech{z-index:2;--px:clamp(4px,.7vw,7px);margin:0;padding:clamp(18px,3vw,34px) clamp(26px,5vw,60px);max-width:100%;
+  font:700 clamp(40px,9vw,112px)/.95 var(--f-pixel);letter-spacing:-.01em;text-wrap:balance;animation:float 6s ease-in-out infinite}
+h1.speech span{display:block}
+@keyframes float{50%{transform:translateY(-8px)}}
+
+/* hero decorations */
+.deco{position:absolute;pointer-events:none;z-index:1}
+.deco .px{width:100%;height:100%}
+.bobble{animation:bob 5s ease-in-out infinite}
+@keyframes bob{50%{translate:0 -12px}}
+.d-coin1{left:2%;top:58%;width:56px;height:56px;animation-delay:.3s}
+.d-coin2{right:3%;top:44%;width:54px;height:54px;animation-delay:1.1s}
+.d-coin3{left:7%;top:80%;width:44px;height:44px;animation-delay:2s}
+.d-heart{left:58%;top:-6%;width:44px;height:40px}
+.d-cursor1{right:12%;top:-2%;width:48px;height:70px;animation-delay:.6s}
+.d-cursor2{right:13%;top:66%;width:44px;height:64px;animation-delay:1.6s}
+.d-hour{right:3%;top:76%;width:46px;height:64px;animation-delay:.9s}
+.coin-spin{animation:coin 2.4s steps(8) infinite}
+@keyframes coin{0%,100%{transform:scaleX(1)}25%{transform:scaleX(.35)}50%{transform:scaleX(-1)}75%{transform:scaleX(-.35)}}
+.mini{position:absolute;width:150px;z-index:0;pointer-events:none}
+.mini .win-t{height:24px;font-size:13px}
+.mini .wb{width:16px;height:16px}
+.mini .wb svg{width:8px;height:8px}
+.mini .inner{display:grid;place-items:center;height:96px;background:var(--paper)}
+.mini .inner .px{width:64px;height:64px}
+.m1{left:-2%;top:-14%;transform:rotate(-4deg)}
+.m2{left:1%;top:44%;transform:rotate(3deg)}
+.m3{right:-1%;top:4%;transform:rotate(4deg);width:130px}
+.disc{position:absolute;left:-60px;bottom:-140px;width:260px;aspect-ratio:1;border-radius:50%;z-index:-1;pointer-events:none;opacity:.9;
+  background:radial-gradient(circle,#dfe9ff 0 9%,#9fb6e6 9.5% 10%,transparent 10.5% 21%,rgba(255,255,255,.7) 21.5% 22%,transparent 22.5%),
+    conic-gradient(from 20deg,#e9f0ff,#ffd1f0,#c7f0ff,#fff6c2,#d7c9ff,#e9f0ff,#bff7e6,#ffc8e8,#e9f0ff);
+  box-shadow:0 0 30px rgba(255,255,255,.7);animation:spin 14s linear infinite}
+.disc::after{content:"";position:absolute;inset:44%;border-radius:50%;background:var(--sky-mid)}
+
+.notice{z-index:2;width:100%;max-width:540px;text-align:left}
+.notice .body{display:flex;gap:14px;padding:18px 18px 4px}
+.notice p{margin:0;font-size:clamp(15px,1.9vw,17px);line-height:1.45;font-weight:700}
+.notice .btns{display:flex;justify-content:flex-end;gap:10px;padding:14px 16px 16px}
+.ico{flex:none;width:34px;height:34px}
+
+
+/* contract */
+.ca{z-index:2;width:100%;max-width:640px;text-align:left}
+.ca .row{display:flex;gap:10px;align-items:center;padding:12px 14px;background:var(--paper);flex-wrap:wrap}
+.ca .lbl{font:700 16px/1 var(--f-pixel);color:var(--title-a)}
+.ca code{flex:1 1 260px;min-width:0;font:20px/1.15 var(--f-term);color:var(--ink);background:#fff;border:2px solid var(--ink);padding:6px 9px;
+  overflow-wrap:anywhere;user-select:all;box-shadow:inset 2px 2px 0 #d9e1f2}
+.ca .acts{display:flex;gap:10px;flex-wrap:wrap}
+.ca .xbtn{min-width:0}
+
+/* links */
+.links{display:flex;gap:clamp(16px,4vw,30px);justify-content:center}
+.lnk{display:grid;justify-items:center;gap:8px;width:96px;text-decoration:none;color:var(--white);font:600 15px/1.1 var(--f-pixel);text-shadow:1px 1px 0 rgba(10,30,90,.7)}
+.lnk .tile{width:58px;height:58px;display:grid;place-items:center;color:#fff;position:relative;background:#0b0d18;border:2px solid var(--ink);
+  box-shadow:inset 3px 3px 0 rgba(255,255,255,.18),4px 4px 0 rgba(15,20,48,.3);transition:transform .15s}
+.lnk .tile svg{width:28px;height:28px}
+.lnk.dx .tile svg{width:34px;height:34px}
+.lnk .arrow{position:absolute;left:-2px;bottom:-2px;width:16px;height:16px;background:#fff;border:2px solid var(--ink);display:grid;place-items:center}
+.lnk .arrow svg{width:9px;height:9px;color:var(--title-a)}
+.lnk span.lb{padding:1px 5px}
+.lnk:hover .tile{transform:translate(-2px,-2px)}
+.lnk:hover span.lb,.lnk:focus-visible span.lb{background:var(--title-a)}
+
+/* ---------- sections ---------- */
+main{padding-inline:16px}
+.sec{max-width:1080px;margin:0 auto;padding-block:clamp(56px,8vw,96px)}
+.sec-head{display:grid;justify-items:start;gap:26px;margin-bottom:46px}
+.path{font:20px/1 var(--f-term);letter-spacing:.03em;color:#e8f2ff;text-shadow:1px 1px 0 rgba(10,30,90,.45);overflow-wrap:anywhere;min-width:0}
+h2.speech{--px:4px;margin:0;padding:14px 22px;font:700 clamp(28px,4.6vw,52px)/1 var(--f-pixel);text-wrap:balance;max-width:100%}
+h2.speech::before,h2.speech::after{left:12%}
+h2.speech::after{left:calc(12% + var(--px))}
+
+/* explorer */
+.explorer .pane{display:grid;grid-template-columns:200px minmax(0,1fr)}
+.side{background:linear-gradient(180deg,#8fb4f5,#7c8fe6);padding:12px;display:grid;gap:12px;align-content:start;border-right:2px solid var(--ink)}
+.side-box{background:#eef2fd;border:2px solid var(--ink);font-size:12px}
+.side-box h3{margin:0;font:600 14px/1 var(--f-pixel);padding:6px 8px;color:#fff;background:var(--title-a);border-bottom:2px solid var(--ink)}
+.side-box ul{list-style:none;margin:0;padding:8px 10px;display:grid;gap:4px;color:#1840a8}
+.side-box li{font-variant-numeric:tabular-nums;display:flex;justify-content:space-between;gap:8px}
+.side-box li b{font-weight:400;color:var(--ink)}
+.stage{background:var(--paper);padding:22px 20px 18px;min-width:0;
+  background-image:linear-gradient(#edf2fb 1px,transparent 1px),linear-gradient(90deg,#edf2fb 1px,transparent 1px);background-size:16px 16px}
+.track{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;min-height:250px;padding-bottom:4px}
+.era{flex:1;min-width:0;display:grid;justify-items:center;gap:10px;align-content:end}
+.bub{--s:1;width:calc(var(--base) * var(--s));max-width:100%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;cursor:pointer;border:0;padding:0;position:relative;
+  background:
+    radial-gradient(circle at 31% 27%,#fff 0 6%,rgba(255,255,255,.3) 13%,transparent 25%),
+    radial-gradient(circle at 70% 78%,rgba(255,255,255,.55),transparent 22%),
+    radial-gradient(circle,rgba(205,232,255,.25) 52%,rgba(140,200,255,.45) 72%,rgba(255,170,235,.5) 86%,rgba(255,255,255,.95) 100%);
+  box-shadow:0 10px 22px rgba(20,60,140,.16),inset 0 0 0 1px rgba(120,160,220,.35);
+  transition:width .2s ease-out,transform .15s;animation:bob 5s ease-in-out infinite;animation-delay:var(--d)}
+.bub:hover{transform:scale(1.05)}
+.bub .px{width:46%;height:46%}
+.bub.q .qm{font:700 calc(var(--base) * var(--s) * .3)/1 var(--f-pixel);color:#7c8ba3}
+.bub.popped{animation:pop .3s ease-out forwards}
+@keyframes pop{50%{transform:scale(1.2);opacity:.8}100%{transform:scale(1.45);opacity:0}}
+.era-l{text-align:center;line-height:1.1}
+.era-l b{display:block;font:700 15px/1.1 var(--f-pixel)}
+.era-l span{font:17px/1 var(--f-term);color:var(--muted)}
+.progress{display:grid;gap:6px;margin-top:20px}
+.progress-row{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font:18px/1 var(--f-term);font-variant-numeric:tabular-nums}
+.bar-xp{height:20px;border:2px solid var(--ink);background:#fff;padding:2px}
+.bar-xp i{display:block;height:100%;width:var(--p,15%);background:repeating-linear-gradient(90deg,#2f6df0 0 10px,transparent 10px 13px);transition:width .2s}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.step{display:flex;flex-direction:column;cursor:pointer;transition:transform .15s}
+.step:hover{transform:translate(-2px,-3px)}
+.step .body{display:flex;gap:12px;padding:16px 16px 4px;flex:1;background:var(--paper)}
+.step h3{margin:0 0 6px;font:700 clamp(20px,2.1vw,24px)/1.02 var(--f-pixel);color:#1840a8}
+.step p{margin:0;color:#2a3550;font-size:13px}
+.crowd{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;padding:12px 16px 14px;background:var(--paper)}
+.crowd i{aspect-ratio:1;background:#d5dbe8;border:1px solid #b9c2d6}
+.crowd i.in{background:var(--gold);border-color:#c88412;box-shadow:inset -2px -2px 0 #e7a71c}
+
+/* behavior + readme */
+.split{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(24px,4vw,52px);align-items:center}
+.vid video{display:block;width:100%;height:auto;aspect-ratio:736/414;object-fit:cover;background:#000;max-width:100%}
+.copy{display:grid;justify-items:start;gap:26px}
+.copy p{margin:0;max-width:44ch;font-size:16px;line-height:1.6;color:var(--ink)}
+.copy .card{background:rgba(255,255,255,.75);border:2px solid var(--ink);padding:16px 18px;box-shadow:var(--shadow)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.tags span{font:600 14px/1 var(--f-pixel);padding:5px 9px;background:var(--face);border:2px solid var(--ink)}
+.cover{max-width:100%;border:2px solid var(--ink);box-shadow:var(--shadow);background:#fff;padding:8px}
+.cover img{display:block;width:100%;height:auto}
+.note .doc{margin:8px;background:#fff;border:2px solid var(--ink);padding:16px 18px;font:22px/1.3 var(--f-term);color:#111}
+.note .doc p{margin:0}
+.note .doc p+p{margin-top:12px}
+#caret{animation:blink 1.06s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ending sea */
+.ending{position:relative;height:230px;overflow:hidden;margin-top:30px}
+.ending .sea{left:-20%;right:-20%;height:160px;z-index:0}
+.ending .cloudbank{bottom:120px;z-index:1}
+.ending p{position:absolute;inset:auto 0 26px;z-index:2;text-align:center;margin:0;color:#fff;font:600 17px/1.2 var(--f-pixel);text-shadow:1px 1px 0 rgba(10,30,90,.6);padding-inline:16px}
+
+/* ---------- taskbar ---------- */
+.taskbar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;align-items:stretch;
+  height:calc(var(--taskbar) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
+  background:linear-gradient(180deg,#3d8af7 0%,#2463df 6%,#225bd6 50%,#1d4fc4 92%,#1941a5 100%);border-top:2px solid var(--ink);color:#fff;font-size:12px}
+.start{display:flex;align-items:center;gap:7px;padding:0 20px 0 12px;border:0;cursor:pointer;color:#fff;
+  background:linear-gradient(180deg,var(--start-a) 0%,#3ea52d 45%,var(--start-b) 100%);border-radius:0 12px 12px 0;
+  font:italic 700 17px var(--f-ui);text-shadow:1px 1px 1px rgba(0,0,0,.45);box-shadow:inset -1px 0 2px rgba(0,0,0,.3)}
+.start:hover{filter:brightness(1.08)}
+.flag{width:18px;height:18px;display:grid;grid-template-columns:1fr 1fr;gap:2px;transform:skewY(-6deg)}
+.flag i:nth-child(1){background:#f35325}.flag i:nth-child(2){background:#81bc06}.flag i:nth-child(3){background:#05a6f0}.flag i:nth-child(4){background:#ffba08}
+.tasks{flex:1;min-width:0;display:flex;gap:4px;padding:5px 6px;overflow:hidden}
+.task{display:flex;align-items:center;gap:6px;min-width:0;max-width:170px;flex:1 1 0;padding:0 10px;border-radius:3px;text-decoration:none;color:#fff;font:600 14px/1 var(--f-pixel);
+  background:linear-gradient(180deg,#4f94fa,#3a7ef0);border:1px solid #1b4bb5;white-space:nowrap;overflow:hidden}
+.task:hover{background:linear-gradient(180deg,#68a6ff,#4a8cf5)}
+.task.on{background:linear-gradient(180deg,#1a4fb8,#1f5bd0);box-shadow:inset 1px 1px 2px rgba(0,0,0,.35)}
+.task .px{width:16px;height:16px;flex:none}
+.task span{overflow:hidden;text-overflow:ellipsis}
+.tray{display:flex;align-items:center;gap:6px;padding:0 12px 0 10px;background:linear-gradient(180deg,#1aa3f3,var(--tray));border-left:1px solid #0a62b8;font-variant-numeric:tabular-nums}
+.tray a{display:flex;color:#fff;padding:3px;border-radius:3px}
+.tray a:hover{background:rgba(255,255,255,.18)}
+.tray a svg{width:15px;height:15px}
+.snd{background:none;border:0;color:#fff;cursor:pointer;padding:3px;display:flex}
+.snd svg{width:17px;height:17px}
+
+/* balloon */
+.balloon{position:fixed;right:12px;bottom:calc(var(--taskbar) + env(safe-area-inset-bottom,0px) + 14px);z-index:70;width:min(320px,calc(100vw - 24px));
+  background:#ffffe1;border:2px solid var(--ink);padding:10px 30px 12px 12px;font-size:12px;box-shadow:4px 4px 0 rgba(15,20,48,.25);transition:opacity .25s,transform .25s}
+.balloon b{display:flex;align-items:center;gap:6px;margin-bottom:3px;font:700 15px/1.1 var(--f-pixel)}
+.balloon b svg{width:16px;height:16px}
+.balloon .close{position:absolute;right:6px;top:6px;width:18px;height:18px;border:2px solid var(--ink);background:#fff;font:10px/1 var(--f-ui);cursor:pointer;padding:0}
+.balloon.hide{opacity:0;transform:translateY(8px);pointer-events:none}
+
+.pop-tip{position:fixed;z-index:80;pointer-events:none;font:600 16px/1 var(--f-pixel);color:var(--ink);background:#fff;border:2px solid var(--ink);padding:4px 7px;
+  box-shadow:3px 3px 0 rgba(15,20,48,.25);animation:rise .9s ease-out forwards;white-space:nowrap}
+@keyframes rise{to{transform:translateY(-34px);opacity:0}}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:40}
+
+/* ---------- intro ---------- */
+html.intro-on,html.intro-on body{overflow:hidden}
+#intro{position:fixed;inset:0;z-index:200;background:#000;color:#c8c8c8;font-family:var(--f-ui);transition:opacity .6s}
+#intro.out{opacity:0;pointer-events:none}
+#intro .scr{position:absolute;inset:0;display:none}
+#intro .scr.on{display:grid}
+.skip{position:absolute;right:14px;top:calc(12px + env(safe-area-inset-top,0px));z-index:5;background:none;border:1px solid rgba(255,255,255,.35);color:rgba(255,255,255,.8);
+  font:600 14px var(--f-pixel);padding:4px 10px;cursor:pointer}
+.skip:hover{color:#fff;border-color:#fff}
+.s-power{place-items:center;text-align:center}
+.pwr{width:92px;height:92px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;margin:0 auto 18px;
+  background:radial-gradient(circle at 35% 30%,#4a4a4a,#151515 70%);box-shadow:0 0 0 3px #2a2a2a,0 0 0 4px #000,0 0 30px rgba(80,170,255,.25);transition:box-shadow .2s}
+.pwr:hover{box-shadow:0 0 0 3px #2a2a2a,0 0 0 4px #000,0 0 40px rgba(80,170,255,.6)}
+.pwr svg{width:40px;height:40px;color:#7fd0ff;filter:drop-shadow(0 0 6px #4ab3ff)}
+.led{display:inline-block;width:8px;height:8px;background:#2fdc3a;box-shadow:0 0 8px #2fdc3a;margin-right:10px;animation:blink 1.4s steps(1) infinite}
+.pw-t{font:24px var(--f-term);color:#9aa}
+.s-bios{align-content:start;padding:28px 22px;font:clamp(17px,2.4vw,22px)/1.25 var(--f-term);color:#c0c0c0;white-space:pre-wrap;overflow:hidden}
+.s-bios .hi{color:#fff}.s-bios .ok{color:#5f5}
+.s-bios .bios-logo{position:absolute;right:22px;top:56px;font:700 clamp(22px,4vw,40px)/.95 var(--f-pixel);color:#5aa0ff;text-align:right}
+.s-boot{place-items:center;text-align:center}
+.boot-in{display:grid;justify-items:center;gap:6px}
+.boot-mark{font:700 clamp(32px,6.4vw,64px)/.95 var(--f-pixel);color:#fff}
+.boot-ed{font:600 clamp(15px,2vw,20px) var(--f-pixel);color:#ff8a00;justify-self:end}
+.loader{width:150px;height:18px;margin-top:46px;border:2px solid #b2b2b2;padding:2px;overflow:hidden;position:relative}
+.loader i{position:absolute;top:2px;bottom:2px;width:9px;background:linear-gradient(180deg,#2c5ce8,#6ba5ff 45%,#1b48c9);animation:chunk 1.7s linear infinite}
+.loader i:nth-child(2){animation-delay:.1s}.loader i:nth-child(3){animation-delay:.2s}
+@keyframes chunk{0%{left:-34px}100%{left:160px}}
+.boot-copy{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));left:0;right:0;font:16px var(--f-term);color:#777}
+.s-login{grid-template-rows:auto 1fr auto;background:#5a7edc}
+.lg-top,.lg-bot{background:#003399;min-height:clamp(56px,10vh,90px)}
+.lg-top{border-bottom:2px solid;border-image:linear-gradient(90deg,#003399,#fff 35%,#7da2ff 60%,#003399) 1}
+.lg-bot{border-top:2px solid;border-image:linear-gradient(90deg,#003399,#f99736 35%,#fbd18c 60%,#003399) 1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 clamp(16px,4vw,40px)}
+.lg-mid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(16px,3vw,36px);padding:24px 16px;
+  background:radial-gradient(ellipse 60% 70% at 18% 30%,#93b1f0 0%,#6f93e4 35%,transparent 70%),linear-gradient(180deg,#5a7edc,#5577d6)}
+.lg-hello{justify-self:end;text-align:right;color:#fff}
+.lg-hello .lg-word{font:700 clamp(28px,4.6vw,54px)/.95 var(--f-pixel);text-shadow:3px 3px 0 #2c4fae}
+.lg-hello p{margin:12px 0 0;font-size:clamp(13px,1.6vw,16px);color:#e2ebff}
+.lg-sep{width:1px;align-self:stretch;background:linear-gradient(180deg,transparent,rgba(255,255,255,.85),transparent)}
+.user{display:flex;align-items:center;gap:14px;padding:10px 26px 10px 10px;border:0;border-radius:8px;background:transparent;color:#fff;cursor:pointer;text-align:left;font:inherit;transition:background .15s}
+.user:hover,.user:focus-visible{background:linear-gradient(90deg,#0d3ca8,rgba(13,60,168,0))}
+.user img{width:64px;height:64px;border-radius:6px;border:3px solid #fff;box-shadow:0 0 0 1px #2c55b8;object-fit:cover;transition:border-color .15s}
+.user:hover img{border-color:#ffcf5a}
+.user b{display:block;font-size:clamp(16px,2vw,21px);font-weight:400}
+.user small{display:block;color:#cfe0ff;font-size:12px;margin-top:2px}
+.turnoff{display:flex;align-items:center;gap:8px;background:none;border:0;color:#fff;font:13px var(--f-ui);cursor:pointer;padding:0}
+.turnoff i{width:24px;height:24px;border-radius:5px;display:grid;place-items:center;background:linear-gradient(180deg,#f07a52,#cf3c15);border:1px solid #fff}
+.turnoff i svg{width:13px;height:13px}
+.lg-hint{font-size:12px;color:#cfe0ff;text-align:right;max-width:34ch}
+.lg-msg{grid-column:1/-1;text-align:center;color:#fff;font-size:13px;min-height:1.2em}
+.s-welcome{place-items:center;background:radial-gradient(ellipse 60% 70% at 18% 30%,#93b1f0 0%,#6f93e4 35%,transparent 70%),linear-gradient(180deg,#5a7edc,#5577d6)}
+.s-welcome .w{font:italic 700 clamp(46px,10vw,96px) var(--f-ui);color:#fff;text-shadow:2px 3px 0 #3e5fb8;animation:wIn .9s ease-out both}
+@keyframes wIn{from{opacity:0;transform:translateX(-30px)}}
+
+@media (max-width:900px){
+  .mini,.d-cursor2,.d-hour{display:none}
+  .explorer .pane{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .track{flex-wrap:wrap;justify-content:center;gap:16px 8px;min-height:0}
+  .era{flex:0 0 calc(25% - 8px)}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .split{grid-template-columns:minmax(0,1fr)}
+  .task.hide-m{display:none}
+}
+@media (max-width:640px){
+  .lg-mid{grid-template-columns:minmax(0,1fr);justify-items:center;text-align:center}
+  .lg-hello{justify-self:center;text-align:center}
+  .lg-sep{width:70%;height:1px;align-self:auto;background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent)}
+  .lg-hint{display:none}
+  .d-coin1,.d-coin2,.d-coin3{display:none}
+  .d-cursor1{width:34px;height:50px;top:-8%}
+  .d-heart{width:32px;height:30px;top:-8%;left:12%}
+  .disc{width:180px;left:-70px;bottom:-110px}
+}
+@media (max-width:520px){
+  .era{flex:0 0 calc(33.3% - 8px)}
+  .steps{grid-template-columns:minmax(0,1fr)}
+  .start span:last-child{display:none}
+  .start{padding:0 14px 0 12px}
+  .task{padding:0 7px}
+  .clock{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="gl" cx=".35" cy=".28" r=".7"><stop offset="0" stop-color="#fff" stop-opacity=".75"/><stop offset=".45" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <symbol id="i-info" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#1f63e0"/><circle cx="20" cy="20" r="18" fill="url(#gl)"/><circle cx="20" cy="20" r="18" fill="none" stroke="#0c3a9a"/><circle cx="20" cy="11.5" r="2.6" fill="#fff"/><rect x="17.6" y="16" width="4.8" height="14" rx="1.5" fill="#fff"/></symbol>
+    <symbol id="i-question" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#1f63e0"/><circle cx="20" cy="20" r="18" fill="url(#gl)"/><circle cx="20" cy="20" r="18" fill="none" stroke="#0c3a9a"/><text x="20" y="28.5" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="23" fill="#fff">?</text></symbol>
+    <symbol id="i-warn" viewBox="0 0 40 40"><path d="M20 3 38 35H2z" fill="#ffd21f" stroke="#a87b00" stroke-linejoin="round"/><path d="M20 3 38 35H2z" fill="url(#gl)"/><rect x="18" y="13" width="4" height="12" rx="1.5" fill="#222"/><circle cx="20" cy="29.5" r="2.3" fill="#222"/></symbol>
+    <symbol id="i-error" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="#e3321b"/><circle cx="20" cy="20" r="18" fill="url(#gl)"/><circle cx="20" cy="20" r="18" fill="none" stroke="#8d1405"/><path d="M13.5 13.5l13 13M26.5 13.5l-13 13" stroke="#fff" stroke-width="4" stroke-linecap="round"/></symbol>
+    <symbol id="i-xlogo" viewBox="0 0 24 24"><path fill="currentColor" d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></symbol>
+    <symbol id="i-dex" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M12 7 14.6 3.2 15.6 8 20.8 6.3 17.6 11.4 21.2 13 15.6 14.5 12 21.2 8.4 14.5 2.8 13 6.4 11.4 3.2 6.3 8.4 8 9.4 3.2ZM12 10.4l1.3 2-1.3 2-1.3-2Z"/></symbol>
+    <symbol id="i-min" viewBox="0 0 10 10"><rect x="1" y="7" width="7" height="2" fill="#0f1430"/></symbol>
+    <symbol id="i-max" viewBox="0 0 10 10"><path d="M1 1h8v8H1z" fill="none" stroke="#0f1430" stroke-width="2"/><rect x="1" y="1" width="8" height="3" fill="#0f1430"/></symbol>
+    <symbol id="i-x" viewBox="0 0 10 10"><path fill="#0f1430" d="M1 1h2v1h1v1h2V2h1V1h2v2H8v1H7v2h1v1h1v2H7V8H6V7H4v1H3v1H1V7h1V6h1V4H2V3H1z"/></symbol>
+  </defs>
+</svg>
+
+<div id="intro" role="dialog" aria-label="Start-up">
+  <button class="skip" type="button" id="skipIntro">Skip intro</button>
+  <div class="scr s-power on" id="sPower">
+    <div>
+      <button class="pwr" type="button" id="pwrBtn" aria-label="Power on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg></button>
+      <div class="pw-t"><span class="led"></span>Press power to boot the bubble</div>
+    </div>
+  </div>
+  <div class="scr s-bios" id="sBios" aria-hidden="true"><div class="bios-logo">IMB<br>BIOS</div><div id="biosTxt"></div></div>
+  <div class="scr s-boot" id="sBoot" aria-hidden="true">
+    <div class="boot-in">
+      <div class="boot-mark">Internet Money<br>Bubble</div>
+      <div class="boot-ed">Hype Edition</div>
+      <div class="loader"><i></i><i></i><i></i></div>
+    </div>
+    <div class="boot-copy">Copyright © 2001 Internet Money Bubble. All savings reserved.</div>
+  </div>
+  <div class="scr s-login" id="sLogin">
+    <div class="lg-top"></div>
+    <div class="lg-mid">
+      <div class="lg-hello">
+        <div class="lg-word">Internet<br>Money Bubble</div>
+        <p>To begin, click your user name</p>
+      </div>
+      <div class="lg-sep" aria-hidden="true"></div>
+      <div><button class="user" type="button" id="userBtn"><img src="pixel.webp" alt="" width="64" height="64"><span><b>Bubble Holder</b><small>Life savings: 100% allocated</small></span></button></div>
+      <div class="lg-msg" id="lgMsg" role="status"></div>
+    </div>
+    <div class="lg-bot">
+      <button class="turnoff" type="button" id="turnOff"><i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg></i>Turn off computer</button>
+      <span class="lg-hint">After you log on, the bubble will start to inflate. It always does.</span>
+    </div>
+  </div>
+  <div class="scr s-welcome" id="sWelcome" aria-hidden="true"><div class="w">welcome</div></div>
+</div>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<header class="hero" id="top">
+  <img class="poster" src="sky.webp" alt="">
+  <video src="sky.mp4" poster="sky.webp" autoplay muted loop playsinline aria-hidden="true"></video>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="sea" aria-hidden="true"></div>
+  <div class="cloudbank" aria-hidden="true"></div>
+  <div class="disc" aria-hidden="true"></div>
+
+  <div class="hero-in">
+    <div class="globe-wrap" aria-hidden="true"><div class="globe"></div></div>
+
+    <div class="win mini m1" aria-hidden="true"><div class="win-t"><span class="ttl">web.exe</span><span class="wb"><svg><use href="#i-min"/></svg></span><span class="wb"><svg><use href="#i-x"/></svg></span></div><div class="inner"><i class="px" data-sprite="globe"></i></div></div>
+    <div class="win mini m2" aria-hidden="true"><div class="win-t"><span class="ttl">savings</span><span class="wb"><svg><use href="#i-x"/></svg></span></div><div class="inner"><i class="px" data-sprite="cash"></i></div></div>
+    <div class="win mini m3" aria-hidden="true"><div class="win-t"><span class="ttl">C:\</span><span class="wb"><svg><use href="#i-x"/></svg></span></div><div class="inner"><i class="px" data-sprite="folder"></i></div></div>
+
+    <span class="deco bobble d-heart" aria-hidden="true"><i class="px" data-sprite="heart"></i></span>
+    <span class="deco bobble d-cursor1" aria-hidden="true"><i class="px" data-sprite="cursor"></i></span>
+    <span class="deco bobble d-coin1" aria-hidden="true"><i class="px coin-spin" data-sprite="coin"></i></span>
+    <span class="deco bobble d-coin2" aria-hidden="true"><i class="px coin-spin" data-sprite="coin"></i></span>
+
+    <span class="deco bobble d-coin3" aria-hidden="true"><i class="px coin-spin" data-sprite="coin"></i></span>
+    <span class="deco bobble d-cursor2" aria-hidden="true"><i class="px" data-sprite="cursor"></i></span>
+    <span class="deco bobble d-hour" aria-hidden="true"><i class="px" data-sprite="hourglass"></i></span>
+
+    <h1 class="speech" aria-label="Internet Money Bubble"><span>Internet Money</span><span>Bubble</span></h1>
+
+    <div class="win notice" role="dialog" aria-labelledby="notice-t">
+      <div class="win-t"><span class="ttl" id="notice-t">Market Notice</span><button class="wb" type="button" id="noticeX" aria-label="Close" data-snd="error"><svg><use href="#i-x"/></svg></button></div>
+      <div class="body" style="background:var(--paper)">
+        <svg class="ico" aria-hidden="true"><use href="#i-info"/></svg>
+        <p>Your life savings will be inside a random market bubble — and somehow, it will feel completely normal.</p>
+      </div>
+      <div class="btns" style="background:var(--paper)"><a class="xbtn default" href="#bubbles" data-snd="ding">OK</a><a class="xbtn" href="#normal" data-snd="click">Buy anyway</a></div>
+    </div>
+
+
+    <div class="win ca" aria-labelledby="ca-t">
+      <div class="win-t"><span class="ttl" id="ca-t"><i class="px" data-sprite="coin"></i>contract.txt — launching on StonkFun</span><span class="wb" aria-hidden="true"><svg><use href="#i-x"/></svg></span></div>
+      <div class="row">
+        <span class="lbl">CA</span>
+        <code id="caText">7GgfANbN6bX1zXo2QDRDyxDx7VmgXisoFX6322CrUYVB</code>
+        <div class="acts">
+          <button class="xbtn" type="button" id="copyCa">Copy</button>
+          <a class="xbtn default" href="https://stonkfun.xyz" target="_blank" rel="noopener" data-snd="coin">Buy on StonkFun</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="links" aria-label="Links">
+      <a class="lnk tw" href="https://x.com" target="_blank" rel="noopener" data-snd="click"><span class="tile"><svg aria-hidden="true"><use href="#i-xlogo"/></svg><i class="arrow" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M2 8 8 2M4 2h4v4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i></span><span class="lb">Twitter</span></a>
+      <a class="lnk dx" href="https://dexscreener.com/solana/7GgfANbN6bX1zXo2QDRDyxDx7VmgXisoFX6322CrUYVB" target="_blank" rel="noopener" data-snd="click"><span class="tile"><svg aria-hidden="true"><use href="#i-dex"/></svg><i class="arrow" aria-hidden="true"><svg viewBox="0 0 10 10"><path d="M2 8 8 2M4 2h4v4" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></i></span><span class="lb">DexScreener</span></a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="sec" id="bubbles" aria-labelledby="h-tl">
+    <div class="sec-head">
+      <span class="path">C:\History\Bubbles</span>
+      <h2 class="speech" id="h-tl">Every generation has its bubble</h2>
+    </div>
+    <div class="win explorer">
+      <div class="win-t"><span class="ttl"><i class="px" data-sprite="folder"></i>Bubbles</span>
+        <span class="wb" aria-hidden="true"><svg><use href="#i-min"/></svg></span><span class="wb" aria-hidden="true"><svg><use href="#i-max"/></svg></span><span class="wb" aria-hidden="true"><svg><use href="#i-x"/></svg></span></div>
+      <div class="menu" aria-hidden="true"><span>File</span><span>Edit</span><span>View</span><span>Favorites</span><span>Tools</span><span>Help</span></div>
+      <div class="pane">
+        <aside class="side" aria-label="Details">
+          <div class="side-box"><h3>Bubble Tasks</h3><ul><li>Inflate this bubble</li><li>Tell a friend</li><li>Remortgage</li></ul></div>
+          <div class="side-box"><h3>Details</h3><ul><li>Bubbles found <b>7</b></li><li>Popped so far <b>6</b></li><li>Lessons kept <b>0</b></li></ul></div>
+        </aside>
+        <div class="stage" id="tl">
+          <div class="track">
+            <div class="era"><button class="bub" type="button" style="--base:64px;--d:0s" data-pop="pets.com: offline"><i class="px" data-sprite="globe" aria-hidden="true"></i><span class="sr">Pop the Dot-Com bubble</span></button><div class="era-l"><b>Dot-Com</b><span>1999</span></div></div>
+            <div class="era"><button class="bub" type="button" style="--base:74px;--d:.4s" data-pop="no money down!"><i class="px" data-sprite="house" aria-hidden="true"></i><span class="sr">Pop the Housing bubble</span></button><div class="era-l"><b>Housing</b><span>2006</span></div></div>
+            <div class="era"><button class="bub" type="button" style="--base:84px;--d:.8s" data-pop="have fun staying poor"><i class="px" data-sprite="coin" aria-hidden="true"></i><span class="sr">Pop the Crypto bubble</span></button><div class="era-l"><b>Crypto</b><span>2017</span></div></div>
+            <div class="era"><button class="bub" type="button" style="--base:94px;--d:1.2s" data-pop="right-click, save as"><i class="px" data-sprite="frame" aria-hidden="true"></i><span class="sr">Pop the NFT bubble</span></button><div class="era-l"><b>NFTs</b><span>2021</span></div></div>
+            <div class="era"><button class="bub" type="button" style="--base:104px;--d:1.6s" data-pop="this time is different"><i class="px" data-sprite="robot" aria-hidden="true"></i><span class="sr">Pop the AI bubble</span></button><div class="era-l"><b>AI</b><span>2023</span></div></div>
+            <div class="era"><button class="bub" type="button" style="--base:114px;--d:2s" data-pop="wagmi"><i class="px" data-sprite="frog" aria-hidden="true"></i><span class="sr">Pop the Memecoin bubble</span></button><div class="era-l"><b>Memecoins</b><span>2024</span></div></div>
+            <div class="era"><button class="bub q" type="button" style="--base:126px;--d:2.4s" data-pop="not yet named" data-keep><span class="qm" aria-hidden="true">???</span><span class="sr">The next bubble</span></button><div class="era-l"><b>???</b><span>next</span></div></div>
+          </div>
+          <div class="progress">
+            <div class="progress-row"><span>Copying life savings into bubble…</span><span id="hypeV">15%</span></div>
+            <div class="bar-xp" role="progressbar" aria-label="Hype" aria-valuemin="0" aria-valuemax="100" aria-valuenow="15" id="hypeM"><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="status"><span>7 objects · scroll to inflate, click to pop</span><span>My Computer</span></div>
+    </div>
+  </section>
+
+  <section class="sec" id="normal" aria-labelledby="h-norm">
+    <div class="sec-head">
+      <span class="path">C:\Human\Behavior\normalize.bat</span>
+      <h2 class="speech" id="h-norm">How it becomes normal</h2>
+    </div>
+    <div class="steps">
+      <article class="win step" data-snd="ding" tabindex="0">
+        <div class="win-t"><span class="ttl">Step 1 of 4</span><span class="wb" aria-hidden="true"><svg><use href="#i-x"/></svg></span></div>
+        <div class="body"><svg class="ico" aria-hidden="true"><use href="#i-info"/></svg><div><h3>First they laugh.</h3><p>"Who would ever pay for that?"</p></div></div>
+        <div class="crowd" data-in="1" aria-hidden="true"></div>
+        <div class="status"><span>1 of 24 friends in</span><span>4%</span></div>
+      </article>
+      <article class="win step" data-snd="question" tabindex="0">
+        <div class="win-t"><span class="ttl">Step 2 of 4</span><span class="wb" aria-hidden="true"><svg><use href="#i-x"/></svg></span></div>
+        <div class="body"><svg class="ico" aria-hidden="true"><use href="#i-question"/></svg><div><h3>Then they watch.</h3><p>A friend is up 40%. The group chat goes quiet.</p></div></div>
+        <div class="crowd" data-in="5" aria-hidden="true"></div>
+        <div class="status"><span>5 of 24 friends in</span><span>21%</span></div>
+      </article>
+      <article class="win step" data-snd="warn" tabindex="0">
+        <div class="win-t"><span class="ttl">Step 3 of 4</span><span class="wb" aria-hidden="true"><svg><use href="#i-x"/></svg></span></div>
+        <div class="body"><svg class="ico" aria-hidden="true"><use href="#i-warn"/></svg><div><h3>Then they buy.</h3><p>"Just a small position." It is not small.</p></div></div>
+        <div class="crowd" data-in="14" aria-hidden="true"></div>
+        <div class="status"><span>14 of 24 friends in</span><span>58%</span></div>
+      </article>
+      <article class="win step" data-snd="error" tabindex="0">
+        <div class="win-t"><span class="ttl">Step 4 of 4</span><span class="wb" aria-hidden="true"><svg><use href="#i-x"/></svg></span></div>
+        <div class="body"><svg class="ico" aria-hidden="true"><use href="#i-error"/></svg><div><h3>Then everyone is in.</h3><p>Your aunt asks which wallet to use.</p></div></div>
+        <div class="crowd" data-in="24" aria-hidden="true"></div>
+        <div class="status"><span>24 of 24 friends in</span><span>100%</span></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="sec" id="behavior" aria-labelledby="h-human">
+    <div class="split">
+      <div class="win vid">
+        <div class="win-t"><span class="ttl"><i class="px" data-sprite="globe"></i>My Portfolio — Web Browser</span>
+          <span class="wb" aria-hidden="true"><svg><use href="#i-min"/></svg></span><span class="wb" aria-hidden="true"><svg><use href="#i-max"/></svg></span><span class="wb" aria-hidden="true"><svg><use href="#i-x"/></svg></span></div>
+        <video id="deskVid" src="desktop.mp4" poster="desktop.webp" autoplay muted loop playsinline aria-label="A cluttered Windows XP desktop full of pop-ups"></video>
+        <div class="status"><span>Done</span><button class="xbtn" type="button" id="deskSnd">Unmute</button></div>
+      </div>
+      <div class="copy">
+        <span class="path">Same desktop, new tabs</span>
+        <h2 class="speech right" id="h-human">The bubble changes. Human behavior doesn't.</h2>
+        <div class="card">
+          <p>Attention moves faster now. Narratives spread instantly. Every new market turns into its own online world, with its own slang, its own heroes and its own reason why this time is different.</p>
+          <div class="tags" aria-label="Bubbles so far"><span>dot-com</span><span>housing</span><span>crypto</span><span>NFTs</span><span>AI</span><span>memecoins</span><span>not named yet</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="readme" aria-labelledby="h-short">
+    <div class="split">
+      <div class="win note">
+        <div class="win-t"><span class="ttl">readme.txt — Notepad</span>
+          <span class="wb" aria-hidden="true"><svg><use href="#i-min"/></svg></span><span class="wb" aria-hidden="true"><svg><use href="#i-x"/></svg></span></div>
+        <div class="menu" aria-hidden="true"><span>File</span><span>Edit</span><span>Format</span><span>View</span><span>Help</span></div>
+        <div class="doc" id="h-short">
+          <p>Your life savings will probably end up inside a random market bubble.</p>
+          <p>The funny part is that by the time it happens, it won't feel random at all.</p>
+          <p>Everyone around you will be doing it.</p>
+          <p>That's the Internet Money Bubble.<span id="caret">▌</span></p>
+        </div>
+        <div class="status"><span>Ln 4, Col 34</span><span>Not financial advice</span></div>
+      </div>
+      <div class="cover"><img src="pixel.webp" alt="Internet Money Bubble pixel speech bubble over clouds, coins and retro windows" width="900" height="900"></div>
+    </div>
+  </section>
+</main>
+
+<div class="ending" aria-label="Footer">
+  <div class="sea" aria-hidden="true"></div>
+  <div class="cloudbank" aria-hidden="true"></div>
+  <p>Internet Money Bubble · CA 7Ggf…UYVB · on StonkFun · not financial advice</p>
+</div>
+
+<div class="balloon hide" id="balloon" role="status">
+  <button class="close" type="button" aria-label="Close notification">✕</button>
+  <b><svg aria-hidden="true"><use href="#i-info"/></svg>Welcome to Internet Money Bubble</b>
+  Sounds are on. Use the speaker in the taskbar to mute.
+</div>
+
+<nav class="taskbar" aria-label="Sections">
+  <button class="start" type="button" id="startBtn" data-snd="click" aria-label="Back to top"><span class="flag" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>start</span></button>
+  <div class="tasks">
+    <a class="task" href="#bubbles" data-snd="click" data-sec="bubbles"><i class="px" data-sprite="folder" aria-hidden="true"></i><span>Bubbles</span></a>
+    <a class="task" href="#normal" data-snd="click" data-sec="normal"><i class="px" data-sprite="coin" aria-hidden="true"></i><span>Normal</span></a>
+    <a class="task hide-m" href="#behavior" data-snd="click" data-sec="behavior"><i class="px" data-sprite="globe" aria-hidden="true"></i><span>Portfolio</span></a>
+    <a class="task" href="#readme" data-snd="click" data-sec="readme"><i class="px" data-sprite="heart" aria-hidden="true"></i><span>readme.txt</span></a>
+  </div>
+  <div class="tray">
+    <a href="https://x.com" target="_blank" rel="noopener" aria-label="Twitter" data-snd="click"><svg aria-hidden="true"><use href="#i-xlogo"/></svg></a>
+    <a href="https://dexscreener.com/solana/7GgfANbN6bX1zXo2QDRDyxDx7VmgXisoFX6322CrUYVB" target="_blank" rel="noopener" aria-label="DexScreener" data-snd="click"><svg aria-hidden="true"><use href="#i-dex"/></svg></a>
+    <button class="snd" id="sndBtn" type="button" aria-pressed="false" aria-label="Sounds off. Turn on">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path id="sndWave" d="M17 9l4 6M21 9l-4 6"/></svg>
+    </button>
+    <span class="clock" id="clock">12:00 PM</span>
+  </div>
+</nav>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+
+  /* ---------- pixel sprites ---------- */
+  const PAL = { k:'#10142a', w:'#ffffff', y:'#ffc93a', Y:'#fff1a0', d:'#c88412', P:'#ffd0ea', p:'#ff7fc8', q:'#d9469c',
+    b:'#2f86f0', B:'#9fd0ff', g:'#3fbf3a', G:'#2e9a3c', h:'#7fe07a', D:'#1d6b2a', c:'#4aa3ff', R:'#ff4b4b', s:'#a8d8ff', o:'#8a5a2b', e:'#cfd8e8' };
+  const SPR = {
+    coin:["...kkkkkk...",".kkYYYyyykk.","kYYyyddyyydk","kYyyddddyydk","kYyddyyyyydk","kYyyddddyydk","kYyyyyyddydk","kYyddddddydk","kYyyyddyyydk","kdyyyyyyyddk",".kkddyyddkk.","...kkkkkk..."],
+    heart:[".kk...kk.","kPPk.kppk","kPpppppqk","kppppppqk",".kppppqk.","..kppqk..","...kqk...","....k...."],
+    cursor:["k..........","kk.........","kwk........","kwwk.......","kwwwk......","kwwwwk.....","kwwwwwk....","kwwwwwwk...","kwwwwwwwk..","kwwwwwwwwk.","kwwwwwkkkkk","kwwkwwk....","kwk.kwwk...","kk..kwwk...","k....kwwk..",".....kwwk..","......kk..."],
+    hourglass:["kkkkkkkkkk","kbbbbbbbbk",".kwwwwwwk.",".kwccccwk.","..kwccwk..","...kwck...","....kk....","...kwwk...","..kwwcwk..",".kwwcccwk.",".kwccccck.","kbbbbbbbbk","kkkkkkkkkk"],
+    cash:["kkkkkkkkkkkkkk","khhhhhwwhhhhhk","khgggGwwGgggGk","khgDgGwwGgDgGk","khgggGwwGgggGk","kGGGGGwwGGGGGk","kkkkkkkkkkkkkk","khhhhhhhhhhhhk","kGGGGGGGGGGGGk","kkkkkkkkkkkkkk"],
+    folder:[".kkkkk........","kYYYYYk.......","kYYYYYYkkkkkkk","kYYYYYYYYYYYYk","kyyyyyyyyyyyyk","kyyyyyyyyyyyyk","kyyyyyyyyyyyyk","kyyyyyyyyyyyyk","kyyyyyyyyyyyyk","kddddddddddddk","kkkkkkkkkkkkkk"],
+    globe:["....kkkkkk....","..kkbbggbbkk..",".kBbggggbbbbk.",".kBgggggbbggk.","kBbbggggbbggbk","kbbbbggbbbbbbk","kbbbbbgbbbggbk","kbbbbbbbbgggbk","kbbggbbbbgggbk","kbgggggbbbgbbk",".kbgggbbbbbbk.",".kbbgbbbbbbbk.","..kkbbbbbbkk..","....kkkkkk...."],
+    house:[".....kk.....","....kRRk....","...kRRRRk...","..kRRRRRRk..",".kRRRRRRRRk.","kkkkkkkkkkkk",".kwwwwwwwwk.",".kwbbwwbbwk.",".kwbbwwbbwk.",".kwwwoowwwk.",".kwwwoowwwk.",".kkkkkkkkkk."],
+    frame:["kkkkkkkkkkkk","kooooooooook","kossssssssok","kossssYYsssk","kossssYYssok","kosssssssgok","kossgsssgggk","kosgggsggggk","koggggggggok","kooooooooook","kkkkkkkkkkkk"],
+    robot:[".....kk.....",".....kR.....","..kkkkkkkk..","..keeeeeek..","..kebeebek..","..keeeeeek..","..kekkkkek..","..kkkkkkkk..",".kkeeeeeekk.","kekeReeRekek",".kkeeeeeekk.","..kkk..kkk.."],
+    frog:["..kkk..kkk..",".kwwkkkkwwk.",".kwkggggkwk.","kggggggggggk","kgRRRRRRRRgk","kggRRRRRRggk",".kgggggggggk",".kkkkkkkkkk."]
+  };
+  function spriteSVG(name){
+    const rows = SPR[name]; if (!rows) return '';
+    const w = Math.max(...rows.map(r => r.length)), h = rows.length, paths = {};
+    rows.forEach((r, y) => [...r].forEach((ch, x) => { if (PAL[ch]) (paths[ch] ||= []).push(`M${x} ${y}h1v1h-1z`); }));
+    return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet">${Object.entries(paths).map(([c, d]) => `<path fill="${PAL[c]}" d="${d.join('')}"/>`).join('')}</svg>`;
+  }
+  $$('[data-sprite]').forEach(el => el.innerHTML = spriteSVG(el.dataset.sprite));
+  const spriteImg = {};
+  function spriteBitmap(name){
+    if (spriteImg[name]) return spriteImg[name];
+    const img = new Image(); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(spriteSVG(name).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" '));
+    return spriteImg[name] = img;
+  }
+
+  /* clock */
+  const clock = $('#clock');
+  const tick = () => clock.textContent = new Date().toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+  tick(); setInterval(tick, 15000);
+
+  /* crowds */
+  $$('.crowd').forEach(c => { const n = +c.dataset.in; for (let i = 0; i < 24; i++) { const e = document.createElement('i'); if (i < n) e.className = 'in'; c.appendChild(e); } });
+
+  /* ---------- system sounds (synthesized, XP-flavoured) ---------- */
+  let ac = null, master = null, verb = null, soundOn = false, booted = false;
+  function initAudio(){
+    if (ac) return true;
+    try {
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      master = ac.createGain(); master.gain.value = .55; master.connect(ac.destination);
+      verb = ac.createConvolver();
+      const len = ac.sampleRate * 1.8, buf = ac.createBuffer(2, len, ac.sampleRate);
+      for (let ch = 0; ch < 2; ch++) { const d = buf.getChannelData(ch); for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * Math.pow(1 - i/len, 3); }
+      verb.buffer = buf; const wet = ac.createGain(); wet.gain.value = .32; verb.connect(wet).connect(master);
+      return true;
+    } catch(e) { return false; }
+  }
+  function note(f, t0, dur, {type='sine', vol=.15, attack=.01, slide=null, wet=true, detune=0}={}){
+    if (!ac || !soundOn) return;
+    const t = ac.currentTime + t0, o = ac.createOscillator(), g = ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t); o.detune.value = detune;
+    if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + dur);
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + attack); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g); g.connect(master); if (wet) g.connect(verb);
+    o.start(t); o.stop(t + dur + .05);
+  }
+  function noise(t0, dur, vol=.08, freq=3000){
+    if (!ac || !soundOn) return;
+    const t = ac.currentTime + t0, len = Math.max(1, ac.sampleRate * dur), b = ac.createBuffer(1, len, ac.sampleRate), d = b.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * (1 - i/len);
+    const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    s.buffer = b; f.type = 'bandpass'; f.frequency.value = freq; g.gain.value = vol;
+    s.connect(f).connect(g).connect(master); s.start(t);
+  }
+  const SND = {
+    beep(){ note(988, 0, .16, {type:'square', vol:.06, wet:false}); },
+    hdd(dur){ for (let t = 0; t < dur; t += .04 + Math.random()*.12) noise(t, .012 + Math.random()*.02, .1 + Math.random()*.12, 1500 + Math.random()*2500); },
+    fan(dur){ if (!ac || !soundOn) return; const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain(), f = ac.createBiquadFilter(); o.type='sawtooth'; o.frequency.value = 55;
+      f.type='lowpass'; f.frequency.value = 140; g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.05, t + .6); g.gain.linearRampToValueAtTime(0, t + dur);
+      o.connect(f).connect(g).connect(master); o.start(t); o.stop(t + dur + .1); },
+    startup(){
+      [155.6,233.1,311.1,392].forEach(f => { note(f, 0, 3.2, {type:'triangle', vol:.05, attack:.9}); note(f, 0, 3.2, {type:'sine', vol:.04, attack:.9, detune:7}); });
+      [622.3, 466.2, 698.5, 932.3].forEach((f,i) => note(f, .55 + i*.32, 1.8, {type:'sine', vol:.11, attack:.02}));
+      note(1244.5, 1.9, 2.2, {type:'sine', vol:.05, attack:.05});
+    },
+    click(){ noise(0, .025, .25, 2400); note(1800, 0, .03, {vol:.03, wet:false}); },
+    ding(){ note(1318.5, 0, .9, {vol:.13}); note(1975.5, 0, .5, {vol:.04}); note(987.8, .11, 1.1, {vol:.11}); },
+    question(){ note(880, 0, .5, {type:'triangle', vol:.1}); note(1174.7, .14, .9, {type:'triangle', vol:.1}); },
+    warn(){ note(659.3, 0, .7, {type:'triangle', vol:.12}); note(523.3, .12, 1, {type:'triangle', vol:.1}); },
+    error(){ [329.6, 415.3, 493.9].forEach(f => note(f, 0, .9, {type:'triangle', vol:.07})); note(164.8, 0, .9, {vol:.08}); },
+    balloon(){ note(1046.5, 0, .25, {vol:.09}); note(1568, .09, .6, {vol:.09}); },
+    pop(){ note(700 + Math.random()*500, 0, .08, {vol:.2, slide:160, wet:false}); noise(0, .03, .12, 5000); },
+    coin(){ note(987.8, 0, .08, {type:'square', vol:.05, wet:false}); note(1318.5, .07, .35, {type:'square', vol:.05}); },
+    shutdown(){ [932.3, 698.5, 466.2, 311.1].forEach((f,i) => note(f, i*.2, 1.2, {vol:.09})); }
+  };
+  const play = k => { if (soundOn && SND[k]) SND[k](); };
+
+  const sndBtn = $('#sndBtn'), wave = $('#sndWave');
+  function setSound(on, quiet){
+    if (on && !initAudio()) on = false;
+    if (!on && soundOn && !quiet) play('shutdown');
+    soundOn = on;
+    if (ac && ac.state === 'suspended') ac.resume();
+    sndBtn.setAttribute('aria-pressed', on);
+    sndBtn.setAttribute('aria-label', on ? 'Sounds on. Turn off' : 'Sounds off. Turn on');
+    wave.setAttribute('d', on ? 'M16 8.5a5 5 0 0 1 0 7M19 5.5a9 9 0 0 1 0 13' : 'M17 9l4 6M21 9l-4 6');
+  }
+  sndBtn.addEventListener('click', e => { e.stopPropagation(); booted = true; setSound(!soundOn); if (soundOn) play('ding'); hideBalloon(); });
+  addEventListener('pointerdown', function boot(e){
+    if (booted || e.target.closest('#sndBtn,#intro')) return;
+    booted = true; setSound(true, true); play('startup'); hideBalloon();
+    removeEventListener('pointerdown', boot);
+  });
+
+  /* balloon */
+  const balloon = $('#balloon');
+  function hideBalloon(){ balloon.classList.add('hide'); }
+  balloon.querySelector('.close').addEventListener('click', e => { e.stopPropagation(); hideBalloon(); });
+  function showBalloon(title, text, icon='i-info'){
+    balloon.querySelector('b').innerHTML = `<svg aria-hidden="true"><use href="#${icon}"/></svg>${title}`;
+    balloon.lastChild.textContent = text; balloon.classList.remove('hide'); play('balloon');
+    clearTimeout(showBalloon.t); showBalloon.t = setTimeout(hideBalloon, 5000);
+  }
+
+  document.addEventListener('click', e => { const el = e.target.closest('[data-snd]'); if (el) play(el.dataset.snd); });
+  $$('.step').forEach(s => s.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(s.dataset.snd); } }));
+  $('#noticeX').addEventListener('click', () => showBalloon('Cannot close this window', 'The bubble is still open. It always is.', 'i-error'));
+  $('#startBtn').addEventListener('click', () => scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'}));
+
+  /* ---------- intro ---------- */
+  const intro = $('#intro'), root = document.documentElement;
+  root.classList.add('intro-on');
+  const scr = id => intro.querySelectorAll('.scr').forEach(x => x.classList.toggle('on', x.id === id));
+  const timers = []; const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  let introDone = false;
+  function endIntro(){
+    if (introDone) return; introDone = true; timers.forEach(clearTimeout);
+    intro.classList.add('out'); root.classList.remove('intro-on');
+    setTimeout(() => { intro.hidden = true; }, 650);
+    later(() => showBalloon('Welcome to Internet Money Bubble', soundOn ? 'Sounds are on. Use the speaker in the taskbar to mute.' : 'Click the speaker in the taskbar to turn on sounds.'), 900);
+    inflate();
+  }
+  function logOn(){ if (introDone) return; scr('sWelcome'); play('startup'); later(endIntro, reduce ? 600 : 2600); }
+  const biosLines = [
+    ['hi','IMB BIOS v2.01  (C) 2001 Internet Money Bubble Inc.'],['',''],['',''],
+    ['','CPU: Pentium III Hype Processor 800 MHz'],['',''],['','Memory Test: 655360K '],['ok','OK'],['',''],
+    ['','Detecting savings account ......... '],['ok','FOUND'],['',''],
+    ['','Detecting common sense ............ '],['ok','SKIPPED'],['',''],
+    ['','Checking market sentiment ......... '],['ok','EUPHORIC'],['',''],['',''],
+    ['hi','Loading BUBBLE.SYS ...']
+  ];
+  function runBios(){
+    scr('sBios'); const box = $('#biosTxt'); box.textContent = '';
+    play('beep'); if (soundOn) { SND.hdd(3.6); SND.fan(6.5); }
+    let t = 250;
+    biosLines.forEach(([cls, txt]) => {
+      later(() => {
+        if (txt === '') { box.appendChild(document.createTextNode('\n')); return; }
+        const sp = document.createElement('span'); if (cls) sp.className = cls; sp.textContent = txt; box.appendChild(sp);
+      }, t);
+      t += txt === '' ? 60 : (cls === 'ok' ? 260 : 140);
+    });
+    later(runBoot, t + 500);
+  }
+  function runBoot(){ scr('sBoot'); later(() => { scr('sLogin'); play('ding'); $('#userBtn').focus({preventScroll:true}); }, 3000); }
+  const wake = () => { if (!booted) { booted = true; setSound(true, true); } };
+  $('#pwrBtn').addEventListener('click', () => { wake(); if (reduce) { scr('sLogin'); play('ding'); return; } runBios(); });
+  $('#userBtn').addEventListener('click', () => { wake(); play('click'); logOn(); });
+  $('#turnOff').addEventListener('click', () => { wake(); play('error'); $('#lgMsg').textContent = 'This computer cannot shut down. The bubble is still running.'; });
+  $('#skipIntro').addEventListener('click', () => { wake(); play('click'); endIntro(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !introDone) $('#skipIntro').click(); });
+
+
+  /* copy contract address */
+  $('#copyCa').addEventListener('click', () => {
+    const txt = $('#caText').textContent.trim(), btn = $('#copyCa');
+    const ok = () => { btn.textContent = 'Copied'; play('ding'); showBalloon('Contract address copied', txt.slice(0,6) + '…' + txt.slice(-6)); setTimeout(() => btn.textContent = 'Copy', 1800); };
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents($('#caText')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      btn.textContent = 'Selected, press Ctrl+C'; play('warn'); setTimeout(() => btn.textContent = 'Copy', 2600); };
+    try { navigator.clipboard.writeText(txt).then(ok, fallback); } catch(e) { fallback(); }
+  });
+
+  /* video sound */
+  const dv = $('#deskVid'), ds = $('#deskSnd');
+  ds.addEventListener('click', () => { dv.muted = !dv.muted; if (!dv.muted) dv.play().catch(()=>{}); ds.textContent = dv.muted ? 'Unmute' : 'Mute'; });
+
+  /* taskbar + notifications */
+  const tasks = $$('.task');
+  const io = new IntersectionObserver(es => es.forEach(en => { if (en.isIntersecting) tasks.forEach(t => t.classList.toggle('on', t.dataset.sec === en.target.id)); }), {rootMargin:'-45% 0px -45% 0px'});
+  ['bubbles','normal','behavior','readme'].forEach(id => io.observe(document.getElementById(id)));
+  const seen = new Set();
+  const io2 = new IntersectionObserver(es => es.forEach(en => {
+    if (!en.isIntersecting || seen.has(en.target.id) || !booted || !introDone) return;
+    seen.add(en.target.id);
+    const m = { normal:['New bubble detected','4 of your friends just bought in.'], behavior:['Portfolio update','Your savings are now 100% bubble. Feels normal.'] }[en.target.id];
+    if (m) showBalloon(m[0], m[1]);
+  }), {threshold:.35});
+  ['normal','behavior'].forEach(id => io2.observe(document.getElementById(id)));
+
+  function tip(x, y, text){ const t = document.createElement('div'); t.className = 'pop-tip'; t.textContent = text; t.style.left = Math.max(8, Math.min(innerWidth - 160, x - 50)) + 'px'; t.style.top = (y - 30) + 'px'; document.body.appendChild(t); setTimeout(() => t.remove(), 950); }
+
+  /* timeline inflate */
+  const tl = $('#tl'), bubs = $$('.bub'), hypeM = $('#hypeM'), hypeV = $('#hypeV');
+  function inflate(){
+    const r = tl.getBoundingClientRect(), vh = innerHeight;
+    const p = Math.max(0, Math.min(1, (vh - r.top) / (vh + r.height)));
+    bubs.forEach((b, i) => { if (!b.classList.contains('popped')) b.style.setProperty('--s', (.82 + p * .42 * (1 + i*.07)).toFixed(3)); });
+    const pct = Math.round(10 + p * 90);
+    hypeM.style.setProperty('--p', pct + '%'); hypeM.setAttribute('aria-valuenow', pct); hypeV.textContent = pct + '%';
+  }
+  addEventListener('scroll', inflate, {passive:true}); addEventListener('resize', inflate); inflate();
+  bubs.forEach(b => b.addEventListener('click', () => {
+    const r = b.getBoundingClientRect(); tip(r.left + r.width/2, r.top, b.dataset.pop); play('pop');
+    if (b.hasAttribute('data-keep')) { b.animate([{transform:'scale(1)'},{transform:'scale(1.1)'},{transform:'scale(1)'}], {duration:280}); return; }
+    b.classList.add('popped'); setTimeout(() => { b.classList.remove('popped'); inflate(); }, 2000);
+  }));
+
+  /* ---------- ambient: twinkling pixel sparkles + drifting coins ---------- */
+  const cv = $('#fx'), cx = cv.getContext('2d'); let W, H;
+  function size(){ const d = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W*d; cv.height = H*d; cx.setTransform(d,0,0,d,0,0); cx.imageSmoothingEnabled = false; }
+  size(); addEventListener('resize', size);
+  const coinImg = spriteBitmap('coin');
+  const S = [], C = [];
+  const nS = reduce ? 0 : Math.round(Math.min(34, W / 36)), nC = reduce ? 0 : Math.round(Math.min(7, W / 220));
+  const mkS = () => ({ x: Math.random()*W, y: Math.random()*H, s: 2 + Math.floor(Math.random()*3), ph: Math.random()*6.28, sp: .02 + Math.random()*.04, kind: Math.random() < .55 ? 'plus' : 'star' });
+  const mkC = y => ({ x: Math.random()*W, y: y ?? H + 30, sz: 20 + Math.random()*16, v: .25 + Math.random()*.4, w: Math.random()*6.28, t: Math.random()*6.28 });
+  for (let i = 0; i < nS; i++) S.push(mkS());
+  for (let i = 0; i < nC; i++) C.push(mkC(Math.random()*H));
+  let mx = -999, my = -999;
+  addEventListener('pointermove', e => { mx = e.clientX; my = e.clientY; }, {passive:true});
+  addEventListener('pointerdown', e => {
+    if (e.target.closest('a,button,video,.win,#intro')) return;
+    for (const c of C) if (Math.hypot(c.x - e.clientX, c.y - e.clientY) < c.sz) { tip(c.x, c.y, '+$1,000'); play('coin'); Object.assign(c, mkC()); break; }
+  });
+  function plus(x, y, s, a){ cx.globalAlpha = a; cx.fillStyle = '#fff'; cx.fillRect(x - s/2, y - s*2.5, s, s*5); cx.fillRect(x - s*2.5, y - s/2, s*5, s); }
+  function star(x, y, s, a){ cx.globalAlpha = a; cx.fillStyle = '#fff'; const r = s*4; cx.beginPath(); cx.moveTo(x, y - r); cx.lineTo(x + s*.6, y - s*.6); cx.lineTo(x + r, y); cx.lineTo(x + s*.6, y + s*.6); cx.lineTo(x, y + r); cx.lineTo(x - s*.6, y + s*.6); cx.lineTo(x - r, y); cx.lineTo(x - s*.6, y - s*.6); cx.closePath(); cx.fill(); }
+  function frame(){
+    cx.clearRect(0, 0, W, H);
+    for (const s of S) {
+      s.ph += s.sp; const a = Math.max(0, Math.sin(s.ph)) * .85;
+      if (a <= .01 && Math.random() < .02) Object.assign(s, mkS());
+      (s.kind === 'plus' ? plus : star)(Math.round(s.x), Math.round(s.y), s.s, a);
+    }
+    cx.globalAlpha = 1;
+    for (const c of C) {
+      c.y -= c.v; c.w += .012; c.x += Math.sin(c.w) * .3; c.t += .05;
+      const dx = c.x - mx, dy = c.y - my, d = Math.hypot(dx, dy); if (d < 90 && d > 0) { c.x += dx/d * 1.4; c.y += dy/d; }
+      if (c.y < -40) Object.assign(c, mkC());
+      const sx = Math.cos(c.t);
+      if (coinImg.complete) { cx.save(); cx.translate(c.x, c.y); cx.scale(Math.abs(sx) < .15 ? .15 : sx, 1); cx.drawImage(coinImg, -c.sz/2, -c.sz/2, c.sz, c.sz); cx.restore(); }
+    }
+    requestAnimationFrame(frame);
+  }
+  if (nS || nC) frame();
+})();
+</script>
+
+</body>
+</html>
