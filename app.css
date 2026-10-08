@@ -150,3 +150,8 @@ body.enter .task{animation:rise .4s ease-out both}
 .balloon::after{content:"";position:absolute;right:30px;bottom:-12px;border:6px solid transparent;border-top-color:#ffffe1}
 .balloon.hide{opacity:0}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.ca{display:flex;align-items:center;gap:6px;padding:6px 8px 8px;border-top:1px solid #cfcbbb;font:11px Tahoma,Verdana,sans-serif;color:#333;min-width:0}
+.ca b{flex:none;color:#0b1a52}
+.ca code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:#fff;border:1px solid #7f9db9;padding:3px 5px;font:11px "Lucida Console",Consolas,monospace;user-select:all}
+.ca button{flex:none;font:11px Tahoma,Verdana,sans-serif;padding:2px 8px;border:1px solid #003c74;border-radius:3px;background:linear-gradient(180deg,#fff,#ecebe6 85%,#d6d0c5);cursor:pointer}

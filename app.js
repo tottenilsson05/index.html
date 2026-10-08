@@ -2,7 +2,8 @@
 /* ===== EDIT THESE ===== */
 const CONFIG = {
   X_URL:   "https://x.com/nostalgia_SF",    // your X / Twitter link
-  DEX_URL: "https://dexscreener.com/solana"  // your DEX Screener link
+  DEX_URL: "https://dexscreener.com/solana/4jy2EV5r5Y1ivpqE2G2i4Ae7ndeuymmZ6d9PHrsse2zz",  // your DEX Screener link
+  CA: "4jy2EV5r5Y1ivpqE2G2i4Ae7ndeuymmZ6d9PHrsse2zz"
 };
 /* ====================== */
 const $=s=>document.querySelector(s);
@@ -239,3 +240,9 @@ setTimeout(toWelcome,reduce?300:6500);
 
 const clk=$("#clock");function tickClock(){clk.textContent=new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"})}
 tickClock();setInterval(tickClock,10000);
+
+/* contract address */
+(function(){const el=document.getElementById("ca");if(!el)return;el.querySelector("code").textContent=CONFIG.CA;
+  const b=el.querySelector("button");b.onclick=()=>{const done=()=>{b.textContent="Copied";setTimeout(()=>b.textContent="Copy",1400)};
+    try{navigator.clipboard.writeText(CONFIG.CA).then(done,sel)}catch(_){sel()}
+    function sel(){const r=document.createRange();r.selectNodeContents(el.querySelector("code"));const s=getSelection();s.removeAllRanges();s.addRange(r)}}})();
