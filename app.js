@@ -1,7 +1,7 @@
 
 /* ===== EDIT THESE ===== */
 const CONFIG = {
-  X_URL:   "https://x.com/",                 // your X / Twitter link
+  X_URL:   "https://x.com/nostalgia_SF",    // your X / Twitter link
   DEX_URL: "https://dexscreener.com/solana"  // your DEX Screener link
 };
 /* ====================== */
