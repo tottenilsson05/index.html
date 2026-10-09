@@ -2,8 +2,8 @@
 /* ===== EDIT THESE ===== */
 const CONFIG = {
   X_URL:   "https://x.com/nostalgia_SF",    // your X / Twitter link
-  DEX_URL: "https://dexscreener.com/solana/5ytPuXDtYVgcg3YHYZrkJdNpTufeCZWwBHMk2Lzgpump",  // your DEX Screener link
-  CA: "5ytPuXDtYVgcg3YHYZrkJdNpTufeCZWwBHMk2Lzgpump"
+  DEX_URL: "https://dexscreener.com/solana/GxAXStHEGptRH12L6G7rnZ8rtqeKGqVpwD4EA5bzpump",  // your DEX Screener link
+  CA: "GxAXStHEGptRH12L6G7rnZ8rtqeKGqVpwD4EA5bzpump"
 };
 /* ====================== */
 const $=s=>document.querySelector(s);
