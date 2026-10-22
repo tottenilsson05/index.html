@@ -6,7 +6,7 @@ export const PIG = {
   // Solana mint address of $PIG. Leave "" until the coin exists — Buy.exe will say so.
   CA: "CdCnpS9qUyG19fxTAsvGsyMaZxMS5dNA6J2T4fr5pump",
   // Social links. Empty values are hidden.
-  X: "",
+  X: "https://x.com/pigpadPF",
   telegram: "",
   // Where launches go (handled by /api/create through PumpPortal on the hosted site).
   launchProvider: "pump.fun",

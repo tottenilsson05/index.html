@@ -72,8 +72,8 @@ const SVG_ICONS = {
   // the official X mark (path from Simple Icons) on a black tile
   x: () => S(html`<rect x="2" y="2" width="44" height="44" rx="10" fill="#000" stroke="#fff" stroke-width="2.5"/><g transform="translate(12 12)"><path fill="#fff" d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></g>`),
 };
-// Dexscreener's own logo, loaded from dexscreener.com (then Google's favicon service); a plain tile if both are blocked.
-const DEX_SRC = ["https://dexscreener.com/favicon.png", "https://www.google.com/s2/favicons?domain=dexscreener.com&sz=128"];
+// Dexscreener's own logo via Google's favicon service (dexscreener.com blocks hotlinking its file); a plain tile if both are blocked.
+const DEX_SRC = ["https://www.google.com/s2/favicons?domain=dexscreener.com&sz=128", "https://dexscreener.com/favicon.png"];
 const DEX_FALLBACK = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="2" y="2" width="44" height="44" rx="10" fill="#000" stroke="#fff" stroke-width="2.5"/><text x="24" y="30" font-family="Arial" font-weight="700" font-size="13" fill="#fff" text-anchor="middle">DEX</text></svg>');
 export const DexLogo = () => html`<img class="dexlogo" src=${DEX_SRC[0]} alt="" draggable="false"
   onError=${e => { const i = e.currentTarget, n = +(i.dataset.n || 0) + 1; i.dataset.n = n; i.src = n < DEX_SRC.length ? DEX_SRC[n] : DEX_FALLBACK; if (n >= DEX_SRC.length) i.onerror = null; }} />`;
