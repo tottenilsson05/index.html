@@ -42,6 +42,11 @@ export function Welcome({ open, toast }) {
         <div class="field"><label for="wel-ca">Contract address</label>
           <div class="ca"><input id="wel-ca" class="inp" ref=${caRef} readonly value=${PIG.CA || "Not live yet. It appears here at launch."} />
             <button class="btn sm" onClick=${copy} disabled=${!PIG.CA}>Copy</button></div></div>
+        <div class="socials">
+          ${PIG.X ? html`<a class="btn soc" href=${PIG.X} target="_blank" rel="noopener"><span class="ico">${ICONS.x()}</span>X</a>`
+            : html`<button class="btn soc" onClick=${() => toast("PIG's X account isn't live yet. This links to it as soon as it is.", "X")} title="Coming soon"><span class="ico">${ICONS.x()}</span>X <small>soon</small></button>`}
+          ${PIG.CA && html`<a class="btn soc" href=${dexUrl(PIG.CA)} target="_blank" rel="noopener"><span class="ico">${ICONS.dex()}</span>Dexscreener</a>`}
+        </div>
       </div>
     </div>
   </div>`;
@@ -530,12 +535,12 @@ export function Buy({ toast }) {
       <div class="ca"><input id="buy-ca" class="inp" ref=${caRef} readonly value=${ca || "Not live yet"} /><button class="btn sm" onClick=${copy} disabled=${!ca}>Copy</button></div></div>
     ${ca ? html`<div class="links">
         <a class="btn go" href=${pumpUrl(ca)} target="_blank" rel="noopener">Buy on pump.fun ↗</a>
-        <a class="btn blue" href=${dexUrl(ca)} target="_blank" rel="noopener">Dexscreener ↗</a>
+        <a class="btn blue soc" href=${dexUrl(ca)} target="_blank" rel="noopener"><span class="ico">${ICONS.dex()}</span>Dexscreener ↗</a>
         <a class="btn" href=${solscanUrl(ca)} target="_blank" rel="noopener">Solscan ↗</a></div>`
       : html`<div class="notice"><span><b>${PIG.ticker} isn't live yet.</b> The address shows here the moment it launches. Until then there is nothing to buy, and any "$PIG" address shared before it appears here isn't ours.</span></div>`}
     <fieldset class="group"><span class="legend">How to buy</span>
       <ol class="how"><li>Install Phantom and fund it with SOL.</li><li>Copy the address from this window and check every character.</li><li>Open it on pump.fun, connect, and buy only what you can afford to lose.</li></ol></fieldset>
-    ${PIG.X && html`<a class="btn" href=${PIG.X} target="_blank" rel="noopener">PIG on X ↗</a>`}
+    ${PIG.X && html`<a class="btn soc" href=${PIG.X} target="_blank" rel="noopener"><span class="ico">${ICONS.x()}</span>PIG on X ↗</a>`}
   </div>`;
 }
 

@@ -69,9 +69,15 @@ const SVG_ICONS = {
   prev: () => S(html`<path d="M40 10L20 24l20 14zM10 10h6v28h-6z"/>`),
   wallet: () => S(html`<rect x="4" y="12" width="40" height="28" rx="5" fill="#fff"/><path d="M8 12l26-7 3 7" fill="#ffd6e5"/><rect x="30" y="22" width="14" height="9" rx="3" fill="#f4a5b8"/>`),
   power: () => S(html`<circle cx="24" cy="24" r="19" fill="#e8513c" stroke="#fff" stroke-width="2.5"/><path d="M24 12v12" stroke="#fff" stroke-width="4" stroke-linecap="round"/><path d="M16 17a11 11 0 1 0 16 0" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>`),
-  x: () => S(html`<rect x="3" y="3" width="42" height="42" rx="10" fill="#111"/><path d="M13 12h7l15 24h-7z M33 12h3L16 36h-3z" fill="#fff"/>`),
+  // the official X mark (path from Simple Icons) on a black tile
+  x: () => S(html`<rect x="2" y="2" width="44" height="44" rx="10" fill="#000" stroke="#fff" stroke-width="2.5"/><g transform="translate(12 12)"><path fill="#fff" d="M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z"/></g>`),
 };
-export const ICONS = { ...SVG_ICONS, welcome: IMG("welcome"), chat: IMG("chat"), radio: IMG("radio"), facts: IMG("facts"), launch: IMG("launch"), pfp: IMG("pfp"), buy: IMG("buy"), gallery: IMG("gallery") };
+// Dexscreener's own logo, loaded from dexscreener.com (then Google's favicon service); a plain tile if both are blocked.
+const DEX_SRC = ["https://dexscreener.com/favicon.png", "https://www.google.com/s2/favicons?domain=dexscreener.com&sz=128"];
+const DEX_FALLBACK = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="2" y="2" width="44" height="44" rx="10" fill="#000" stroke="#fff" stroke-width="2.5"/><text x="24" y="30" font-family="Arial" font-weight="700" font-size="13" fill="#fff" text-anchor="middle">DEX</text></svg>');
+export const DexLogo = () => html`<img class="dexlogo" src=${DEX_SRC[0]} alt="" draggable="false"
+  onError=${e => { const i = e.currentTarget, n = +(i.dataset.n || 0) + 1; i.dataset.n = n; i.src = n < DEX_SRC.length ? DEX_SRC[n] : DEX_FALLBACK; if (n >= DEX_SRC.length) i.onerror = null; }} />`;
+export const ICONS = { ...SVG_ICONS, dex: DexLogo, welcome: IMG("welcome"), chat: IMG("chat"), radio: IMG("radio"), facts: IMG("facts"), launch: IMG("launch"), pfp: IMG("pfp"), buy: IMG("buy"), gallery: IMG("gallery") };
 
 // ---------- window frame ----------
 const ctlIcon = {

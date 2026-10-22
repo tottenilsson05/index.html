@@ -1,7 +1,7 @@
 // PIG World — the desktop shell: wallpaper, mascot, icons, window manager, widget, taskbar.
 import { html, render, useState, useEffect, useRef, useReducer, useCallback, cx, isMobile, ICONS, Window, Mascot, startLook, copyText } from "./ui.js";
 import { Welcome, Chat, Radio, Facts, Launch, Pfp, Buy, Gallery } from "./apps.js";
-import { PIG } from "./config.js";
+import { PIG, dexUrl } from "./config.js";
 import { detectMode, getChat, connectWallet, disconnectWallet, walletProvider, short, SID } from "./net.js";
 import { sfx, play } from "./sfx.js";
 import { yt } from "./ytradio.js";
@@ -179,7 +179,7 @@ function StartMenu({ open, close, closeAll, toast }) {
   return html`<nav class="smenu" ref=${ref} aria-label="Start menu">
     <div class="top"><img src="assets/pig_full.webp" alt="" />Pig User</div>
     <div class="cols"><ul>${APPS.slice(0, 4).map(li)}</ul>
-      <ul>${APPS.slice(4).map(li)}${PIG.X && html`<li><a href=${PIG.X} target="_blank" rel="noopener"><span class="ico">${ICONS.x()}</span><span>PIG on X</span></a></li>`}</ul></div>
+      <ul>${APPS.slice(4).map(li)}${PIG.X && html`<li><a href=${PIG.X} target="_blank" rel="noopener"><span class="ico">${ICONS.x()}</span><span>PIG on X</span></a></li>`}${PIG.CA && html`<li><a href=${dexUrl(PIG.CA)} target="_blank" rel="noopener"><span class="ico">${ICONS.dex()}</span><span>Dexscreener</span></a></li>`}</ul></div>
     <div class="bot">
       <button onClick=${() => { closeAll(); close(); }}>${ICONS.power()}<span>Close all windows</span></button>
       <button onClick=${() => { close(); toast("You can't shut down greed.", "Shut Down"); }}>${ICONS.power()}<span>Shut down</span></button>
@@ -218,6 +218,11 @@ function App() {
   }, []);
   const moodFor = (m, ms) => { setMood(m); clearTimeout(moodT.current); moodT.current = setTimeout(() => setMood(""), ms); };
   const speak = text => setSay({ text, k: Math.random() });
+  const xSoon = () => { play.click(); toast("PIG's X account isn't live yet. The logo links to it as soon as it is.", "X"); };
+  const socialIcons = [
+    { id: "x", label: "X", href: PIG.X, title: PIG.X ? "PIG on X" : "PIG on X · coming soon", soon: xSoon },
+    { id: "dex", label: "Dexscreener", href: PIG.CA ? dexUrl(PIG.CA) : "", title: "PIG on Dexscreener", soon: () => toast("The chart appears on Dexscreener once $PIG trades.", "Dexscreener") },
+  ];
   const open = useCallback(id => { play.open(); dispatch({ t: "open", id }); moodFor("hop wiggle", 650); if (id === "chat") setUnread(0); }, []);
 
   useEffect(() => {
@@ -335,6 +340,11 @@ function App() {
           onKeyDown=${e => e.key === "Enter" && open(a.id)} aria-label=${"Open " + a.file}>
         <span class="glyph">${ICONS[a.id]()}</span><span class="lbl">${a.file}</span>
         ${a.id === "chat" && unread > 0 && html`<span class="new">NEW</span>`}</button>`)}
+      ${socialIcons.map(l => l.href
+        ? html`<a role="listitem" key=${l.id} class="icon link" href=${l.href} target="_blank" rel="noopener" aria-label=${"Open " + l.label} title=${l.title}>
+            <span class="glyph">${ICONS[l.id]()}</span><span class="lbl">${l.label}</span><span class="arrow" aria-hidden="true">↗</span></a>`
+        : html`<button role="listitem" key=${l.id} class="icon link" onClick=${l.soon} aria-label=${l.label + " (coming soon)"} title=${l.title}>
+            <span class="glyph">${ICONS[l.id]()}</span><span class="lbl">${l.label}</span></button>`)}
     </div>
 
     ${!isMobile() && html`<${Widget} online=${online} radio=${music} toast=${toast} />`}
@@ -369,6 +379,9 @@ function App() {
         })}
       </div>
       <div class="tray">
+        <span class="soc">${socialIcons.map(l => l.href
+          ? html`<a key=${l.id} href=${l.href} target="_blank" rel="noopener" aria-label=${l.title} title=${l.title}>${ICONS[l.id]()}</a>`
+          : html`<button key=${l.id} onClick=${l.soon} aria-label=${l.title} title=${l.title}>${ICONS[l.id]()}</button>`)}</span>
         ${music.playing && html`<${Eq} real=${music.real} />`}
         <button aria-label="Previous track" title="Previous track" onClick=${rc.prev}>${ICONS.prev()}</button>
         <button aria-label=${music.playing ? "Pause radio" : "Play radio"} title=${music.playing ? "Pause PIG Radio · " + music.title : "Play PIG Radio"} onClick=${rc.toggle}>${music.playing ? ICONS.pause() : ICONS.play()}</button>
