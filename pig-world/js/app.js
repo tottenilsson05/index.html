@@ -136,7 +136,7 @@ function RadioDock({ openRadio }) {
   const frame = useRef(null);
   useEffect(() => yt.sub(setSt), []);
   useEffect(() => { yt.attach(frame.current); }, []);
-  const label = st.failed ? ["err", "NO SIGNAL"] : !st.ready ? ["wait", "TUNING IN…"] : st.status === "playing" ? ["", "ON AIR"] : st.status === "loading" ? ["wait", "BUFFERING…"] : ["", "PAUSED"];
+  const label = st.failed ? ["err", "NO SIGNAL"] : st.stalled ? ["err", "NOT STARTING"] : !st.ready ? ["wait", "TUNING IN…"] : st.status === "playing" ? ["", "ON AIR"] : st.status === "loading" ? ["wait", "BUFFERING…"] : ["", "PAUSED"];
   return html`<section class=${cx("dock", mini && "mini")} aria-label="PIG Radio player">
     <header><span class=${"st " + label[0]}>● ${label[1]}</span><span>PIG RADIO</span>
       <button onClick=${() => setMini(m => !m)} aria-label=${mini ? "Show video" : "Hide video"} title=${mini ? "Show video" : "Hide video"}>${mini ? "▴" : "▾"}</button>
@@ -149,6 +149,7 @@ function RadioDock({ openRadio }) {
       <button class=${cx("rb", st.muted && "on")} aria-label=${st.muted ? "Unmute" : "Mute"} onClick=${() => st.muted ? yt.unmute() : yt.mute()} disabled=${!st.ready}>${ICONS.sound(!st.muted)}</button>
       <div class=${cx("ttl", st.title.length > 18 && st.status === "playing" && "run")} title=${st.title}><span>${st.title} · Lana Del Rey</span></div>
     </div>
+    ${(st.stalled || st.failed) && html`<div class="stall">YouTube isn't starting here. <a href=${"https://www.youtube.com/watch?v=" + (TRACKS[st.idx] || TRACKS[0]).id} target="_blank" rel="noopener">Open on YouTube ↗</a></div>`}
   </section>`;
 }
 

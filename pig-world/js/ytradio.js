@@ -8,12 +8,20 @@ const ORIGIN = "https://www.youtube-nocookie.com";
 class YTRadio {
   constructor() {
     this.frame = null; this.subs = new Set(); this.listening = null;
-    this.s = { ready: false, status: "idle", idx: 0, title: TRACKS[0].title, time: 0, dur: 0, vol: store.get("vol", 70), muted: false, failed: false, everPlayed: false };
+    this.s = { ready: false, status: "idle", idx: 0, title: TRACKS[0].title, time: 0, dur: 0, vol: store.get("vol", 70), muted: false, failed: false, everPlayed: false, stalled: false };
     addEventListener("message", e => this.onMsg(e));
+    // watchdog: YouTube sometimes sits in "buffering" forever (blocked network, bot check). Say so instead of pretending.
+    let lastT = -1, since = 0;
+    setInterval(() => {
+      if (this.s.status === "loading") {
+        if (this.s.time !== lastT) { lastT = this.s.time; since = Date.now(); }
+        else if (since && Date.now() - since > 15000 && !this.s.stalled) this.set({ stalled: true });
+      } else { since = Date.now(); lastT = this.s.time; if (this.s.stalled && this.s.status === "playing") this.set({ stalled: false }); }
+    }, 2000);
   }
   get src() {
     const ids = TRACKS.map(t => t.id);
-    return `${ORIGIN}/embed/${ids[0]}?enablejsapi=1&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3&playlist=${ids.slice(1).join(",")}&loop=1&origin=${encodeURIComponent(location.origin)}`;
+    return `${ORIGIN}/embed/${ids[0]}?enablejsapi=1&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3&playlist=${ids.join(",")}&loop=1&origin=${encodeURIComponent(location.origin)}`;
   }
   attach(frame) {
     if (this.frame === frame) return; this.frame = frame;
@@ -45,7 +53,7 @@ class YTRadio {
     if (Object.keys(p).length) this.set(p);
   }
   stateP(n) { // -1 unstarted, 0 ended, 1 playing, 2 paused, 3 buffering, 5 cued
-    if (n === 1) return { status: "playing", everPlayed: true };
+    if (n === 1) return { status: "playing", everPlayed: true, stalled: false };
     if (n === 3) return { status: "loading" };
     if (n === 2) return { status: "paused" };
     if (n === 0) return { status: "paused" };
