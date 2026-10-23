@@ -4,7 +4,7 @@ export const PIG = {
   name: "PIG",
   ticker: "$PIG",
   // Solana mint address of $PIG. Leave "" until the coin exists — Buy.exe will say so.
-  CA: "CdCnpS9qUyG19fxTAsvGsyMaZxMS5dNA6J2T4fr5pump",
+  CA: "snogHWqLWdxGNR8TL5Dsr1igRL65ApGeD84gdSxpump",
   // Social links. Empty values are hidden.
   X: "https://x.com/pigpadPF",
   telegram: "",
