@@ -140,7 +140,7 @@ function LaunchTab({ s, busy, act }: any) {
         ) : (
           <>
             <p style={{ fontWeight: 700, margin: 0 }}>
-              Only press this once $MO is actually live on pump.fun. It verifies the saved CA on-chain, then starts round #001 and the 5-minute clock for everyone. This cannot be undone.
+              The site starts round #001 automatically within ~30 seconds of the $MO mint appearing on-chain. Use this button only if auto-launch fails. It verifies the saved CA on-chain, then starts the 5-minute clock for everyone. This cannot be undone.
             </p>
             <input className="input" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Type LAUNCH to confirm" />
             <button className="btn btn-ink" disabled={busy || confirm !== 'LAUNCH' || !s.ca} onClick={() => act({ action: 'launch', confirm }, 'Launched! Round #001 is live.')}>Start the competition</button>

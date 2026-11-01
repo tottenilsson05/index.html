@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { supa } from '@/lib/browser';
 import type { Post, PublicState, Winner } from '@/lib/types';
+import { OFFICIAL_CA, PUMP_URL, DEX_URL } from '@/lib/config';
 import { clock, payoutLabel, roundNo, sol, usd, shortAddr } from '@/lib/format';
 import { Cloud, IconCamera, IconCopy, IconFlag, IconPill, IconPump, IconTrophy, IconVote, IconX, Sparkle } from './Icons';
 import UploadModal from './UploadModal';
@@ -215,9 +216,13 @@ export default function MoApp({ initial }: { initial: Initial }) {
     } catch { say('Network error.'); }
   }
 
+  const ca = state?.ca || OFFICIAL_CA;
   function copyCA() {
-    if (!state?.ca) { say('Contract address drops at launch.'); return; }
-    navigator.clipboard?.writeText(state.ca).then(() => say('CA copied!'), () => say(state.ca || ''));
+    navigator.clipboard?.writeText(ca).then(() => say('CA copied!'), () => say(ca));
+  }
+  function openUpload() {
+    if (!state?.launched) { say('Posting opens when $MO goes live.'); return; }
+    setUploadOpen(true);
   }
 
   /* ---------- derived ---------- */
@@ -245,7 +250,7 @@ export default function MoApp({ initial }: { initial: Initial }) {
 
   return (
     <>
-      <Nav onCopy={copyCA} ca={state?.ca || null} />
+      <Nav onCopy={copyCA} ca={ca} />
 
       <main>
         {/* ================= HERO ================= */}
@@ -264,7 +269,12 @@ export default function MoApp({ initial }: { initial: Initial }) {
             </div>
 
             <div className="hero-copy">
-              {!launched && <div className="intro"><span className="chip chip-ink">The mo is coming · Launching soon</span></div>}
+              {!launched && (
+                <div className="intro" style={{ display: 'grid', justifyItems: 'center', gap: 8 }}>
+                  <span className="chip chip-ink" style={{ height: 34, fontSize: 13 }}>LAUNCHING SOON.</span>
+                  <span style={{ fontWeight: 800, color: 'var(--ink-2)' }}>The first 5-minute round begins when $MO goes live.</span>
+                </div>
+              )}
               <p className="hero-tag d intro-2" style={{ marginTop: launched ? 0 : 18 }}>
                 <span>GROW IT.</span> <span className="g">POST IT.</span> <span>WIN IT.</span>
               </p>
@@ -272,8 +282,8 @@ export default function MoApp({ initial }: { initial: Initial }) {
                 Real mo. Fake mo. Dog mo. Drawn mo. We don&apos;t care. Post your mustache, get the votes, win the fees.
               </p>
               <div className="hero-ctas intro-3">
-                <button className="btn btn-green" onClick={() => setUploadOpen(true)}>Post your mo</button>
-                <a className="btn" href="#wall">Vote now</a>
+                <button className="btn btn-green" onClick={openUpload} disabled={!launched} title={launched ? undefined : 'Posting opens at launch'}>{launched ? 'Post your mo' : 'Posting opens at launch'}</button>
+                <a className="btn" href="#wall">{launched ? 'Vote now' : 'See the wall'}</a>
               </div>
               <HeroStatus state={state} offset={offset} />
             </div>
@@ -299,7 +309,7 @@ export default function MoApp({ initial }: { initial: Initial }) {
                   <button aria-pressed={sort === 'new'} onClick={() => setSort('new')}>Newest</button>
                   <button aria-pressed={sort === 'random'} onClick={() => { setSort('random'); setSeed((s) => s + 1); }}>Random</button>
                 </div>
-                <button className="btn btn-green btn-sm" onClick={() => setUploadOpen(true)}>+ Post</button>
+                <button className="btn btn-green btn-sm" onClick={openUpload} disabled={!launched}>+ Post</button>
               </div>
             </div>
 
@@ -309,15 +319,15 @@ export default function MoApp({ initial }: { initial: Initial }) {
               </div>
             )}
             {!launched && (
-              <div style={{ marginBottom: 18 }}><span className="chip chip-mint">Posting is open · voting starts at launch</span></div>
+              <div style={{ marginBottom: 18 }}><span className="chip chip-mint">Posting and voting open when $MO goes live</span></div>
             )}
 
             {sorted.length === 0 ? (
               <div className="card empty reveal">
                 <img src="/logo.png" alt="" width={160} height={59} />
-                <p className="d" style={{ fontSize: 30, margin: 0 }}>No mos yet.</p>
-                <p className="lede" style={{ margin: '8px 0 18px' }}>Be the first face on the wall.</p>
-                <button className="btn btn-green" onClick={() => setUploadOpen(true)}>Post your mo</button>
+                <p className="d" style={{ fontSize: 30, margin: 0 }}>NO MOS YET.</p>
+                <p className="lede" style={{ margin: '8px 0 18px' }}>Be the first to post your mo.</p>
+                <button className="btn btn-green" onClick={openUpload} disabled={!launched}>{launched ? 'Post your mo' : 'Posting opens at launch'}</button>
               </div>
             ) : (
               <>
@@ -364,7 +374,7 @@ export default function MoApp({ initial }: { initial: Initial }) {
               </div>
             </div>
             {winners.length === 0 ? (
-              <div className="card empty reveal"><p className="lede" style={{ margin: 0 }}>The first legend gets crowned after round #001.</p></div>
+              <div className="card empty reveal"><p className="d" style={{ fontSize: 26, margin: 0 }}>NO WINNERS YET.</p><p className="lede" style={{ margin: '8px 0 0' }}>The first winner will be crowned after launch.</p></div>
             ) : (
               <>
                 <div className="hof">
@@ -439,7 +449,7 @@ export default function MoApp({ initial }: { initial: Initial }) {
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 22 }}>
                   <a className="btn btn-green" href="https://movember.com" target="_blank" rel="noopener noreferrer">Learn about Movember</a>
-                  <a className="btn" href="https://www.1177.se" target="_blank" rel="noopener noreferrer">Men&apos;s health — 1177</a>
+                  <a className="btn" href="https://www.who.int" target="_blank" rel="noopener noreferrer">Men&apos;s health — WHO</a>
                 </div>
                 <p className="disclaimer">
                   Post Your Mo is an independent community memecoin project and is not affiliated with or endorsed by the Movember Foundation.
@@ -510,7 +520,7 @@ function Nav({ onCopy, ca }: { onCopy: () => void; ca: string | null }) {
 function HeroStatus({ state, offset }: { state: PublicState | null; offset: number }) {
   useTick(250);
   if (!state?.launched) {
-    return <div className="status-pill intro-3"><span className="dot" /> Pre-launch · rounds start at launch</div>;
+    return <div className="status-pill intro-3"><span className="dot" /> Pre-launch · round #000 · clock starts at launch</div>;
   }
   const rem = remainingMs(state, offset);
   return (
@@ -602,8 +612,8 @@ function LastWinner({ w, launched }: { w: Winner | null; launched: boolean }) {
     return (
       <div className="card empty reveal">
         <IconTrophy className="" />
-        <p className="d" style={{ fontSize: 30, margin: '10px 0 0' }}>{launched ? 'No winner yet.' : 'The throne is empty.'}</p>
-        <p className="lede" style={{ margin: '8px 0 0' }}>{launched ? 'The first round is still running.' : 'Round #001 starts at launch.'}</p>
+        <p className="d" style={{ fontSize: 30, margin: '10px 0 0' }}>{launched ? 'No winner yet.' : 'NO WINNERS YET.'}</p>
+        <p className="lede" style={{ margin: '8px 0 0' }}>{launched ? 'The first round is still running.' : 'The first winner will be crowned after launch.'}</p>
       </div>
     );
   }
@@ -671,11 +681,8 @@ function Footer({ state, onCopy }: { state: PublicState | null; onCopy: () => vo
           </div>
           <div style={{ display: 'grid', gap: 22 }}>
             <div className="btns">
-              {state?.pump_url ? (
-                <a className="btn btn-green btn-sm" href={state.pump_url} target="_blank" rel="noopener noreferrer"><IconPump /> Pump.fun</a>
-              ) : (
-                <span className="btn btn-green btn-sm" aria-disabled="true" style={{ opacity: .6 }}><IconPump /> Pump.fun · soon</span>
-              )}
+              <a className="btn btn-green btn-sm" href={state?.pump_url || PUMP_URL} target="_blank" rel="noopener noreferrer"><IconPump /> Pump.fun</a>
+              <a className="btn btn-sm" href={DEX_URL} target="_blank" rel="noopener noreferrer">Dexscreener</a>
               {state?.x_url ? (
                 <a className="btn btn-sm" href={state.x_url} target="_blank" rel="noopener noreferrer"><IconX /> X / Twitter</a>
               ) : (
@@ -683,7 +690,7 @@ function Footer({ state, onCopy }: { state: PublicState | null; onCopy: () => vo
               )}
               <button className="btn btn-sm" onClick={onCopy}><IconCopy /> Copy CA</button>
             </div>
-            <div className="ca" style={{ opacity: .85, wordBreak: 'break-all' }}>CA: {state?.ca || 'revealed at launch'}</div>
+            <div className="ca" style={{ opacity: .85, wordBreak: 'break-all' }}>CA: {state?.ca || OFFICIAL_CA}</div>
             <div className="links">
               <a href="#how">How it works</a>
               <a href="#hall">Winners</a>

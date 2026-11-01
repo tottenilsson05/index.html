@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db, rpc, errMsg } from '@/lib/server';
-import { creatorVaultLamports, fetchMarketCap } from '@/lib/solana';
+import { creatorVaultLamports, fetchMarketCap, verifyMint } from '@/lib/solana';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
@@ -23,7 +23,23 @@ export async function GET(req: Request) {
     out.server_key = errMsg(e);
   }
   const { data: s } = await db().from('mo_settings').select('launched, ca, fee_tracking').eq('id', 1).single();
-  if (!s?.launched || !s.ca) return NextResponse.json({ ...out, skipped: 'not_launched' });
+  if (!s?.ca) return NextResponse.json({ ...out, skipped: 'no_ca' });
+
+  // Pre-launch: start round #001 only once the $MO mint actually exists on-chain (pump.fun creates it at launch).
+  if (!s.launched) {
+    try {
+      const v = await verifyMint(s.ca);
+      if (!v.ok) return NextResponse.json({ ...out, skipped: 'not_launched', reason: v.reason });
+      await rpc('mo_admin_launch');
+      out.launched = 'auto: mint verified on-chain';
+    } catch (e) {
+      const m = errMsg(e);
+      if (m !== 'already_launched') {
+        try { await rpc('mo_log_error', { p_source: 'auto_launch', p_message: m }); } catch {}
+        return NextResponse.json({ ...out, skipped: 'not_launched', error: m });
+      }
+    }
+  }
 
   try {
     const m = await fetchMarketCap(s.ca);
