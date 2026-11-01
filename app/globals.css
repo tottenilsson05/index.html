@@ -102,6 +102,8 @@ a { color: inherit; }
 .brand img { width: 54px; height: auto; }
 .brand span { font-family: var(--font-d); font-weight: 900; font-style: italic; font-size: 18px; letter-spacing: -.01em; }
 .nav-links { display: none; gap: 4px; }
+.xbtn-nav { width: 40px; padding: 0; }
+.xbtn-nav svg { width: 17px; height: 17px; }
 .nav-links a { font-weight: 800; font-size: 14px; text-decoration: none; padding: 8px 12px; border-radius: 99px; }
 .nav-links a:hover { background: var(--mint-1); }
 @media (min-width: 900px) { .nav-links { display: flex; } }

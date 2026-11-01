@@ -250,7 +250,7 @@ export default function MoApp({ initial }: { initial: Initial }) {
 
   return (
     <>
-      <Nav onCopy={copyCA} ca={ca} />
+      <Nav onCopy={copyCA} ca={ca} xUrl={state?.x_url || null} onSoon={() => say('Our X account drops soon.')} />
 
       <main>
         {/* ================= HERO ================= */}
@@ -493,7 +493,7 @@ function prizeText(w: Winner) {
 /* ------------------------------------------------------------------ */
 /* pieces                                                              */
 /* ------------------------------------------------------------------ */
-function Nav({ onCopy, ca }: { onCopy: () => void; ca: string | null }) {
+function Nav({ onCopy, ca, xUrl, onSoon }: { onCopy: () => void; ca: string | null; xUrl: string | null; onSoon: () => void }) {
   return (
     <nav className="nav">
       <div className="wrap">
@@ -508,9 +508,16 @@ function Nav({ onCopy, ca }: { onCopy: () => void; ca: string | null }) {
             <a href="#how">How it works</a>
             <a href="#why">Why the mo</a>
           </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {xUrl ? (
+            <a className="btn btn-sm xbtn-nav" href={xUrl} target="_blank" rel="noopener noreferrer" aria-label="Post Your Mo on X"><IconX /></a>
+          ) : (
+            <button className="btn btn-sm xbtn-nav" onClick={onSoon} aria-label="Post Your Mo on X (coming soon)"><IconX /></button>
+          )}
           <button className="btn btn-sm btn-ink" onClick={onCopy} aria-label="Copy contract address">
             <IconCopy /> {ca ? shortAddr(ca) : 'CA soon'}
           </button>
+          </div>
         </div>
       </div>
     </nav>
