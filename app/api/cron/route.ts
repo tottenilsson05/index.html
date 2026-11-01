@@ -16,8 +16,14 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
   const out: Record<string, unknown> = {};
+  try {
+    await rpc('mo_my_votes', { p_voter: 'healthcheck' });
+    out.server_key = 'ok';
+  } catch (e) {
+    out.server_key = errMsg(e);
+  }
   const { data: s } = await db().from('mo_settings').select('launched, ca, fee_tracking').eq('id', 1).single();
-  if (!s?.launched || !s.ca) return NextResponse.json({ skipped: 'not_launched' });
+  if (!s?.launched || !s.ca) return NextResponse.json({ ...out, skipped: 'not_launched' });
 
   try {
     const m = await fetchMarketCap(s.ca);
