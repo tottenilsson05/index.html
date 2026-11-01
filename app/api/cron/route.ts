@@ -25,8 +25,15 @@ export async function GET(req: Request) {
     try { await rpc('mo_log_error', { p_source: source, p_message: errMsg(e) }); } catch {}
   };
 
-  const { data: s } = await db().from('mo_settings').select('launched, ca, fee_tracking').eq('id', 1).single();
+  const { data: s } = await db().from('mo_settings').select('launched, ca, fee_tracking, x_url').eq('id', 1).single();
   const ca: string = s?.ca || OFFICIAL_CA;
+  if (s && !s.ca && !s.launched) {
+    // store the official CA + Pump.fun link (pre-launch only; the CA is locked after launch)
+    try {
+      await rpc('mo_admin_set_settings', { p_ca: OFFICIAL_CA, p_pump_url: `https://pump.fun/coin/${OFFICIAL_CA}`, p_x_url: s.x_url || '', p_fee_tracking: true });
+      out.ca = 'stored';
+    } catch (e) { await log('store_ca', e); }
+  }
 
   // ---- 1. launch detection (verified on-chain) ----
   let status: Awaited<ReturnType<typeof pumpLaunchStatus>> | null = null;
@@ -50,7 +57,11 @@ export async function GET(req: Request) {
   try {
     const m = await fetchMarket(ca);
     if (m) {
-      await rpc('mo_record_market', { p_mcap: m.mcap, p_source: m.source, p_price: m.price, p_volume: m.volume24h });
+      try {
+        await rpc('mo_record_market', { p_mcap: m.mcap, p_source: m.source, p_price: m.price, p_volume: m.volume24h });
+      } catch {
+        await rpc('mo_record_market', { p_mcap: m.mcap, p_source: m.source }); // older DB function without price/volume
+      }
       out.market = m;
     } else out.market = 'unavailable';
   } catch (e) {

@@ -17,6 +17,8 @@ function sniff(buf: Uint8Array): string | null {
 
 export async function POST(req: Request) {
   if (!(await sameOrigin())) return NextResponse.json({ error: 'Bad origin' }, { status: 403 });
+  const { data: st } = await db().from('mo_settings').select('launched').eq('id', 1).single();
+  if (!st?.launched) return NextResponse.json({ error: 'Posting opens when $MO goes live.', code: 'not_launched' }, { status: 403 });
   // Accepts multipart (the site) or JSON with a base64 image (API clients).
   let get: (k: string) => string;
   let buf: Uint8Array;
