@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { isAdmin, rpc, sameOrigin, errMsg } from '@/lib/server';
-import { verifyMint, verifyPayoutTx } from '@/lib/solana';
+import { pumpLaunchStatus, verifyMint, verifyPayoutTx } from '@/lib/solana';
 import { LAMPORTS_PER_SOL } from '@/lib/config';
 
 export const dynamic = 'force-dynamic';
@@ -30,8 +30,8 @@ export async function POST(req: Request) {
         const ov: any = await rpc('mo_admin_overview');
         const ca = ov?.settings?.ca;
         if (!ca) return NextResponse.json({ error: 'Save a contract address first' }, { status: 400 });
-        const v = await verifyMint(ca);
-        if (!v.ok) return NextResponse.json({ error: `Launch blocked: ${v.reason}` }, { status: 400 });
+        const v = await pumpLaunchStatus(ca);
+        if (!v.live) return NextResponse.json({ error: `Launch blocked: ${v.reason}` }, { status: 400 });
         const res = await rpc('mo_admin_launch');
         return NextResponse.json({ ok: true, settings: res });
       }

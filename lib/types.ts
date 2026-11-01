@@ -22,6 +22,9 @@ export type PublicState = {
   pump_url: string | null;
   x_url: string | null;
   market_cap_usd: number | null;
+  price_usd?: number | null;
+  volume_24h_usd?: number | null;
+  fees_total_lamports?: number | null;
   mcap_updated_at: string | null;
   mcap_source: string | null;
   fee_tracking: boolean;

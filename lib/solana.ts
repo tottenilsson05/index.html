@@ -50,6 +50,35 @@ export async function verifyMint(ca: string): Promise<{ ok: boolean; reason?: st
 }
 
 /**
+ * Real launch status of a pump.fun coin, read straight from Solana.
+ * Live = the SPL mint exists AND its pump.fun bonding-curve account exists (the coin is tradable on pump.fun,
+ * or has graduated, in which case the curve is marked complete). The bonding curve also stores the coin's creator,
+ * which is the wallet that receives creator fees.
+ */
+export async function pumpLaunchStatus(ca: string): Promise<{ live: boolean; reason?: string; creator?: string; complete?: boolean }> {
+  let mint: PublicKey;
+  try { mint = new PublicKey(ca); } catch { return { live: false, reason: 'Invalid address' }; }
+  const [curve] = PublicKey.findProgramAddressSync([Buffer.from('bonding-curve'), mint.toBuffer()], PUMP_PROGRAM);
+  const r = await rpcCall<any>('getMultipleAccounts', [[ca, curve.toBase58()], { encoding: 'base64', commitment: 'confirmed' }]);
+  const m = r?.value?.[0];
+  const c = r?.value?.[1];
+  if (!m) return { live: false, reason: 'Mint not on-chain yet' };
+  if (m.owner !== TOKEN_PROGRAM.toBase58() && m.owner !== TOKEN_2022) return { live: false, reason: 'Account is not a token mint' };
+  if (!c || c.owner !== PUMP_PROGRAM.toBase58()) return { live: false, reason: 'No pump.fun bonding curve for this mint' };
+  const data = Buffer.from(c.data[0], 'base64');
+  // layout: 8 discriminator, 5 x u64 reserves/supply, bool complete, pubkey creator
+  const complete = data.length > 48 ? data[48] === 1 : undefined;
+  let creator: string | undefined;
+  if (data.length >= 81) {
+    try {
+      const pk = new PublicKey(data.subarray(49, 81));
+      if (!pk.equals(PublicKey.default)) creator = pk.toBase58();
+    } catch {}
+  }
+  return { live: true, creator, complete };
+}
+
+/**
  * Creator-fee balance currently sitting in the pump.fun creator vaults of CREATOR_WALLET:
  * bonding-curve vault (SOL) + PumpSwap creator vault (WSOL token account).
  * Note: vaults are per creator wallet, so a dedicated dev wallet is required for exact per-coin numbers.
@@ -86,24 +115,32 @@ export async function verifyPayoutTx(sig: string, wallet: string, notBefore: Dat
   return { ok: true, lamports: delta };
 }
 
-/** Market cap in USD from DexScreener, falling back to pump.fun's public coin endpoint. */
-export async function fetchMarketCap(ca: string): Promise<{ mcap: number; source: string } | null> {
+export type Market = { mcap: number; price: number | null; volume24h: number | null; source: string };
+
+/** Market cap, price and 24h volume in USD from DexScreener, falling back to pump.fun's public coin endpoint. */
+export async function fetchMarket(ca: string): Promise<Market | null> {
   try {
     const r = await fetch(`https://api.dexscreener.com/latest/dex/tokens/${ca}`, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
     if (r.ok) {
       const j = await r.json();
       const pairs: any[] = (j.pairs || []).filter((p: any) => p.chainId === 'solana' && p.baseToken?.address === ca);
       pairs.sort((a, b) => (b.liquidity?.usd || 0) - (a.liquidity?.usd || 0));
-      const m = pairs[0]?.marketCap ?? pairs[0]?.fdv;
-      if (m && isFinite(m)) return { mcap: Number(m), source: 'dexscreener' };
+      const top = pairs[0];
+      const m = top?.marketCap ?? top?.fdv;
+      if (m && isFinite(m)) {
+        const vol = pairs.reduce((s, p) => s + (Number(p.volume?.h24) || 0), 0);
+        const price = Number(top.priceUsd);
+        return { mcap: Number(m), price: isFinite(price) ? price : null, volume24h: isFinite(vol) ? vol : null, source: 'dexscreener' };
+      }
     }
   } catch {}
   try {
     const r = await fetch(`https://frontend-api-v3.pump.fun/coins/${ca}`, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
     if (r.ok) {
       const j = await r.json();
-      const m = j?.usd_market_cap;
-      if (m && isFinite(m)) return { mcap: Number(m), source: 'pump.fun' };
+      const m = Number(j?.usd_market_cap);
+      const supply = Number(j?.total_supply) / 1e6; // pump.fun tokens use 6 decimals
+      if (m && isFinite(m)) return { mcap: m, price: supply > 0 ? m / supply : null, volume24h: null, source: 'pump.fun' };
     }
   } catch {}
   return null;

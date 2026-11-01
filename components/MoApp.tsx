@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { supa } from '@/lib/browser';
 import type { Post, PublicState, Winner } from '@/lib/types';
 import { OFFICIAL_CA, PUMP_URL, DEX_URL } from '@/lib/config';
-import { clock, payoutLabel, roundNo, sol, usd, shortAddr } from '@/lib/format';
+import { clock, payoutLabel, roundNo, sol, usd, shortAddr, price } from '@/lib/format';
 import { Cloud, IconCamera, IconCopy, IconFlag, IconPill, IconPump, IconTrophy, IconVote, IconX, Sparkle } from './Icons';
 import UploadModal from './UploadModal';
 
@@ -275,7 +275,8 @@ export default function MoApp({ initial }: { initial: Initial }) {
                   <span style={{ fontWeight: 800, color: 'var(--ink-2)' }}>The first 5-minute round begins when $MO goes live.</span>
                 </div>
               )}
-              <p className="hero-tag d intro-2" style={{ marginTop: launched ? 0 : 18 }}>
+              {launched && <div className="intro"><span className="chip chip-green" style={{ height: 34, fontSize: 13 }}><span className="dot live" /> $MO IS LIVE</span></div>}
+              <p className="hero-tag d intro-2" style={{ marginTop: 18 }}>
                 <span>GROW IT.</span> <span className="g">POST IT.</span> <span>WIN IT.</span>
               </p>
               <p className="hero-sub intro-3">
@@ -570,6 +571,12 @@ function Stats({ state, offset }: { state: PublicState | null; offset: number })
       <div className="stat lr">
         <div className="l">Total paid out</div>
         <div className="v">{sol(state?.total_paid_lamports ?? 0)}<small>SOL</small></div>
+      </div>
+      <div className="ticker">
+        <span><b>Price</b> {!launched ? '$0' : mcapLive && state?.price_usd ? price(state.price_usd) : 'Unavailable'}</span>
+        <span><b>24h volume</b> {!launched ? '$0' : mcapLive && state?.volume_24h_usd != null ? usd(state.volume_24h_usd) : 'Unavailable'}</span>
+        <span><b>Creator fees collected</b> {!launched ? '0 SOL' : feeLive || (state?.fees_total_lamports ?? 0) > 0 ? `${sol(state?.fees_total_lamports ?? 0, 4)} SOL` : 'Unavailable'}</span>
+        <span><b>Status</b> {launched ? <>LIVE <span className="dot live" style={{ display: 'inline-block', marginLeft: 4 }} /></> : 'LAUNCHING SOON'}</span>
       </div>
     </div>
   );

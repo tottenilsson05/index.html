@@ -37,3 +37,11 @@ export const payoutLabel: Record<string, string> = {
   nothing_due: 'NO FEES THIS ROUND',
   awaiting_fees: 'FEES BEING COUNTED',
 };
+
+export function price(v: number | null | undefined): string {
+  if (v == null || !isFinite(Number(v)) || Number(v) <= 0) return '—';
+  const n = Number(v);
+  if (n >= 1) return '$' + n.toFixed(2);
+  const dec = Math.min(12, Math.max(4, -Math.floor(Math.log10(n)) + 3));
+  return '$' + n.toFixed(dec);
+}
