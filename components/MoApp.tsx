@@ -7,6 +7,7 @@ import { OFFICIAL_CA, PUMP_URL, DEX_URL } from '@/lib/config';
 import { clock, payoutLabel, roundNo, sol, usd, shortAddr, price } from '@/lib/format';
 import { Cloud, IconCamera, IconCopy, IconFlag, IconPill, IconPump, IconTrophy, IconVote, IconX, Sparkle } from './Icons';
 import UploadModal from './UploadModal';
+import { Marquee, MoParticles, ScrollProgress, TiltBanner, burstMo } from './Motion';
 
 type Initial = { state: PublicState | null; posts: Post[]; winners: Winner[]; winnersTotal: number; counts: Record<number, number> };
 type Sort = 'top' | 'new' | 'random';
@@ -181,7 +182,8 @@ export default function MoApp({ initial }: { initial: Initial }) {
   const roundId = state?.round?.id ?? null;
   const votedFor = roundId != null ? myVotes[String(roundId)] : undefined;
 
-  async function vote(postId: number) {
+  async function vote(postId: number, ev?: React.MouseEvent) {
+    const pt = ev ? { x: ev.clientX, y: ev.clientY } : null;
     if (!state?.launched) { say('Voting opens when $MO launches.'); return; }
     if (!roundId || votedFor) return;
     setBusy(postId);
@@ -192,6 +194,7 @@ export default function MoApp({ initial }: { initial: Initial }) {
         setMyVotes((m) => ({ ...m, [String(j.round_id)]: postId }));
         if (j.round_id === roundRef.current) setCounts((c) => ({ ...c, [postId]: Math.max(c[postId] || 0, j.votes) }));
         setBumped(postId); setTimeout(() => setBumped(null), 600);
+        if (pt) burstMo(pt.x, pt.y);
         say('Vote locked in. 🥸');
       } else {
         if (j.code === 'already_voted') loadMine();
@@ -250,22 +253,28 @@ export default function MoApp({ initial }: { initial: Initial }) {
 
   return (
     <>
+      <ScrollProgress />
+      <MoParticles />
       <Nav onCopy={copyCA} ca={ca} xUrl={state?.x_url || null} onSoon={() => say('Our X account drops soon.')} />
 
       <main>
         {/* ================= HERO ================= */}
         <header className="hero">
           <div className="rays" />
-          <Cloud className="cloud bob" style={{ width: 220, left: -70, top: 330 }} />
-          <Cloud className="cloud bob" style={{ width: 260, right: -90, top: 250, animationDelay: '-2s' }} />
+          <Cloud className="cloud drift-l" style={{ width: 220, left: -70, top: 330 }} />
+          <Cloud className="cloud drift-r" style={{ width: 260, right: -90, top: 250 }} />
           <div className="wrap">
             <h1 className="sr-only">Post Your Mo ($MO)</h1>
-            <div className="banner intro">
-              <picture>
-                <source media="(max-width: 700px)" srcSet="/banner-sm.jpg" />
-                <img src="/banner.jpg" alt="Post Your MO — glossy green mustache logo in a mint sky" width={2172} height={724} fetchPriority="high" />
-              </picture>
-              <div className="shine" />
+            <div className="intro">
+              <TiltBanner>
+                <div className="banner">
+                  <picture>
+                    <source media="(max-width: 700px)" srcSet="/banner-sm.jpg" />
+                    <img src="/banner.jpg" alt="Post Your MO — glossy green mustache logo in a mint sky" width={2172} height={724} fetchPriority="high" />
+                  </picture>
+                  <div className="shine" />
+                </div>
+              </TiltBanner>
             </div>
 
             <div className="hero-copy">
@@ -277,7 +286,7 @@ export default function MoApp({ initial }: { initial: Initial }) {
               )}
               {launched && <div className="intro"><span className="chip chip-green" style={{ height: 34, fontSize: 13 }}><span className="dot live" /> $MO IS LIVE</span></div>}
               <p className="hero-tag d intro-2" style={{ marginTop: 18 }}>
-                <span>GROW IT.</span> <span className="g">POST IT.</span> <span>WIN IT.</span>
+                <span className="w w1">GROW IT.</span> <span className="g w w2">POST IT.</span> <span className="w w3">WIN IT.</span>
               </p>
               <p className="hero-sub intro-3">
                 Real mo. Fake mo. Dog mo. Drawn mo. We don&apos;t care. Post your mustache, get the votes, win the fees.
@@ -295,6 +304,8 @@ export default function MoApp({ initial }: { initial: Initial }) {
         <div className="wrap" style={{ marginTop: 26 }}>
           <Stats state={state} offset={offset} />
         </div>
+
+        <div style={{ marginTop: 56 }}><Marquee items={['GROW IT', 'POST IT', 'WIN IT', '$MO', 'EVERY 5 MINUTES', 'MOVEMBER IN THE TRENCHES']} /></div>
 
         {/* ================= WALL ================= */}
         <section id="wall" className="sec">
@@ -338,7 +349,7 @@ export default function MoApp({ initial }: { initial: Initial }) {
                       key={p.id} p={p} i={i} votes={counts[p.id] || 0} rank={rankOf[p.id]}
                       launched={launched} mine={votedFor === p.id} locked={!!votedFor} busy={busy === p.id}
                       bumped={bumped === p.id} reported={reported.has(p.id)}
-                      onVote={() => vote(p.id)} onReport={() => report(p.id)}
+                      onVote={(e) => vote(p.id, e)} onReport={() => report(p.id)}
                     />
                   ))}
                 </div>
@@ -404,6 +415,8 @@ export default function MoApp({ initial }: { initial: Initial }) {
             )}
           </div>
         </section>
+
+        <div style={{ marginTop: 72 }}><Marquee items={['REAL MO', 'FAKE MO', 'DOG MO', 'DRAWN MO', 'ANY MO', 'POST YOUR MO']} reverse /></div>
 
         {/* ================= HOW IT WORKS ================= */}
         <section id="how" className="sec">
@@ -555,7 +568,7 @@ function Stats({ state, offset }: { state: PublicState | null; offset: number })
       </div>
       <div className="stat wide count">
         <div className="l">{launched && <span className="dot live" />}Next payout</div>
-        <div className="v">{!state ? <span className="skel" style={{ display: 'inline-block', width: 110, height: 28 }} /> : !launched ? <span className="na">NOT STARTED</span> : rem == null ? <span className="na">SYNCING…</span> : clock(rem)}</div>
+        <div className={`v ${launched && rem != null && rem < 10000 ? 'urgent' : ''}`}>{!state ? <span className="skel" style={{ display: 'inline-block', width: 110, height: 28 }} /> : !launched ? <span className="na">NOT STARTED</span> : rem == null ? <span className="na">SYNCING…</span> : clock(rem)}</div>
         <div className="bar" aria-hidden="true"><i style={{ width: `${launched ? pct : 0}%` }} /></div>
       </div>
       <div className="stat">
@@ -584,7 +597,7 @@ function Stats({ state, offset }: { state: PublicState | null; offset: number })
 
 function PostCard(props: {
   p: Post; i: number; votes: number; rank?: number; launched: boolean; mine: boolean; locked: boolean; busy: boolean; bumped: boolean; reported: boolean;
-  onVote: () => void; onReport: () => void;
+  onVote: (e: React.MouseEvent) => void; onReport: () => void;
 }) {
   const { p, i, votes, rank, launched, mine, locked, busy, bumped, reported } = props;
   return (
