@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { supa } from '@/lib/browser';
 import type { Post, PublicState, Winner } from '@/lib/types';
-import { OFFICIAL_CA, PUMP_URL, DEX_URL, X_URL } from '@/lib/config';
+import { X_URL } from '@/lib/config';
 import { clock, payoutLabel, roundNo, sol, usd, shortAddr, price } from '@/lib/format';
 import { Cloud, IconCamera, IconCopy, IconFlag, IconPill, IconPump, IconTrophy, IconVote, IconX, Sparkle } from './Icons';
 import UploadModal from './UploadModal';
@@ -219,8 +219,11 @@ export default function MoApp({ initial }: { initial: Initial }) {
     } catch { say('Network error.'); }
   }
 
-  const ca = state?.ca || OFFICIAL_CA;
+  const ca = state?.ca || null;
+  const pumpUrl = state?.pump_url || (ca ? `https://pump.fun/coin/${ca}` : null);
+  const dexUrl = ca ? `https://dexscreener.com/solana/${ca}` : null;
   function copyCA() {
+    if (!ca) { say('The CA drops at launch.'); return; }
     navigator.clipboard?.writeText(ca).then(() => say('CA copied!'), () => say(ca));
   }
   function openUpload() {
@@ -484,7 +487,7 @@ export default function MoApp({ initial }: { initial: Initial }) {
         </section>
       </main>
 
-      <Footer state={state} onCopy={copyCA} />
+      <Footer state={state} onCopy={copyCA} pumpUrl={pumpUrl} dexUrl={dexUrl} />
 
       {uploadOpen && (
         <UploadModal
@@ -693,7 +696,7 @@ function WinnerToast({ data, onClose }: { data: { round: number; winner: Winner 
   );
 }
 
-function Footer({ state, onCopy }: { state: PublicState | null; onCopy: () => void }) {
+function Footer({ state, onCopy, pumpUrl, dexUrl }: { state: PublicState | null; onCopy: () => void; pumpUrl: string | null; dexUrl: string | null }) {
   return (
     <footer className="foot">
       <svg className="wave" viewBox="0 0 1440 40" preserveAspectRatio="none" aria-hidden="true">
@@ -708,8 +711,9 @@ function Footer({ state, onCopy }: { state: PublicState | null; onCopy: () => vo
           </div>
           <div style={{ display: 'grid', gap: 22 }}>
             <div className="btns">
-              <a className="btn btn-green btn-sm" href={state?.pump_url || PUMP_URL} target="_blank" rel="noopener noreferrer"><IconPump /> Pump.fun</a>
-              <a className="btn btn-sm" href={DEX_URL} target="_blank" rel="noopener noreferrer">Dexscreener</a>
+              {pumpUrl ? <a className="btn btn-green btn-sm" href={pumpUrl} target="_blank" rel="noopener noreferrer"><IconPump /> Pump.fun</a>
+                : <span className="btn btn-green btn-sm" aria-disabled="true" style={{ opacity: .6 }}><IconPump /> Pump.fun · soon</span>}
+              {dexUrl && <a className="btn btn-sm" href={dexUrl} target="_blank" rel="noopener noreferrer">Dexscreener</a>}
               {(state?.x_url || X_URL) ? (
                 <a className="btn btn-sm" href={state?.x_url || X_URL} target="_blank" rel="noopener noreferrer"><IconX /> X / Twitter</a>
               ) : (
@@ -717,7 +721,7 @@ function Footer({ state, onCopy }: { state: PublicState | null; onCopy: () => vo
               )}
               <button className="btn btn-sm" onClick={onCopy}><IconCopy /> Copy CA</button>
             </div>
-            <div className="ca" style={{ opacity: .85, wordBreak: 'break-all' }}>CA: {state?.ca || OFFICIAL_CA}</div>
+            <div className="ca" style={{ opacity: .85, wordBreak: 'break-all' }}>CA: {state?.ca || 'drops at launch'}</div>
             <div className="links">
               <a href="#how">How it works</a>
               <a href="#hall">Winners</a>

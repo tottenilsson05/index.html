@@ -9,8 +9,7 @@ const body = Nunito({ subsets: ['latin'], weight: ['400', '600', '700', '800', '
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: 'Post Your Mo ($MO) — Grow it. Post it. Win it.',
-  description: 'Post your mustache, get the votes, win the fees. Every 5 minutes the most-voted mo wins 100% of the round’s creator fees. $MO on Pump.fun — CA: HAB42JadC7ETDGEWCuLBGVkSBgBaREE25THCo5tspump',
-  other: { 'token:chain': 'solana', 'token:address': 'HAB42JadC7ETDGEWCuLBGVkSBgBaREE25THCo5tspump', 'token:launchpad': 'pump.fun' },
+  description: 'Post your mustache, get the votes, win the fees. Every 5 minutes the most-voted mo wins 100% of the round’s creator fees. $MO on Pump.fun.',
   openGraph: {
     title: 'Post Your Mo ($MO)',
     description: 'Grow it. Post it. Win it. Every 5 minutes the most-voted mustache wins the creator fees.',

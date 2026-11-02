@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db, rpc, errMsg } from '@/lib/server';
 import { creatorVaultLamports, fetchMarket, pumpLaunchStatus } from '@/lib/solana';
-import { OFFICIAL_CA } from '@/lib/config';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
@@ -26,14 +25,8 @@ export async function GET(req: Request) {
   };
 
   const { data: s } = await db().from('mo_settings').select('launched, ca, fee_tracking, x_url').eq('id', 1).single();
-  const ca: string = s?.ca || OFFICIAL_CA;
-  if (s && !s.ca && !s.launched) {
-    // store the official CA + Pump.fun link (pre-launch only; the CA is locked after launch)
-    try {
-      await rpc('mo_admin_set_settings', { p_ca: OFFICIAL_CA, p_pump_url: `https://pump.fun/coin/${OFFICIAL_CA}`, p_x_url: s.x_url || '', p_fee_tracking: true });
-      out.ca = 'stored';
-    } catch (e) { await log('store_ca', e); }
-  }
+  const ca: string | null = s?.ca || null;
+  if (!ca) return NextResponse.json({ state: 'launching_soon', onchain: 'no CA set yet (add it in /admin)' });
 
   // ---- 1. launch detection (verified on-chain) ----
   let status: Awaited<ReturnType<typeof pumpLaunchStatus>> | null = null;
