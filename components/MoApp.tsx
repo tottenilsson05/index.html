@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { supa } from '@/lib/browser';
 import type { Post, PublicState, Winner } from '@/lib/types';
-import { OFFICIAL_CA, PUMP_URL, DEX_URL } from '@/lib/config';
+import { OFFICIAL_CA, PUMP_URL, DEX_URL, X_URL } from '@/lib/config';
 import { clock, payoutLabel, roundNo, sol, usd, shortAddr, price } from '@/lib/format';
 import { Cloud, IconCamera, IconCopy, IconFlag, IconPill, IconPump, IconTrophy, IconVote, IconX, Sparkle } from './Icons';
 import UploadModal from './UploadModal';
@@ -255,7 +255,7 @@ export default function MoApp({ initial }: { initial: Initial }) {
     <>
       <ScrollProgress />
       <MoParticles />
-      <Nav onCopy={copyCA} ca={ca} xUrl={state?.x_url || null} onSoon={() => say('Our X account drops soon.')} />
+      <Nav onCopy={copyCA} ca={ca} xUrl={state?.x_url || X_URL} onSoon={() => say('Our X account drops soon.')} />
 
       <main>
         {/* ================= HERO ================= */}
@@ -710,8 +710,8 @@ function Footer({ state, onCopy }: { state: PublicState | null; onCopy: () => vo
             <div className="btns">
               <a className="btn btn-green btn-sm" href={state?.pump_url || PUMP_URL} target="_blank" rel="noopener noreferrer"><IconPump /> Pump.fun</a>
               <a className="btn btn-sm" href={DEX_URL} target="_blank" rel="noopener noreferrer">Dexscreener</a>
-              {state?.x_url ? (
-                <a className="btn btn-sm" href={state.x_url} target="_blank" rel="noopener noreferrer"><IconX /> X / Twitter</a>
+              {(state?.x_url || X_URL) ? (
+                <a className="btn btn-sm" href={state?.x_url || X_URL} target="_blank" rel="noopener noreferrer"><IconX /> X / Twitter</a>
               ) : (
                 <span className="btn btn-sm" aria-disabled="true" style={{ opacity: .6 }}><IconX /> X · soon</span>
               )}

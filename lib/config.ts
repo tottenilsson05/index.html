@@ -11,3 +11,4 @@ export const LAMPORTS_PER_SOL = 1_000_000_000;
 export const OFFICIAL_CA = 'HAB42JadC7ETDGEWCuLBGVkSBgBaREE25THCo5tspump';
 export const PUMP_URL = `https://pump.fun/coin/${OFFICIAL_CA}`;
 export const DEX_URL = `https://dexscreener.com/solana/${OFFICIAL_CA}`;
+export const X_URL = 'https://x.com/postyourmo';

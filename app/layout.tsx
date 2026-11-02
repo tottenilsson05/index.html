@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     description: 'Grow it. Post it. Win it. Every 5 minutes the most-voted mustache wins the creator fees.',
     type: 'website',
   },
-  twitter: { card: 'summary_large_image', title: 'Post Your Mo ($MO)', description: 'Grow it. Post it. Win it.' },
+  twitter: { card: 'summary_large_image', site: '@postyourmo', creator: '@postyourmo', title: 'Post Your Mo ($MO)', description: 'Grow it. Post it. Win it.' },
 };
 
 export const viewport: Viewport = { themeColor: '#e6f7ee', width: 'device-width', initialScale: 1 };
