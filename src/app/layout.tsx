@@ -6,7 +6,7 @@ import "./globals.css";
 const display = Fraunces({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-display", display: "swap" });
 const body = Nunito_Sans({ subsets: ["latin"], variable: "--font-body", display: "swap" });
 
-const title = "Together ($TOGETHER) — Better trenches. Better Christmas.";
+const title = "Together";
 const description =
   "Together, we make the trenches better. A Christmas reminder on Solana: be kind, build together, and enjoy the holidays.";
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   title,
   description,
   applicationName: "Together",
-  keywords: ["Together", "$TOGETHER", "Solana", "memecoin", "Christmas", "pump.fun"],
+  keywords: ["Together", "$Together", "Solana", "memecoin", "Christmas", "pump.fun"],
   openGraph: {
     title,
     description,

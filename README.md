@@ -1,4 +1,4 @@
-# Together ($TOGETHER)
+# Together ($Together)
 
 Better trenches. Better Christmas. Together.
 

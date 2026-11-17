@@ -1,6 +1,6 @@
 const env = (v: string | undefined) => (v && v.trim().length > 0 ? v.trim() : undefined);
 
-/** Official $TOGETHER mint on Solana (launching on Pump.fun). */
+/** Official $Together mint on Solana (launching on Pump.fun). */
 export const CONTRACT_ADDRESS =
   env(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) ?? "FBJU2Jms2XmVuq1SiZzecJYtGmu5hidCUywKNNvbpump";
 

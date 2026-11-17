@@ -22,7 +22,7 @@ export default function Home() {
           <header>
           <div className="brand">
             <Image src="/together-logo.webp" alt="Together logo" width={40} height={40} priority />
-            <span>$TOGETHER</span>
+            <span>$Together</span>
           </div>
           <Countdown />
           </header>
