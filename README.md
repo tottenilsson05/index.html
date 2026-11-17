@@ -13,8 +13,8 @@ npm run dev     # http://localhost:3000
 ## Token
 - Contract (Pump.fun): `FBJU2Jms2XmVuq1SiZzecJYtGmu5hidCUywKNNvbpump` — set in `src/lib/site.ts`
 - Pump.fun button → `https://pump.fun/coin/<CA>` · DexScreener button → `https://dexscreener.com/solana/<CA>`
-- X button shows **Soon** until an official account exists. To enable it, set `X_URL` in `src/lib/site.ts`
-  (or the `NEXT_PUBLIC_X_URL` env var in Vercel) and redeploy.
+- X button → `https://x.com/togethercoinPF` (`X_URL` in `src/lib/site.ts`
+  in `src/lib/site.ts`, or the `NEXT_PUBLIC_X_URL` env var in Vercel)
 
 ## Launch detection & live data (`/api/token`)
 Server route, no API keys needed. Providers in order, first match wins:

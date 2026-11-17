@@ -6,8 +6,8 @@ export const CONTRACT_ADDRESS =
 
 export const SITE_URL = env(process.env.NEXT_PUBLIC_SITE_URL) ?? "https://together-trenches.vercel.app";
 
-/** Official X account. Leave empty until it exists — the button then shows "Soon" instead of a made-up link. */
-export const X_URL = env(process.env.NEXT_PUBLIC_X_URL) ?? "";
+/** Official X account. If emptied, the button shows "Soon" instead of a made-up link. */
+export const X_URL = env(process.env.NEXT_PUBLIC_X_URL) ?? "https://x.com/togethercoinPF";
 
 export const LINKS = {
   pumpfun: `https://pump.fun/coin/${CONTRACT_ADDRESS}`,
