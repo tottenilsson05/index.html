@@ -2,7 +2,7 @@ const env = (v: string | undefined) => (v && v.trim().length > 0 ? v.trim() : un
 
 /** Official $Together mint on Solana (launching on Pump.fun). */
 export const CONTRACT_ADDRESS =
-  env(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) ?? "FBJU2Jms2XmVuq1SiZzecJYtGmu5hidCUywKNNvbpump";
+  env(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS) ?? "GeyCZwXLfytn1J7orVdvAaj5Kv6mbpyBcREjiqznpump";
 
 export const SITE_URL = env(process.env.NEXT_PUBLIC_SITE_URL) ?? "https://together-trenches.vercel.app";
 
