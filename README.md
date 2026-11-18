@@ -11,7 +11,7 @@ npm run dev     # http://localhost:3000
 ```
 
 ## Token
-- Contract (Pump.fun): `H8Tje6yYBfLBzi8SjF2F3UgqDCJHdgszR5RfAQp8pump` — set in `src/lib/site.ts`
+- Contract (Pump.fun): `F2NkmJrVJBnd9gg5snH5qF5Gg7E4MS7F3m7osWGspump` — set in `src/lib/site.ts`
 - Pump.fun button → `https://pump.fun/coin/<CA>` · DexScreener button → `https://dexscreener.com/solana/<CA>`
 - X button → `https://x.com/togethercoinPF` (`X_URL` in `src/lib/site.ts`, or the `NEXT_PUBLIC_X_URL` env var in Vercel)
 
